@@ -2473,7 +2473,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "SI2301CDS-T1-GE3:SI2301CDS-T1-GE3"
+		(symbol "daisy-studio:SI2301CDS-T1-GE3"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -6028,7 +6028,7 @@
 		)
 	)
 	(symbol
-		(lib_id "SI2301CDS-T1-GE3:SI2301CDS-T1-GE3")
+		(lib_id "daisy-studio:SI2301CDS-T1-GE3")
 		(at 54.61 49.53 0)
 		(mirror x)
 		(unit 1)

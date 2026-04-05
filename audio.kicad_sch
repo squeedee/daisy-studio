@@ -2696,7 +2696,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "LC2255EESP:LC2255EESP"
+		(symbol "daisy-studio:LC2255EESP"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -9453,7 +9453,7 @@
 		)
 	)
 	(symbol
-		(lib_id "LC2255EESP:LC2255EESP")
+		(lib_id "daisy-studio:LC2255EESP")
 		(at 86.36 100.33 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10620,7 +10620,7 @@
 	)
 	(symbol
 		(lib_name "THAT1246_1")
-		(lib_id "triptech:THAT1246")
+		(lib_id "daisy-studio:THAT1246")
 		(at 58.42 107.95 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10710,7 +10710,7 @@
 	)
 	(symbol
 		(lib_name "THAT1646_1")
-		(lib_id "triptech:THAT1646")
+		(lib_id "daisy-studio:THAT1646")
 		(at 205.74 102.87 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -12214,7 +12214,7 @@
 	)
 	(symbol
 		(lib_name "THAT1246_1")
-		(lib_id "triptech:THAT1246")
+		(lib_id "daisy-studio:THAT1246")
 		(at 58.42 45.72 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -12592,7 +12592,7 @@
 	)
 	(symbol
 		(lib_name "THAT1646_1")
-		(lib_id "triptech:THAT1646")
+		(lib_id "daisy-studio:THAT1646")
 		(at 205.74 40.64 0)
 		(unit 1)
 		(exclude_from_sim no)

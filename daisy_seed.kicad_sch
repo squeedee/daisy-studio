@@ -1174,7 +1174,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Daisy-Boards:Daisy_Seed"
+		(symbol "daisy-studio:Daisy_Seed"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -1196,7 +1196,7 @@
 					(justify right)
 				)
 			)
-			(property "Footprint" "Daisy-Boards:DAISY_SEED"
+			(property "Footprint" "daisy-studio:DAISY_SEED"
 				(at 5.08 -33.02 0)
 				(effects
 					(font
@@ -3368,7 +3368,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "SDS-50J:SDS-50J"
+		(symbol "daisy-studio:SDS-50J"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -8043,7 +8043,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Daisy-Boards:Daisy_Seed")
+		(lib_id "daisy-studio:Daisy_Seed")
 		(at 78.74 102.87 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8070,7 +8070,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "daisy:DAISY_SEED_SMT"
+		(property "Footprint" "daisy-studio:DAISY_SEED_SMT"
 			(at 83.82 135.89 0)
 			(effects
 				(font
@@ -8732,7 +8732,7 @@
 		)
 	)
 	(symbol
-		(lib_id "SDS-50J:SDS-50J")
+		(lib_id "daisy-studio:SDS-50J")
 		(at 248.92 109.22 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -9804,7 +9804,7 @@
 	)
 	(symbol
 		(lib_name "SDS-50J_2")
-		(lib_id "SDS-50J:SDS-50J")
+		(lib_id "daisy-studio:SDS-50J")
 		(at 248.92 135.89 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10040,7 +10040,7 @@
 		)
 	)
 	(symbol
-		(lib_id "SDS-50J:SDS-50J")
+		(lib_id "daisy-studio:SDS-50J")
 		(at 331.47 125.73 0)
 		(unit 1)
 		(exclude_from_sim no)

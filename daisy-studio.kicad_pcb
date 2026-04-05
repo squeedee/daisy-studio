@@ -7300,7 +7300,7 @@
 			)
 		)
 	)
-	(footprint "libs:SDS50J"
+	(footprint "daisy-studio:SDS50J"
 		(locked yes)
 		(layer "F.Cu")
 		(uuid "59aed7ff-b547-4d00-9e38-1e36da58de0d")
@@ -10105,7 +10105,7 @@
 			)
 		)
 	)
-	(footprint "daisy:DAISY_SEED_SMT"
+	(footprint "daisy-studio:DAISY_SEED_SMT"
 		(locked yes)
 		(layer "F.Cu")
 		(uuid "8b4e143f-df32-4419-87fa-870270aed975")
@@ -13318,7 +13318,7 @@
 			)
 		)
 	)
-	(footprint "libs:LC2255EESP"
+	(footprint "daisy-studio:LC2255EESP"
 		(locked yes)
 		(layer "F.Cu")
 		(uuid "a612d210-cf14-4bbe-8c5e-2fa9a90d09d5")
@@ -18882,7 +18882,7 @@
 			)
 		)
 	)
-	(footprint "libs:SDS50J"
+	(footprint "daisy-studio:SDS50J"
 		(locked yes)
 		(layer "F.Cu")
 		(uuid "ccd04739-f7fe-444c-89ab-c9cbcb4c31b1")
@@ -22763,7 +22763,7 @@
 			)
 		)
 	)
-	(footprint "libs:SDS50J"
+	(footprint "daisy-studio:SDS50J"
 		(locked yes)
 		(layer "F.Cu")
 		(uuid "ebe8619f-6ad6-4c51-9539-fc8eb1db0ada")

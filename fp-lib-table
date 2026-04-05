@@ -1,5 +1,4 @@
 (fp_lib_table
   (version 7)
-  (lib (name "triptech")(type "KiCad")(uri "${KIPRJMOD}/libs/daisy-studio.pretty")(options "")(descr "Triptech project footprints"))
-  (lib (name "daisy")(type "KiCad")(uri "${KIPRJMOD}/libs/Daisy-Boards.pretty")(options "")(descr ""))
+  (lib (name "daisy-studio")(type "KiCad")(uri "${KIPRJMOD}/daisy-studio.pretty")(options "")(descr "Daisy Studio project footprints"))
 )
