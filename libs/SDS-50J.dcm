@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP SDS-50J
+D 5 Pin, Right-Angle Receptacle, 180
+K
+F https://www.sameskydevices.com/product/resource/supplyframepdf/sds-j.pdf
+$ENDCMP
+#
+#End Doc Library

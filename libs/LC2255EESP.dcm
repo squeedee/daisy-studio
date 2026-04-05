@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP LC2255EESP
+D PUSHBUTTON, 300mA, 30VDC DPDT, On-On Through Hole, Right Angle
+K
+F https://configured-product-images.s3.amazonaws.com/2D/specs/LC2255EESP.pdf
+$ENDCMP
+#
+#End Doc Library

@@ -1,0 +1,7 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "triptech")(type "KiCad")(uri "${KIPRJMOD}/libs/triptech.kicad_sym")(options "")(descr "Triptech project symbols"))
+  (lib (name "SI2301CDS-T1-GE3")(type "KiCad")(uri "${KIPRJMOD}/libs/SI2301CDS-T1-GE3.kicad_sym")(options "")(descr ""))
+  (lib (name "SJ3-35083D-TR")(type "KiCad")(uri "${KIPRJMOD}/libs/SJ3-35083D-TR.kicad_sym")(options "")(descr ""))
+  (lib (name "LC2255EESP")(type "KiCad")(uri "${KIPRJMOD}/libs/LC2255EESP.kicad_sym")(options "")(descr ""))
+)
