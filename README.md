@@ -37,6 +37,11 @@ Designed in KiCad 8 with a hierarchical schematic:
 | `bom.csv`                | Bill of materials with Mouser part numbers       |
 | `libs/`                  | Custom symbol and footprint libraries            |
 
+## Documentation
+
+- [Schematic (PDF)](docs/daisy-studio-schematic.pdf)
+- [PCB Layout (PDF)](docs/daisy-studio-pcb.pdf)
+
 ## Status
 
 Rev 1.0 — known issues noted in BOM for Rev 2:
