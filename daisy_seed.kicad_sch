@@ -41,7 +41,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "https://www.hirose.com/product/document?clcode=CL0609-0033-6-00&productname=DM3AT-SF-PEJ2M5&series=DM3&documenttype=Catalog&lang=en&documentid=D49662_en"
+			(property "Datasheet" "https://www.mouser.com/datasheet/3/731/1/DM3AT_SF_PEJM5_CL0609_0031_0_00_2DDrawing_0000947170.pdf"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2602,7 +2602,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "https://www.onsemi.com/pub/Collateral/H11L3M-D.PDF"
+			(property "Datasheet" "https://www.onsemi.com/pdf/datasheet/h11l3m-d.pdf"
 				(at -2.286 0 0)
 				(effects
 					(font
@@ -3402,7 +3402,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "https://www.sameskydevices.com/product/resource/supplyframepdf/sds-j.pdf"
+			(property "Datasheet" "https://www.mouser.com/datasheet/3/6118/1/sds-j.pdf"
 				(at 19.05 -194.92 0)
 				(effects
 					(font

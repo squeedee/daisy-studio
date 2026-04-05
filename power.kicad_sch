@@ -532,7 +532,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" ""
+			(property "Datasheet" "https://www.mouser.com/datasheet/3/6118/1/pj_002ah.pdf"
 				(at 0 0 0)
 				(effects
 					(font
@@ -964,7 +964,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "https://www.tracopower.com/products/tma.pdf"
+			(property "Datasheet" "https://www.tracopower.com/tma-datasheet"
 				(at 0 -6.35 0)
 				(effects
 					(font
@@ -2312,7 +2312,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tps54302.pdf"
+			(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tps54302.pdf?ts=1775287815118&ref_url=https%253A%252F%252Fwww.ti.com%252Fproduct%252FTPS54302"
 				(at -7.62 8.89 0)
 				(effects
 					(font
@@ -2503,7 +2503,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "http://www.vishay.com/docs/68741/si2301cd.pdf"
+			(property "Datasheet" "https://www.vishay.com/docs/68741/si2301cd.pdf"
 				(at 16.51 -194.92 0)
 				(effects
 					(font

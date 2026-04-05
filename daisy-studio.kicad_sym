@@ -1541,7 +1541,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://thatcorp.com/datashts/THAT_1200-series_Datasheet.pdf"
+		(property "Datasheet" "https://www.mouser.com/datasheet/3/4/1/THAT_1240_Series_Datasheet.pdf"
 			(at 0 -15.24 0)
 			(effects
 				(font
@@ -1753,7 +1753,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://thatcorp.com/datashts/THAT_1606-1646_Datasheet.pdf"
+		(property "Datasheet" "https://www.mouser.com/datasheet/3/4/1/THAT_1606-1646_Datasheet.pdf"
 			(at 0 -15.24 0)
 			(effects
 				(font
@@ -1943,7 +1943,7 @@
 	(property "Footprint" "daisy-studio:SOT95P237X112-3N" (at 16.51 -94.92 0)
 	(effects (font (size 1.27 1.27)) (justify left top) hide)
 	)
-	(property "Datasheet" "http://www.vishay.com/docs/68741/si2301cd.pdf" (at 16.51 -194.92 0)
+	(property "Datasheet" "https://www.vishay.com/docs/68741/si2301cd.pdf" (at 16.51 -194.92 0)
 	(effects (font (size 1.27 1.27)) (justify left top) hide)
 	)
 	(property "ki_description" "SI2301CDS-T1-GE3, P-channel MOSFET Transistor 2.3 A 20 V, 3-Pin SOT-23, TO-236" (at 16.51 -294.92 0)
@@ -1994,7 +1994,7 @@
 	(property "Footprint" "daisy-studio:LC2255EESP" (at 26.67 -94.92 0)
 	(effects (font (size 1.27 1.27)) (justify left top) hide)
 	)
-	(property "Datasheet" "https://configured-product-images.s3.amazonaws.com/2D/specs/LC2255EESP.pdf" (at 26.67 -194.92 0)
+	(property "Datasheet" "https://www.mouser.com/datasheet/3/315/1/LC.pdf" (at 26.67 -194.92 0)
 	(effects (font (size 1.27 1.27)) (justify left top) hide)
 	)
 	(property "ki_description" "PUSHBUTTON, 300mA, 30VDC DPDT, On-On Through Hole, Right Angle" (at 26.67 -294.92 0)
@@ -2095,7 +2095,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.sameskydevices.com/product/resource/supplyframepdf/sds-j.pdf"
+		(property "Datasheet" "https://www.mouser.com/datasheet/3/6118/1/sds-j.pdf"
 			(at 19.05 -194.92 0)
 			(effects
 				(font
