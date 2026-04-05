@@ -32,24 +32,34 @@ flowchart LR
 | Clamp Diode     | BAT54S     | Dual Schottky to VIN (5V) and AGND (0V).                               |
 
 ## Observed Performance (Simulated)
-   Simulations were performed using LTspice with a 0.868V Peak source (representing +4 dBu after the THAT 1246).
-   Frequency Response
+
+Simulations were performed using LTspice with a 0.868V Peak source (representing +4 dBu after the THAT 1246).
+
+### Frequency Response
 
 * Audio Band (20Hz – 20kHz): Exceptionally flat.
 * Low-End Roll-off: -0.047 dB at 20Hz (Cutoff frequency < 1Hz).
 * High-End Roll-off: Flat beyond 100kHz (Cutoff frequency ~4.4MHz).
 
-Headroom & Clipping
+![Frequency response curve](response-curve.png)
+
+### Headroom & Clipping
 
 * Nominal (+4 dBu Input): Arrives at Codec at 1.64 Vp-p (-5.2 dBFS). High signal-to-noise utilization.
 * Digital Clipping Point: Occurs at +9.2 dBu input (Pad OFF).
 * Hot Input (+24 dBu Input): With Pad ON, arrives at Codec at 2.64 Vp-p.
 * Max Headroom: Supports up to +25.1 dBu before digital clipping (Pad ON).
 
-Hardware Protection ("The Seatbelt")
+![Nominal +4 dBu input simulation](Sim-4dBu.png)
+
+![Hot +24 dBu input with -20dB pad](sim-24dBu-with-20db-pad.png)
+
+### Hardware Protection ("The Seatbelt")
 
 * Positive Clamp: Engages at ~5.3V.
 * Negative Clamp: Engages at ~ -0.3V.
 * Current Limiting: The 1.2 kΩ resistor restricts fault current to <10mA during extreme overvoltage, ensuring the
   PCM3060 and Daisy Seed remain physically safe.
+
+![Protection clamp simulation](Protection.png)
 

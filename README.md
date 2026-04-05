@@ -35,12 +35,14 @@ Designed in KiCad 8 with a hierarchical schematic:
 | `audio.kicad_sch`        | Balanced line receivers/drivers and connectors   |
 | `daisy-studio.kicad_pcb` | PCB layout                                       |
 | `bom.csv`                | Bill of materials with Mouser part numbers       |
-| `libs/`                  | Custom symbol and footprint libraries            |
+| `daisy-studio.kicad_sym` | Project symbol library                           |
+| `daisy-studio.pretty/`   | Project footprint library                        |
 
 ## Documentation
 
 - [Schematic (PDF)](docs/daisy-studio-schematic.pdf)
 - [PCB Layout (PDF)](docs/daisy-studio-pcb.pdf)
+- [Input Stage Design & Simulation](sim/input/DESIGN.md)
 
 ## Status
 
