@@ -2716,7 +2716,7 @@
 					)
 				)
 			)
-			(property "Footprint" "libs:LC2255EESP"
+			(property "Footprint" "daisy-studio:LC2255EESP"
 				(at 26.67 -94.92 0)
 				(effects
 					(font
@@ -9478,7 +9478,7 @@
 				)
 			)
 		)
-		(property "Footprint" "libs:LC2255EESP"
+		(property "Footprint" "daisy-studio:LC2255EESP"
 			(at 113.03 195.25 0)
 			(effects
 				(font

@@ -8756,7 +8756,7 @@
 				)
 			)
 		)
-		(property "Footprint" "libs:SDS50J"
+		(property "Footprint" "daisy-studio:SDS50J"
 			(at 267.97 204.14 0)
 			(effects
 				(font
@@ -9828,7 +9828,7 @@
 				)
 			)
 		)
-		(property "Footprint" "libs:SDS50J"
+		(property "Footprint" "daisy-studio:SDS50J"
 			(at 267.97 230.81 0)
 			(effects
 				(font
@@ -10064,7 +10064,7 @@
 				)
 			)
 		)
-		(property "Footprint" "libs:SDS50J"
+		(property "Footprint" "daisy-studio:SDS50J"
 			(at 350.52 220.65 0)
 			(effects
 				(font
