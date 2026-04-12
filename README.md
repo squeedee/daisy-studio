@@ -46,7 +46,5 @@ Designed in KiCad 8 with a hierarchical schematic:
 
 ## Status
 
-Rev 1.0 — known issues noted in BOM for Rev 2:
+[Known Issues](https://github.com/squeedee/daisy-studio/issues?q=is%3Aissue%20state%3Aopen%20label%3Abug)
 
-- C6/C7 (22uF on 5V rail): should be 1206/25V instead of 0805/10V
-- DC barrel jack (PJ-002AH): pin widths need correction (3.0mm vs 3.5mm)
