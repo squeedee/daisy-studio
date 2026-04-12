@@ -8250,6 +8250,15 @@
 				(hide yes)
 			)
 		)
+		(property "Placement" "Near Daisy Seed input. Bottom diode to digital ground."
+			(at 118.11 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "e6192066-a203-4334-a340-4c3de99f69d0")
 		)
@@ -9069,6 +9078,15 @@
 				(hide yes)
 			)
 		)
+		(property "Placement" "After 1.2k series resistor in signal path. Ground to analog ground."
+			(at 121.92 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "bab4e5e6-8bcd-491a-959e-9095b00b28db")
 		)
@@ -9365,6 +9383,15 @@
 				(hide yes)
 			)
 		)
+		(property "Placement" "Near 2.5V bias junction, close to signal path."
+			(at 111.76 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "c8c3c6bb-d73b-421c-a2e9-bc103d2dbe81")
 		)
@@ -9574,6 +9601,15 @@
 					(size 1.27 1.27)
 				)
 				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Placement" "Panel-mounted. Route to signal path with short traces, analog ground."
+			(at 86.36 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -10263,6 +10299,15 @@
 				(hide yes)
 			)
 		)
+		(property "Placement" "As close as possible to Daisy Seed AGND/DGND pins."
+			(at 229.87 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "a1211297-203c-4fc7-9405-7b1b435655bd")
 		)
@@ -10669,6 +10714,15 @@
 				)
 			)
 		)
+		(property "Placement" "Near input connector. Pins 1,4 to analog ground, keep ground path short and clean."
+			(at 58.42 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "a7b4e8f8-42bb-4d58-b26a-88ce9be592bf")
 		)
@@ -10757,6 +10811,15 @@
 				(font
 					(size 1.27 1.27)
 				)
+			)
+		)
+		(property "Placement" "Near output connector. Analog ground reference."
+			(at 205.74 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -11706,6 +11769,15 @@
 				(hide yes)
 			)
 		)
+		(property "Placement" "Near 2.5V bias junction, close to signal path."
+			(at 105.41 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "c44e4cbf-1b6f-45b5-94b3-f66a68580457")
 		)
@@ -12191,6 +12263,15 @@
 				(hide yes)
 			)
 		)
+		(property "Placement" "Near 2.5V bias junction. Bottom resistor, connect to analog ground."
+			(at 105.41 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "8f7c2e22-f7ba-4674-941e-b80c20acfa7c")
 		)
@@ -12261,6 +12342,15 @@
 				(font
 					(size 1.27 1.27)
 				)
+			)
+		)
+		(property "Placement" "Near input connector. Pins 1,4 to analog ground, keep ground path short and clean."
+			(at 58.42 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -12641,6 +12731,15 @@
 				)
 			)
 		)
+		(property "Placement" "Near output connector. Analog ground reference."
+			(at 205.74 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "b1007003-0002-4001-8000-000000000001")
 		)
@@ -12733,6 +12832,15 @@
 				(hide yes)
 			)
 		)
+		(property "Placement" "In signal path between THAT1246 output and protection diodes."
+			(at 81.28 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "a2000001-0011-4000-8000-000000000001")
 		)
@@ -12807,6 +12915,15 @@
 				(hide yes)
 			)
 		)
+		(property "Placement" "In signal path between THAT1246 output and protection diodes."
+			(at 81.28 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "a2000001-0014-4000-8000-000000000001")
 		)
@@ -12873,6 +12990,15 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 121.92 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Placement" "After 1.2k series resistor in signal path. Ground to analog ground."
 			(at 121.92 102.87 0)
 			(effects
 				(font
@@ -14347,6 +14473,15 @@
 				(hide yes)
 			)
 		)
+		(property "Placement" "Near 2.5V bias junction. Bottom resistor, connect to analog ground."
+			(at 111.76 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "3c745ea2-58bf-41cd-a4f9-1cd59a1a75c6")
 		)
@@ -15077,6 +15212,15 @@
 			)
 		)
 		(property "Description" "Vr 30V, If 200mA, Dual schottky barrier diode, in series, SOT-323"
+			(at 125.73 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Placement" "Near Daisy Seed input. Bottom diode to digital ground."
 			(at 125.73 74.93 0)
 			(effects
 				(font

@@ -7286,6 +7286,15 @@
 				(hide yes)
 			)
 		)
+		(property "Placement" "Follow TPS54302 datasheet layout rules. Digital ground. Keep switching noise away from analog section."
+			(at 161.29 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "5323fd62-992e-4498-b692-3f51a48e8555")
 		)
@@ -7363,6 +7372,15 @@
 			)
 		)
 		(property "Description" "1W DC/DC converter unregulated, 10.8-13.2 input, ±12V output voltage, 42mA each output, 1.0kVDC isolation, SIP-7"
+			(at 60.96 130.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Placement" "Separate from analog signal path. Digital ground side."
 			(at 60.96 130.81 0)
 			(effects
 				(font
