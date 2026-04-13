@@ -2,7 +2,8 @@
 
 * Annotate all components in the schematic with ideal placement notes - make a property for them called
   `ideal-placement`.
-* Add some details about the project to the silkscreen. [Github Issue](https://github.com/squeedee/daisy-studio/issues/4)
+* Add some details about the project to the
+  silkscreen. [Github Issue](https://github.com/squeedee/daisy-studio/issues/4)
 * GPIO component is wrong [Github Issue](https://github.com/squeedee/daisy-studio/issues/3)
 
 # Part 1: High-Voltage Protected Audio Input for Daisy Seed
@@ -116,11 +117,13 @@ ground**, eliminating several components and the 5V rail lift problem entirely.
 ## Evidence
 
 From the **Daisy Seed datasheet (v1.2.0)**:
+
 * "Audio inputs are AC coupled and 3.6Vpp, or approx. 1Vrms." (p.2)
 * Audio input absolute max: **-1.8V to +1.8V** (Table 1, p.2)
 * Input impedance: **13.6kΩ** (Figure 1.2, p.6) = 3.6k series resistor + 10k PCM3060 internal
 
 From the **PCM3060 datasheet (SLAS533B)**:
+
 * ADC center voltage: 0.5 V_CC = 2.5V (set internally)
 * V_COM output: 0.5 V_CC, 12.5kΩ output impedance — provides internal bias after the AC coupling cap
 * ADC full scale: 0.6 V_CC = 3 Vp-p (1V to 4V at the PCM3060 pin, after AC coupling)
@@ -193,3 +196,184 @@ Added: 1x op-amp (e.g., half OPA2134 on ±12V), 2x gain resistors, 1x series inp
 * Eliminates the 5V rail lift problem and bias network noise coupling at the source
 * Series input resistor limits current through the op-amp's internal clamp diodes if a
   gain resistor fails open
+
+------------------------------
+
+# Rev 3 Concept: Mixer-Style Input with Symmetric Clamp
+
+## Design Goals
+
+Replace the Rev 2 protection circuit (asymmetric diode clamp, 2.5V bias network, 5.1V
+zener) with a gain-controlled input stage and symmetric fault clamp. The objectives are:
+
+1. Maximise ADC headroom at +4 dBu (standard studio operating level).
+2. Provide continuous trim from +4 dBu to +24 dBu via a single pot per channel.
+3. Protect the Daisy Seed input (±1.8V abs max) under all fault conditions.
+4. Eliminate the 5V rail lift problem and bias network noise coupling.
+
+## Signal Path
+
+```
+Balanced in → THAT 1246 (-6dB) → R_in (10kΩ) → OPA1656 (inverting, ±12V) → R_out (2.2kΩ) → clamp → Seed pin
+                                                       ↑
+                                                 25kΩ pot (R_fb)
+```
+
+The THAT 1246 converts the balanced input to single-ended with -6dB of gain, preserving
+common-mode rejection and keeping +24 dBu signals (±8.7V peak at the output) within the
+±10V output swing of the ±12V rails.
+
+The OPA1656 is configured as an inverting amplifier with gain set by the ratio of the
+feedback pot to the input resistor (gain = -R_fb / R_in). At the pot's upper range (~86%,
+21.4kΩ), the gain of 2.14 maps +4 dBu to ±1.6V at the Seed pin — approximately 89% of the
+ADC's 3.6Vpp full-scale window. At the pot's lower range (~10%), gain drops to 0.24,
+mapping +24 dBu to the same ±1.6V. The pot sweep covers the full 20dB operating window
+continuously, replacing the binary pad switch from Rev 2.
+
+The signal remains centred at 0V throughout. The Daisy Seed's internal AC coupling
+capacitor and V_COM bias (2.5V) handle the DC offset for the PCM3060 ADC. The external
+2.5V bias network (2× 100kΩ resistors and scrubber capacitor per channel) is eliminated.
+
+## Op-Amp Selection: OPA1656
+
+The OPA1656 (TI, dual, SOIC-8) is selected for low voltage noise (4.3 nV/√Hz at 1kHz),
+low distortion (THD+N 0.000029% at 1kHz), and 53 MHz GBW — comfortably exceeding audio
+bandwidth requirements at the target gain range. Supply range extends to ±18V; the ±12V
+rails provide generous output headroom. Rail-to-rail output ensures the clipping threshold
+is close to the supply rails. Both channels are served by a single dual package.
+
+## Output Series Resistor (2.2kΩ)
+
+A 2.2kΩ resistor between the op-amp output and the clamp node limits fault current when
+the op-amp clips. Without it, the op-amp's output stage can source up to 50mA directly
+into the clamp diodes, overwhelming the reference divider.
+
+During normal operation, the Seed's 13.6kΩ input impedance draws minimal current through
+the 2.2kΩ, producing a small signal loss of approximately 14% (2.2kΩ / 15.8kΩ). The
+op-amp gain compensates for this loss.
+
+During fault conditions (op-amp clipping at ±11V), the resistor limits current to:
+
+    (11V - 1.7V) / 2.2kΩ = 4.2mA
+
+This is within the capacity of the reference divider and clamp diodes.
+
+## Symmetric Clamp
+
+The clamp sits at the Seed pin, after the 2.2kΩ series resistor. Two silicon signal
+diodes per channel clamp the signal to reference rails derived from the ±12V analog
+supply:
+
+```
+
+               n+                       n-
++12V ── 11kΩ ──┬── 1kΩ ── AGND ── 1kΩ ──┬── 11kΩ ── -12V
+               │                        │
+             470µF                    470µF
+               │                        │
+             AGND                     AGND
+         (+1.0V ref)              (-1.0V ref)
+
+Per channel:
+
+              +1.0V ref
+                 │
+            D+ (cathode)
+                 │
+R_out ───────── node ──── Seed pin
+                 │
+            D- (anode)
+                 │
+              -1.0V ref
+```
+
+D+ conducts when the signal exceeds +1.0V + Vf (~1.7V), sinking current into the
+positive reference rail. D- conducts when the signal falls below -1.0V - Vf (~-1.7V),
+sourcing current from the negative reference rail.
+
+Each divider produces ±1.0V with a Thévenin impedance of 917Ω and a quiescent draw of
+1.1mA per rail (26mW total from the ±12V supply). The 470µF electrolytic capacitors keep
+the reference stiff at audio frequencies — at 20Hz (worst case), the parallel impedance
+of the divider and capacitor is approximately 16.7Ω, limiting rail shift under 4.2mA
+fault current to 71mV. The resulting clamp voltage is:
+
+    1.0V (ref) + 0.07V (shift) + 0.7V (diode Vf at fault current) = 1.77V
+
+This is within the Seed's ±1.8V absolute maximum with margin.
+
+During normal operation at +4 dBu, the signal peaks at ±1.6V — 100mV below the nominal
+±1.7V clamp threshold. The diodes remain fully reverse-biased and introduce no distortion
+or leakage into the signal path.
+
+Under fault conditions — for example, a +24 dBu source with the trim pot at maximum —
+the OPA1656 clips at approximately ±11V (rail-to-rail on ±12V). The 2.2kΩ series
+resistor limits the current delivered to the clamp node:
+
+    (11V - 1.7V) / 2.2kΩ = 4.2mA
+
+The clamp diodes conduct, holding the Seed pin at ±1.77V while the 4.2mA flows into the
+reference divider. The 470µF capacitor absorbs the AC component; the divider's 917Ω
+Thévenin impedance absorbs the remainder with a 71mV shift at 20Hz. The ±12V analog
+supply (TMA-1212D) sinks the fault current — unlike the 5V buck converter in the Rev 2
+topology, it can handle current in both directions without rail lift.
+
+## Eliminated Components (vs Rev 2, per channel)
+
+* 2× 100kΩ bias resistors
+* 10µF bias scrubber capacitor
+* 1.2kΩ series resistor (replaced by 10kΩ R_in)
+* 120Ω pad resistor and switch (replaced by 25kΩ pot)
+* BAV99 protection diodes to 5V/GND rails (replaced by symmetric clamp to ±1.0V rails)
+* 5.1V zener on 5V rail (shared, eliminated — no current path to 5V rail)
+
+## Added Components
+
+**Per channel:**
+
+* 10kΩ input resistor (R_in)
+* 25kΩ trim pot (R_fb)
+* 2.2kΩ series output resistor
+* 2× silicon signal diodes (to ±1.0V reference rails)
+
+**Shared:**
+
+* 1× OPA1656 dual op-amp (SOIC-8)
+* 2× 11kΩ, 2× 1kΩ resistors (reference dividers)
+* 2× 470µF electrolytic capacitors (reference rail filtering)
+
+## Power Budget (TMA-1212D, 1W)
+
+| Source                   | Current (±12V) | Power     |
+|--------------------------|----------------|-----------|
+| 2× THAT 1246             | ~16mA          | 384mW     |
+| OPA1656 (both channels)  | 7.8mA          | 187mW     |
+| Clamp reference dividers | 2.2mA          | 53mW      |
+| **Total**                | **~26mA**      | **624mW** |
+
+## Performance Summary
+
+| Condition                    | Op-amp output | At Seed pin    | ADC utilisation |
+|------------------------------|---------------|----------------|-----------------|
+| +4 dBu, trim at 86%          | ±1.86V        | ±1.60V         | 89%             |
+| +24 dBu, trim at ~10%        | ±2.09V        | ±1.80V         | 100%            |
+| +24 dBu, trim at max (fault) | clips ±11V    | clamped ±1.77V | protected       |
+| Muted (trim at 0%)           | 0V            | 0V             | —               |
+
+## Ground Rules
+
+All components in this circuit are in the analog signal path and connect to Analog
+Ground. The clamp reference dividers derive from the ±12V analog supply (TMA-1212D
+secondary) and terminate at AGND.
+
+## Open Design Questions
+
+* **Pot taper:** Audio (logarithmic) taper provides finer control in the low-gain region
+  where hot signals are trimmed. Linear taper provides uniform gain-per-rotation.
+* **Clamp diode packaging:** Two diodes per channel in opposite orientations. Options
+  include discrete 1N4148 (SOD-323) or dual packages sharing a reference rail across
+  both channels — e.g., BAV70 (common cathode) for the positive clamp rail and a
+  common-anode dual for the negative clamp rail.
+* **Op-amp decoupling:** 100nF ceramic on each supply pin, placed close to the OPA1656.
+* **Anti-alias filtering:** The OPA1656's low output impedance changes the filtering
+  requirements at the Seed input pin. The 1.5–2.2nF capacitor from Rev 2 may still be
+  useful for attenuating wideband op-amp noise above the audio band.
