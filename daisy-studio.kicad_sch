@@ -450,7 +450,7 @@
 			)
 		)
 		(instances
-			(project "triptech"
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
 					(page "4")
 				)
@@ -491,7 +491,7 @@
 			)
 		)
 		(instances
-			(project "triptech"
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
 					(page "2")
 				)
@@ -532,7 +532,7 @@
 			)
 		)
 		(instances
-			(project "triptech"
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
 					(page "8")
 				)
