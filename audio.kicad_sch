@@ -5034,12 +5034,6 @@
 		(uuid "04d2f421-eaed-42f9-8669-9ac692833c08")
 	)
 	(junction
-		(at 73.66 74.93)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "087b094c-300f-4a3f-b8e1-9d5e7518da7b")
-	)
-	(junction
 		(at 184.15 69.85)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5236,12 +5230,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "89932dfe-07cb-40c4-9bbf-03eab08733f0")
-	)
-	(junction
-		(at 73.66 69.85)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "8df083b3-50c5-42bb-811e-f4c74c78c5f6")
 	)
 	(junction
 		(at 231.14 46.99)
@@ -5631,16 +5619,6 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 69.85) (xy 73.66 69.85)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "118b5c20-bda9-4dc0-92ba-fb006b53cc11")
-	)
-	(wire
-		(pts
 			(xy 43.18 110.49) (xy 43.18 121.92)
 		)
 		(stroke
@@ -5758,16 +5736,6 @@
 			(type default)
 		)
 		(uuid "1dd28436-5b00-4c10-b59f-40573341ac55")
-	)
-	(wire
-		(pts
-			(xy 31.75 76.2) (xy 31.75 80.01)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1f7a8eee-7e14-45e7-988b-6081110f9414")
 	)
 	(wire
 		(pts
@@ -6008,16 +5976,6 @@
 			(type default)
 		)
 		(uuid "43110690-55b2-457d-a2d6-f28d0ce3671e")
-	)
-	(wire
-		(pts
-			(xy 29.21 73.66) (xy 68.58 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "43533cd8-c1eb-4b4d-b3cc-bed2664e1bff")
 	)
 	(wire
 		(pts
@@ -6341,16 +6299,6 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 71.12) (xy 68.58 69.85)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "69627f56-2d8f-43e5-b36b-6d82f66bb64a")
-	)
-	(wire
-		(pts
 			(xy 215.9 46.99) (xy 220.98 46.99)
 		)
 		(stroke
@@ -6438,16 +6386,6 @@
 			(type default)
 		)
 		(uuid "7631b214-5c48-4d81-b4ad-cce32bea2897")
-	)
-	(wire
-		(pts
-			(xy 68.58 74.93) (xy 73.66 74.93)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7a3a60b1-a489-40ce-9567-de80695db5b8")
 	)
 	(wire
 		(pts
@@ -6888,16 +6826,6 @@
 			(type default)
 		)
 		(uuid "9d29ac2a-cc71-4199-a31c-6828cf0aba53")
-	)
-	(wire
-		(pts
-			(xy 68.58 73.66) (xy 68.58 74.93)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9da4621c-0c19-42a2-9650-773c16d5216b")
 	)
 	(wire
 		(pts
@@ -7591,16 +7519,6 @@
 	)
 	(wire
 		(pts
-			(xy 29.21 76.2) (xy 31.75 76.2)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e639944b-de58-48e7-80f8-c3cd1a37652a")
-	)
-	(wire
-		(pts
 			(xy 15.24 102.87) (xy 20.32 102.87)
 		)
 		(stroke
@@ -7658,16 +7576,6 @@
 			(type default)
 		)
 		(uuid "eb260703-e057-4991-8f46-f732a3a81f6d")
-	)
-	(wire
-		(pts
-			(xy 29.21 71.12) (xy 68.58 71.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ebb11398-05cf-4601-b38f-8f295098a9d4")
 	)
 	(wire
 		(pts
@@ -8112,72 +8020,6 @@
 				)
 				(justify right)
 				(hide yes)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 31.75 80.01 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "0369a980-6080-4ae0-ab8a-bff68ee6a96a")
-		(property "Reference" "#PWR030"
-			(at 31.75 86.36 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 31.75 85.09 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 31.75 80.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 31.75 80.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 31.75 80.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "867fffd7-7b9d-428d-9966-97d49c1f164f")
-		)
-		(instances
-			(project "triptech"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "#PWR030")
-					(unit 1)
-				)
 			)
 		)
 	)
@@ -14043,84 +13885,6 @@
 			(project "audio"
 				(path "/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "#PWR021")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_name "AudioJack3_1")
-		(lib_id "Connector_Audio:AudioJack3")
-		(at 24.13 73.66 0)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "cfb804e2-d799-403a-861f-4597a77d2422")
-		(property "Reference" "J_IN_ST1"
-			(at 20.828 64.516 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "STX-3100-3CB"
-			(at 21.082 66.802 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Connector_Audio:Jack_3.5mm_Kycon_STX-3100-3CB"
-			(at 24.13 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 24.13 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Audio Jack, 3 Poles (Stereo / TRS)"
-			(at 24.13 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "5"
-			(uuid "fef9ab0d-eb72-4b29-8422-d457b8330121")
-		)
-		(pin "2"
-			(uuid "73e0e708-af6c-426b-8b19-518ef8eba50a")
-		)
-		(pin "1"
-			(uuid "629f2c23-0b13-468e-94d0-ae13939cdd77")
-		)
-		(instances
-			(project "triptech"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "J_IN_ST1")
-					(unit 1)
-				)
-			)
-			(project ""
-				(path "/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "IN_ST1")
 					(unit 1)
 				)
 			)
