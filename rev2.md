@@ -377,3 +377,13 @@ secondary) and terminate at AGND.
 * **Anti-alias filtering:** The OPA1656's low output impedance changes the filtering
   requirements at the Seed input pin. The 1.5–2.2nF capacitor from Rev 2 may still be
   useful for attenuating wideband op-amp noise above the audio band.
+
+
+## Input section re-review
+
+* PCM3060 has a nominal input swing of 3v p-p.
+* The input op-amp can be designed to give us 3v or even more p-p on quiet inputs.
+* The max at the CODEC should not exceed -0.3v to 4.8v. This is a safe (ac coupled) swing of 5v.
+* Assuming some wriggle for tolerance (all values measured at the codec):
+  * aim the diode hard clamp at 4.5v to 4.8v, leaving room for tolerances to drive up to 5v (TODO: check the tolerance ranges)
+  * the diodes should soft clamp well above the 3v p-p.
