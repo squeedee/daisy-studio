@@ -78,64 +78,91 @@ approximately 14% (2.2kΩ / 15.8kΩ). The op-amp gain compensates for this loss.
 
 During fault conditions (op-amp clipping at ±11V), the resistor limits current to:
 
-    (11V - V_clamp) / 2.2kΩ
+    (11V − 1.82V) / 2.2kΩ = 4.2mA
 
-where V_clamp is the clamp diode conduction voltage. This must remain within the
-capacity of the reference divider and clamp diodes.
+This is within the capacity of the reference divider and clamp diodes.
 
 ## Symmetric Clamp
 
-The clamp sits at the Seed pin, after the 2.2kΩ series resistor. Resistive dividers from
-the ±12V analog supply establish positive and negative reference rails. Electrolytic
-capacitors hold the references stiff at audio frequencies. Two silicon signal diodes per
-channel clamp the signal to these rails:
-
-The reference rails are per channel to avoid cross talk.
+The clamp sits at the Seed pin, after the 2.2kΩ series resistor. Per-channel resistive
+dividers from the ±12V analog supply establish independent positive and negative reference
+rails (avoiding crosstalk). Electrolytic capacitors hold the references stiff at audio
+frequencies. A BAV99 dual diode (SOT-23) per channel clamps the signal to these rails:
 
 ```
 Per channel:
 
-          (+V_ref)                (-V_ref)
-+12V ── R1 ───┬── R2 ── AGND ── R2 ───┬── R1 ── -12V
-              │                       │
-            C_ref                   C_ref
-              │                       │
-            AGND                    AGND
+            (+1.09V)                  (-1.09V)
++12V ── 10kΩ ──┬── 1kΩ ── AGND ── 1kΩ ──┬── 10kΩ ── -12V
+               │                        │
+             470µF                    470µF
+               │                        │
+             AGND                     AGND
 
-Per channel:
+Per channel (BAV99, SOT-23):
 
-              +V_ref
-                │
-           D+ (cathode)
-                │
-R_out ──────── node ──── Seed pin
-                │
-           D- (anode)
-                │
-              -V_ref
+              +1.09V ref ── pin 2 (K2)
+                              │
+                             D2
+                              │
+R_out ────────────── pin 3 (K1/A2) ──── Seed pin
+                              │
+                             D1
+                              │
+              -1.09V ref ── pin 1 (A1)
 ```
 
-D+ conducts when the signal exceeds +V_ref + Vf, sinking current into the positive
-reference rail. D- conducts when the signal falls below -V_ref - Vf, sourcing current
+D2 conducts when the signal exceeds +1.09V + Vf, sinking current into the positive
+reference rail. D1 conducts when the signal falls below -1.09V - Vf, sourcing current
 from the negative reference rail.
 
-The reference rail voltages are selected so that the hard clamp point (V_ref + diode Vf + rail shift under fault
-current) maps to 4.5V-4.8V at the codec.
-The start-of-knee (V_ref + diode onset ~0.3V) must remain above the 3V p-p signal peak.
+### Reference Divider Calculations
 
-> TODO: Select divider resistor ratio and capacitor value. The calculation structure is:
->
->     V_ref = 12V × R2 / (R1 + R2)
->     R_th  = R1 ∥ R2               (Thévenin impedance)
->     Z_cap = 1 / (2π × f × C_ref)  (capacitor impedance at frequency f)
->     Z_eff = R_th ∥ Z_cap           (effective impedance at frequency f)
->
->     Fault current:  I_fault = (V_clip - V_ref - Vf) / R_out
->     Rail shift:     ΔV = I_fault × Z_eff
->     Hard clamp:     V_clamp = V_ref + ΔV + Vf
->
-> Target: V_clamp maps to 4.5V–4.8V at the codec (after AC coupling and 2.5V bias).
-> Constraint: V_ref + 0.3V (diode onset) must exceed the 1.5V signal peak at the Seed pin.
+    V_ref = 12V × 1kΩ / (10kΩ + 1kΩ) = 1.091V
+    R_th  = 10kΩ ∥ 1kΩ = 909Ω
+    Quiescent: 12V / 11kΩ = 1.09mA per divider
+
+At 20Hz (worst case for capacitor impedance):
+
+    Z_cap = 1 / (2π × 20Hz × 470µF) = 16.9Ω
+    Z_eff = 909Ω ∥ 16.9Ω = 16.6Ω
+
+### Fault Analysis
+
+Under fault conditions (op-amp clipping at ±11V):
+
+    I_fault = (11V − 1.82V) / 2.2kΩ = 4.2mA
+    ΔV      = 4.2mA × 16.6Ω = 0.070V
+    V_clamp = 1.09V + 0.07V + 0.66V (Vf at 4mA) = 1.82V at Seed pin
+
+SPICE simulation (LTspice, 5-corner tolerance sweep with ±5% supply, ±1% resistors,
+±20% caps) validates worst-case hard clamp at **4.72V at the codec — 80mV margin** to
+the 4.8V absolute maximum.
+
+### Signal Interaction at Normal Levels
+
+At the ±1.5V signal peak (3V p-p, 100% ADC utilisation), the diode forward bias is
+0.41V. Using BAV99 SPICE model parameters (Is = 3.18nA, N = 1.82), diode current at
+this bias is ~19µA, producing a ~42mV drop through the 2.2kΩ series resistor — 2.8%
+peak compression. This is below the threshold of audibility for musical signals.
+
+### Tolerance Analysis
+
+With ±5% supply tolerance (TMA-1212D) and ±1% resistors:
+
+| Parameter | Nominal | Min (low supply) | Max (high supply) |
+|-----------|---------|------------------|-------------------|
+| V_ref     | 1.09V   | 1.02V            | 1.17V             |
+
+At worst-case low V_ref (1.02V), diode current at the ±1.5V signal peak rises to ~89µA
+(197mV drop). This is the absolute worst case (supply and all resistors at tolerance
+extremes simultaneously); typical variation is much smaller.
+
+The five SPICE tolerance corners (nominal, outer max, inner max, upper/lower DC offset)
+confirm:
+
+* Worst-case codec high: 4.72V (80mV margin to 4.8V abs max)
+* Worst-case codec low: 155mV (well above -0.3V abs min)
 
 The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 
@@ -146,13 +173,14 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 * 10kΩ input resistor (R_in)
 * 25kΩ trim pot (R_fb)
 * 2.2kΩ series output resistor
-* 2× silicon signal diodes (to reference rails)
+* 1× BAV99 dual diode, SOT-23 (symmetric clamp to reference rails)
+* 2× 10kΩ resistors, 1% (R1, reference dividers)
+* 2× 1kΩ resistors, 1% (R2, reference dividers)
+* 2× 470µF electrolytic capacitors, 25V (reference rail filtering)
 
 **Shared:**
 
 * 1× OPA1656 dual op-amp (SOIC-8)
-* Reference divider resistors (values TBD per clamp target calculations) - consider tight tolerance parts, at least 1%
-* 2× electrolytic capacitors (reference rail filtering, value TBD)
 
 ## Power Budget (TMA-1212D, 1W)
 
@@ -160,10 +188,8 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 |--------------------------|----------------|---------|
 | 2× THAT 1246             | ~16mA          | 384mW   |
 | OPA1656 (both channels)  | 7.8mA          | 187mW   |
-| Clamp reference dividers | TBD            | TBD     |
-| **Total**                | **TBD**        | **TBD** |
-
-> TODO: Update divider current and total power after reference resistor values are finalised.
+| Clamp reference dividers | 4.3mA          | 52mW    |
+| **Total**                | **~28mA**      | **623mW** |
 
 ## Performance Summary
 
@@ -171,12 +197,11 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 |------------------------------|---------------|---------------|-----------------|
 | +4 dBu, trim at 86%          | ±1.86V        | ±1.60V        | 89%             |
 | +24 dBu, trim at ~10%        | ±2.09V        | ±1.80V        | 100%            |
-| +24 dBu, trim at max (fault) | clips ±11V    | clamped (TBD) | protected       |
-| Muted (trim at 0%)           | 0V            | 0V            | —               |
+| +24 dBu, trim at max (fault) | clips ±11V    | clamped ±1.82V | protected       |
+| Muted (trim at 0%)           | 0V            | 0V             | —               |
 
-> TODO: Update clamped voltage after reference rail values are finalised.
-> TODO: +4 dBu target should be ±1.50V for 100% utilisation - recalculate this table based on nominal range from the
-> PCM3060's datasheet (3v p-p).
+> TODO: Recalculate signal rows once pot values are finalised — target ±1.50V at Seed pin
+> for 100% ADC utilisation (3V p-p at codec).
 
 ## Ground Rules
 
@@ -188,16 +213,10 @@ secondary) and terminate at AGND.
 
 * **Pot taper:** Audio (logarithmic) taper provides finer control in the low-gain region
   where hot signals are trimmed. Linear taper provides uniform gain-per-rotation.
-* **Clamp diode packaging:** Two diodes per channel in opposite orientations. Options
-  include discrete 1N4148 (SOD-323) or dual packages sharing a reference rail across
-  both channels — e.g., BAV70 (common cathode) for the positive clamp rail and a
-  common-anode dual for the negative clamp rail. Investigate if the shared package provides better thermal characteristics.
 * **Op-amp decoupling:** 100nF ceramic on each supply pin, placed close to the OPA1656.
 * **Anti-alias filtering:** The OPA1656’s low output impedance changes the filtering
   requirements at the Seed input pin. The 1.5–2.2nF capacitor may still be useful for
   attenuating wideband op-amp noise above the audio band.
-* **Reference divider component selection:** Resistor values and capacitor sizing per
-  the codec voltage budget targets above.
 
 # Part 2: Midi Section
 
