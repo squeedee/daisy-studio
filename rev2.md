@@ -21,11 +21,11 @@ The PCM3060 codec on the Daisy Seed has an internal AC coupling capacitor and a 
 V_COM bias. All voltages below are measured at the codec (after AC coupling and bias),
 establishing three operating zones:
 
-| Zone   | Codec voltage range                                 | Seed pin equivalent | Design intent                                                               |
-|--------|-----------------------------------------------------|---------------------|-----------------------------------------------------------------------------|
-| Signal | 1.0V to 4.0V (3V p-p nom)                           | ±1.5V               | Full ADC utilisation. No diode conduction.                                  |
-| Clamp  | 4.0V to 4.5V                                        | ±1.5V to ±2.0V      | Progressive diode conduction limits overdrive. Keep this as low as possible |
-| Damage | -0.3V to +4.8V (Vcc + 0.3V = 4.8V, LDO Vcc is 4.5V) | > ±2.8V             | Must never be reached.                                                      |
+| Zone   | Target range V(codec)                               | Sim range V(codec)                          | Seed pin equivalent | Design intent                                                               |
+|--------|-----------------------------------------------------|---------------------------------------------|---------------------|-----------------------------------------------------------------------------|
+| Signal | 1.0V to 4.0V (3V p-p nom)                           | 1.5V to 3.5V (2.0V p-p)                     | ±1.5V               | Full ADC utilisation. No diode conduction.                                  |
+| Clamp  | 4.0V to 4.5V                                        | 3.5V to 4.72V                               | ±1.5V to ±2.0V      | Progressive diode conduction limits overdrive. Keep this as low as possible |
+| Damage | -0.3V to +4.8V (Vcc + 0.3V = 4.8V, LDO Vcc is 4.5V) | Not reached (worst case 4.72V, 80mV margin) | > ±2.8V             | Must never be reached.                                                      |
 
 Design goals:
 
@@ -184,24 +184,38 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 
 ## Power Budget (TMA-1212D, 1W)
 
-| Source                   | Current (±12V) | Power   |
-|--------------------------|----------------|---------|
-| 2× THAT 1246             | ~16mA          | 384mW   |
-| OPA1656 (both channels)  | 7.8mA          | 187mW   |
-| Clamp reference dividers | 4.3mA          | 52mW    |
+| Source                   | Current (±12V) | Power     |
+|--------------------------|----------------|-----------|
+| 2× THAT 1246             | ~16mA          | 384mW     |
+| OPA1656 (both channels)  | 7.8mA          | 187mW     |
+| Clamp reference dividers | 4.3mA          | 52mW      |
 | **Total**                | **~28mA**      | **623mW** |
 
 ## Performance Summary
 
-| Condition                    | Op-amp output | At Seed pin   | ADC utilisation |
-|------------------------------|---------------|---------------|-----------------|
-| +4 dBu, trim at 86%          | ±1.86V        | ±1.60V        | 89%             |
-| +24 dBu, trim at ~10%        | ±2.09V        | ±1.80V        | 100%            |
+| Condition                    | Op-amp output | At Seed pin    | ADC utilisation |
+|------------------------------|---------------|----------------|-----------------|
+| +4 dBu, trim at 86%          | ±1.86V        | ±1.60V         | 89%             |
+| +24 dBu, trim at ~10%        | ±2.09V        | ±1.80V         | 100%            |
 | +24 dBu, trim at max (fault) | clips ±11V    | clamped ±1.82V | protected       |
 | Muted (trim at 0%)           | 0V            | 0V             | —               |
 
 > TODO: Recalculate signal rows once pot values are finalised — target ±1.50V at Seed pin
 > for 100% ADC utilisation (3V p-p at codec).
+
+### THD vs Gain (SPICE, +4 dBu input)
+
+LTspice `.four` analysis at 1kHz with nominal component values shows the circuit is
+distortion-free (THD at the simulator noise floor of ~0.07%) up to R_fb ≈ 18.3kΩ
+(gain ≈ -1.83). Above this point the signal peaks enter the clamp diode knee and THD
+rises steeply — reaching ~0.15% at 19kΩ, ~0.5% at 20kΩ, and ~5.8% at 25kΩ.
+
+At R_fb = 18.3kΩ the codec sees 2.0V p-p of the available 3.0V p-p full scale (67%
+ADC utilisation, approximately -3.5 dB). The remaining ~1V p-p of headroom is
+unavailable without entering the clamp knee — a direct consequence of the V_ref
+(1.091V) chosen for codec protection margin.
+
+See `sim/input/thd-plus4db.csv` for the full dataset.
 
 ## Ground Rules
 
@@ -237,5 +251,6 @@ secondary) and terminate at AGND.
 # Part 5: Additional Power section issues
 
 * Caps wrong voltage and dimension [github Issue](https://github.com/squeedee/daisy-studio/issues/2)
-* Completely ignored layout rules for the buck converter [Github Issue](https://github.com/squeedee/daisy-studio/issues/1)
+* Completely ignored layout rules for the buck
+  converter [Github Issue](https://github.com/squeedee/daisy-studio/issues/1)
 
