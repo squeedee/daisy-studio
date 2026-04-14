@@ -223,6 +223,47 @@ All components in this circuit are in the analog signal path and connect to Anal
 Ground. The clamp reference dividers derive from the ±12V analog supply (TMA-1212D
 secondary) and terminate at AGND.
 
+## Reducing the Clamp Zone
+
+The current passive clamp limits clean ADC utilisation to 67% (2.0V p-p at the codec
+vs 3.0V p-p full scale). The root cause is the BAV99's wide conduction knee: with an
+ideality factor of N=1.82, the transition from negligible diode current to hard
+limiting spans approximately 200mV at the Seed pin. This forces V_ref to be set low
+enough that the hard clamp stays within damage margin, leaving the signal zone
+under-utilised.
+
+Two approaches to narrowing the clamp zone are under consideration:
+
+### Sharper Diode Selection
+
+The BAV99's ideality factor (N=1.82) produces a gradual exponential knee. A silicon
+signal diode such as the 1N4148 (N≈1.0–1.2) exhibits a significantly sharper
+transition from non-conducting to fully conducting. With the same passive topology,
+this narrows the knee width, allowing V_ref to be raised closer to the signal peak
+without increasing the hard clamp voltage proportionally. The trade-off is a change in
+Vf that requires recalculation of the reference divider values and re-validation of
+the fault analysis.
+
+### Feedback Clamp (Active Limiting)
+
+Moving the clamp diodes into the OPA1656's feedback loop eliminates the passive
+diode knee entirely. In this configuration, diodes from the op-amp output to the
+positive and negative reference rails are connected back to the inverting input in
+parallel with R_fb. Below the clamp threshold the circuit operates as a normal
+inverting amplifier. When the output reaches V_ref + Vf, the diode conducts through
+the feedback path and the op-amp's loop gain forces the output to track the reference
+voltage — producing a near-ideal brick-wall limit at audio frequencies.
+
+This approach decouples the signal headroom problem from the protection problem: the
+feedback clamp handles all signal-domain limiting with negligible knee width, while a
+simplified passive protection element (series resistor with a Zener or TVS diode) can
+be retained between the op-amp output and the Seed pin solely for fault conditions
+where the op-amp itself fails or the supply rails are lost.
+
+> TODO: Evaluate whether the feedback clamp topology can be implemented with the
+> existing OPA1656 and reference divider, or whether it requires additional components.
+> Validate stability under clamp engagement (phase margin with diode in loop).
+
 ## Open Design Questions
 
 * **Pot taper:** Audio (logarithmic) taper provides finer control in the low-gain region
