@@ -205,22 +205,30 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 
 ### THD vs Gain (SPICE, +4 dBu input)
 
-LTspice `.four` analysis at 1kHz with nominal component values. Two configurations
+LTspice `.four` analysis at 1kHz with nominal component values. Three configurations
 compared:
 
-**Passive clamp (V_ref = 1.091V, feedback from V_out):** Distortion-free up to
+**Passive clamp (BAV99, V_ref = 1.091V, feedback from V_out):** Distortion-free up to
 R_fb ≈ 18.3kΩ (gain ≈ -1.83). Above this point THD rises steeply — ~0.15% at 19kΩ,
 ~0.5% at 20kΩ, ~5.8% at 25kΩ. At the knee the codec sees 2.0V p-p (67% ADC
 utilisation).
 
-**Post-clamp feedback tap (V_ref = 1.818V, feedback from Seed_In):** Distortion-free
-up to R_fb ≈ 22kΩ (gain = -2.2). The loop gain compresses the BAV99 knee so THD
-rises gently — 0.074% at 22.5kΩ, 0.082% at 23kΩ, 0.109% at 25kΩ. At the knee the
-codec sees 2.81V p-p (94% ADC utilisation). At R_fb = 25kΩ the codec reaches
-3.19V p-p with THD still under 0.11% — compared to 5.8% THD with the passive clamp
-at the same gain.
+**Post-clamp feedback tap (BAV99, V_ref = 1.818V, feedback from Seed_In):**
+Distortion-free up to R_fb ≈ 22kΩ (gain = -2.2). The loop gain compresses the BAV99
+knee so THD rises gently — 0.074% at 22.5kΩ, 0.082% at 23kΩ, 0.109% at 25kΩ. At
+the knee the codec sees 2.81V p-p (94% ADC utilisation). At R_fb = 25kΩ the codec
+reaches 3.19V p-p with THD still under 0.11% — but fails under overdrive due to
+reference pumping (see below).
 
-See `sim/input/thd-plus4db.csv` for the full dataset (both configurations).
+**BJT clamp (2N3906/2N3904, V_ref = 1.091V, feedback from V_out):** Distortion-free
+up to R_fb ≈ 21.5kΩ. THD rises gradually — 0.083% at 22kΩ, 0.105% at 23kΩ, 1.16%
+at 25kΩ. At the knee the codec sees 2.36V p-p (79% ADC utilisation). At R_fb = 25kΩ
+the codec reaches 2.66V p-p (89%) with codec_max = 3.84V (signal zone). Under +24 dBu
+overdrive, codec_max = 4.50V with 300mV damage margin — reference pumping is
+eliminated by the BJT's current gain.
+
+See `sim/input/thd-plus4db.csv` for the passive and feedback clamp datasets, and
+`sim/input/sharper-diode.csv` for the BJT clamp dataset.
 
 ## Ground Rules
 
@@ -239,18 +247,99 @@ under-utilised.
 
 Two approaches to narrowing the clamp zone Under investigation:
 
-### Sharper Diode Selection
+### Sharper Clamp Element — BJT Clamp
 
-The BAV99's ideality factor (N=1.82) produces a gradual exponential knee. A silicon
-signal diode such as the 1N4148 (N≈1.0–1.2) exhibits a significantly sharper
-transition from non-conducting to fully conducting. With the same passive topology,
-this narrows the knee width, allowing V_ref to be raised closer to the signal peak
-without increasing the hard clamp voltage proportionally. The trade-off is a change in
-Vf that requires recalculation of the reference divider values and re-validation of
-the fault analysis.
+Simple diode substitution does not help: the standard 1N4148 SPICE model has N=1.752,
+nearly identical to the BAV99's N=1.82. All common silicon PN signal diodes cluster in
+the N=1.7–1.9 range. Schottky diodes (e.g. BAT54) have lower ideality factors but
+exhibit significant clamping asymmetry and very low Vf that eats into signal headroom —
+this was confirmed on the Rev 1 board.
 
-> TODO: let's revisit this as the Feedback clamp is adding more complexity by 
-> requiring a stiffer rail reference.
+The solution is to replace each clamp diode with a BJT transistor. A PNP (2N3906)
+clamps positive excursions; an NPN (2N3904) clamps negative excursions. The base-
+emitter junction has a forward ideality factor NF≈1.24 (vs N=1.82 for BAV99),
+producing a meaningfully sharper knee. More importantly, the transistor's current gain
+(β≈200) means only microamps of base current flow through the reference divider, while
+the collector handles the full clamp current — largely eliminating reference pumping.
+
+```
+BJT clamp topology (replaces BAV99 diodes):
+
+                n+ ref ──── Base (Q1, PNP 2N3906)
+                                │
+R_out ──────────────── Emitter ──┬── Seed_In
+                                │
+                n- ref ──── Base (Q2, NPN 2N3904)
+                                │
+                Collectors ──── AGND
+```
+
+**How it works:**
+
+- **Positive clamp (Q1, PNP):** When V(Seed_In) exceeds V(n+) + Vbe, the PNP turns
+  on and sinks current from Seed_In to ground through its collector. The base current
+  (Ic/β) is the only load on the reference divider.
+- **Negative clamp (Q2, NPN):** When V(Seed_In) drops below V(n-) − Vbe, the NPN
+  turns on and sources current from ground into Seed_In.
+
+**Knee width comparison (10µA to 1mA transition):**
+
+    BAV99:  ΔVf  = N × Vt × ln(100) = 1.82 × 25.85mV × 4.605 = 216mV
+    2N3904: ΔVbe = NF × Vt × ln(100) = 1.259 × 25.85mV × 4.605 = 150mV  (31% narrower)
+
+**Reference pumping comparison (at 1mA clamp current, R_th = 909Ω):**
+
+    BAV99:  ΔV_ref = I_clamp × R_th = 1mA × 909Ω = 909mV  (catastrophic)
+    BJT:    ΔV_ref = I_base × R_th = 5µA × 909Ω = 4.5mV   (negligible)
+
+#### SPICE Validation — Normal Levels (+4 dBu)
+
+LTspice simulation (`sim/input/sharper-diode.asc`) with 10kΩ/1kΩ dividers
+(V_ref = 1.091V), 2N3904/2N3906 models (NF = 1.259/1.232):
+
+| Metric                   | BAV99 passive   | BJT clamp        |
+|--------------------------|-----------------|------------------|
+| Knee onset (R_fb)        | ~18.3kΩ         | ~21.5kΩ          |
+| codec p-p at knee        | 2.01V (67%)     | 2.36V (79%)      |
+| THD at R_fb = 25kΩ       | 5.80%           | 1.16%            |
+| codec p-p at R_fb = 25kΩ | hard clamp      | 2.66V (89%)      |
+| codec_max at R_fb = 25kΩ | 4.72V           | 3.84V            |
+
+The BJT clamp extends the clean gain range by ~3kΩ and keeps THD under 1.2% even at
+maximum gain, where the BAV99 was already at 5.8%. At rfb = 25k, the codec peak
+(3.84V) is still within the signal zone.
+
+#### SPICE Validation — Overdrive (+24 dBu, full rfb sweep)
+
+Simulation (`sim/input/sharper-diode-overdrive.asc`) at +24 dBu (8.68V) across the
+full rfb range confirms the BJT clamp survives heavy overdrive:
+
+| Metric            | At R_fb = 10kΩ | At R_fb = 25kΩ |
+|-------------------|----------------|----------------|
+| codec_max         | 4.19V          | 4.50V          |
+| codec_pp          | 3.38V          | 4.00V          |
+| seed_max          | 2.32V          | 2.73V          |
+| seed_min          | −2.28V         | −2.69V         |
+| Clamp asymmetry   | 34mV           | 44mV (1.6%)    |
+| THD               | 31.6%          | 39.9%          |
+
+**codec_max = 4.50V at worst case (rfb = 25kΩ) — 300mV margin to the 4.8V damage
+threshold.** The clamp asymmetry (44mV between positive and negative thresholds) comes
+from the NF mismatch between the two transistors (1.232 vs 1.259) and is well within
+acceptable limits.
+
+The reference pumping that made the feedback clamp topology fail under overdrive is
+effectively eliminated — the BJT's current gain reduces reference divider loading by
+a factor of β (≈200), keeping V_ref stable even under sustained clamp current.
+
+#### Component Impact
+
+Replaces 1× BAV99 (SOT-23) per channel with 1× 2N3906 + 1× 2N3904 (both SOT-23).
+Same footprint class, same cost tier. Reference dividers and capacitors unchanged.
+
+> TODO: Run tolerance analysis (±5% supply, ±1% resistors, BJT β variation) to
+> validate worst-case codec_max stays below 4.8V. Adjust divider values if needed to
+> optimise signal zone utilisation vs damage margin.
 
 ### Post-Clamp Feedback Tap (Active Limiting)
 
