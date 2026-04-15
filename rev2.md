@@ -205,17 +205,22 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 
 ### THD vs Gain (SPICE, +4 dBu input)
 
-LTspice `.four` analysis at 1kHz with nominal component values shows the circuit is
-distortion-free (THD at the simulator noise floor of ~0.07%) up to R_fb ≈ 18.3kΩ
-(gain ≈ -1.83). Above this point the signal peaks enter the clamp diode knee and THD
-rises steeply — reaching ~0.15% at 19kΩ, ~0.5% at 20kΩ, and ~5.8% at 25kΩ.
+LTspice `.four` analysis at 1kHz with nominal component values. Two configurations
+compared:
 
-At R_fb = 18.3kΩ the codec sees 2.0V p-p of the available 3.0V p-p full scale (67%
-ADC utilisation, approximately -3.5 dB). The remaining ~1V p-p of headroom is
-unavailable without entering the clamp knee — a direct consequence of the V_ref
-(1.091V) chosen for codec protection margin.
+**Passive clamp (V_ref = 1.091V, feedback from V_out):** Distortion-free up to
+R_fb ≈ 18.3kΩ (gain ≈ -1.83). Above this point THD rises steeply — ~0.15% at 19kΩ,
+~0.5% at 20kΩ, ~5.8% at 25kΩ. At the knee the codec sees 2.0V p-p (67% ADC
+utilisation).
 
-See `sim/input/thd-plus4db.csv` for the full dataset.
+**Post-clamp feedback tap (V_ref = 1.818V, feedback from Seed_In):** Distortion-free
+up to R_fb ≈ 22kΩ (gain = -2.2). The loop gain compresses the BAV99 knee so THD
+rises gently — 0.074% at 22.5kΩ, 0.082% at 23kΩ, 0.109% at 25kΩ. At the knee the
+codec sees 2.81V p-p (94% ADC utilisation). At R_fb = 25kΩ the codec reaches
+3.19V p-p with THD still under 0.11% — compared to 5.8% THD with the passive clamp
+at the same gain.
+
+See `sim/input/thd-plus4db.csv` for the full dataset (both configurations).
 
 ## Ground Rules
 
@@ -232,7 +237,7 @@ limiting spans approximately 200mV at the Seed pin. This forces V_ref to be set 
 enough that the hard clamp stays within damage margin, leaving the signal zone
 under-utilised.
 
-Two approaches to narrowing the clamp zone are under consideration:
+Two approaches to narrowing the clamp zone Under investigation:
 
 ### Sharper Diode Selection
 
@@ -244,25 +249,205 @@ without increasing the hard clamp voltage proportionally. The trade-off is a cha
 Vf that requires recalculation of the reference divider values and re-validation of
 the fault analysis.
 
-### Feedback Clamp (Active Limiting)
+> TODO: let's revisit this as the Feedback clamp is adding more complexity by 
+> requiring a stiffer rail reference.
 
-Moving the clamp diodes into the OPA1656's feedback loop eliminates the passive
-diode knee entirely. In this configuration, diodes from the op-amp output to the
-positive and negative reference rails are connected back to the inverting input in
-parallel with R_fb. Below the clamp threshold the circuit operates as a normal
-inverting amplifier. When the output reaches V_ref + Vf, the diode conducts through
-the feedback path and the op-amp's loop gain forces the output to track the reference
-voltage — producing a near-ideal brick-wall limit at audio frequencies.
+### Post-Clamp Feedback Tap (Active Limiting)
 
-This approach decouples the signal headroom problem from the protection problem: the
-feedback clamp handles all signal-domain limiting with negligible knee width, while a
-simplified passive protection element (series resistor with a Zener or TVS diode) can
-be retained between the op-amp output and the Seed pin solely for fault conditions
-where the op-amp itself fails or the supply rails are lost.
+Instead of moving the clamp diodes, the feedback resistor R_fb is reconnected from
+the op-amp output to the Seed_In node (after R_out and the passive clamp). This puts
+the existing passive clamp inside the feedback loop, using the op-amp's loop gain to
+sharpen the diode knee without changing any clamp components.
 
-> TODO: Evaluate whether the feedback clamp topology can be implemented with the
-> existing OPA1656 and reference divider, or whether it requires additional components.
-> Validate stability under clamp engagement (phase margin with diode in loop).
+This is not automatic gain control. The limiter only acts when the signal enters the
+clamp zone. All gain below the threshold is set entirely by R_fb/R_in.
+
+```
+Current topology (feedback from V_out):
+
+V_in → R_in → V_inv → op-amp → V_out → R_out → [BAV99 clamp] → Seed_In
+                ↑                  ↑
+                └──── R_fb ────────┘
+
+Proposed topology (feedback from Seed_In):
+
+V_in → R_in → V_inv → op-amp → V_out → R_out → [BAV99 clamp] → Seed_In
+                ↑                                                   ↑
+                └──────────────── R_fb ─────────────────────────────┘
+```
+
+The passive clamp (BAV99 diodes, reference dividers, filter capacitors) remains
+exactly as specified above. The only physical change is reconnecting R_fb from the
+op-amp output to the Seed_In node.
+
+#### Operating Modes
+
+**Normal operation (below clamp):** The op-amp maintains virtual ground at V_inv.
+Gain at the Seed_In node is exactly -R_fb/R_in. The R_out signal loss (~14%) is
+automatically compensated by the loop — the op-amp increases its output to maintain
+the correct voltage at Seed_In. This is an improvement over the current topology,
+where the gain at Seed_In is reduced by the R_out / Seed impedance divider.
+
+**At the clamp threshold:** When V(Seed_In) reaches V_ref + Vf, the BAV99 starts
+conducting. The op-amp responds by increasing V_out to maintain virtual ground, but
+the clamp diode absorbs the excess current, holding Seed_In near V_ref + Vf. The loop
+gain compresses the BAV99's soft exponential knee into a near-ideal brick-wall limit
+at the Seed_In node — the exact node that determines ADC headroom.
+
+**Heavy overdrive (op-amp saturation):** Under extreme input levels, the op-amp
+output saturates at the rail (~±12V). The clamp reverts to passive behaviour.
+However, the half-wave rectified clamp current (each diode conducts on one polarity
+only) charges the reference capacitors through the divider's Thevenin resistance
+(R_th), shifting V_ref away from its nominal value. This **reference pumping** is the
+primary limitation of the feedback clamp topology with resistive dividers — see
+"Reference Pumping" below.
+
+#### Advantages
+
+1. **Precision:** V_ref is set by the existing resistive divider (1% resistors), not
+   by diode forward voltage which varies with current and temperature.
+2. **Minimal change:** Only R_fb reconnection — no new components, no removed
+   components, no change to the clamp or reference dividers.
+3. **Direct control:** V_ref sets the clamp voltage directly at the Seed_In node
+   (V_clamp ≈ V_ref + Vf). No R_out divider correction needed.
+4. **Gain accuracy:** Gain at Seed_In is exactly R_fb/R_in, automatically
+   compensating for R_out loss that the current topology must account for.
+
+#### Fault Protection
+
+No additional passive protection is required. If the ±12V supply is lost, the op-amp
+has no output swing and gain drops to zero — there is no signal to clamp. The
+existing R_out (2.2kΩ) remains in the signal path and limits current in any scenario.
+
+#### Stability
+
+The feedback loop now includes R_out (2.2kΩ). The additional pole from R_out and
+stray capacitance at Seed_In is at very high frequency (few pF → pole well above
+10MHz). The Seed input impedance (R4=3.6kΩ, C1=4.7µF) is a load at Seed_In, not in
+the feedback path, and does not add a pole to the loop.
+
+When the clamp engages, the effective impedance at Seed_In drops (clamp diode
+provides a low-impedance path to V_ref). Audio quality in the clamp region is
+irrelevant — the concern is that an unstable loop could oscillate and produce voltage
+spikes that overshoot into the damage zone (4.8V at codec). The reference capacitors
+(470µF) hold V_ref stiff, limiting the impedance change. SPICE transient simulation
+driving hard into the clamp will verify that no overshoot exceeds the damage
+threshold.
+
+#### V_ref Adjustment
+
+With the feedback loop compensating for R_out loss, the original V_ref (1.091V, from
+10kΩ/1kΩ dividers) causes the clamp to engage too early — the op-amp drives Seed_In
+to exactly R_fb/R_in × V_in, so the signal reaches V_ref at a lower R_fb than with
+the passive topology. Raising the divider to 5.6kΩ/1kΩ sets V_ref = 1.818V,
+shifting the clamp knee to R_fb ≈ 22kΩ.
+
+    V_ref = 12V × 1kΩ / (5.6kΩ + 1kΩ) = 1.818V
+
+#### SPICE Validation — Normal Levels (+4 dBu)
+
+LTspice transient simulation (`sim/input/feedback-clamp.asc`) with V_ref = 1.818V
+at +4 dBu input confirms the feedback tap dramatically outperforms the passive clamp
+at normal operating levels:
+
+| Metric                          | Passive clamp     | Feedback clamp     |
+|---------------------------------|-------------------|--------------------|
+| V_ref                           | 1.091V (10k/1k)  | 1.818V (5k6/1k)   |
+| Knee onset (R_fb)               | ~18.3kΩ           | ~22kΩ              |
+| codec p-p at knee               | 2.01V (67%)       | 2.81V (94%)        |
+| THD at R_fb = 25kΩ              | 5.80%             | 0.11%              |
+| codec p-p at R_fb = 25kΩ        | hard clamp        | 3.19V              |
+
+The feedback loop compresses the BAV99 knee from ~200mV of soft transition into a
+near-ideal clamp. THD rises from the noise floor (0.071%) to only 0.109% across the
+full 10kΩ–25kΩ gain range. ADC utilisation at the clean headroom limit **improves
+from 67% to 94%.**
+
+See `sim/input/thd-plus4db.csv` for the complete dataset.
+
+#### Reference Pumping — Overdrive (+24 dBu, R_fb = 25kΩ)
+
+Under heavy overdrive the op-amp saturates at the supply rails and the clamp reverts
+to passive behaviour. The clamp current is half-wave rectified at each reference
+node — D2 conducts into n+ on positive excursions only, D1 conducts from n- on
+negative excursions only. This DC current charges the reference capacitors through
+the divider's Thevenin resistance (R_th), shifting V_ref away from its nominal
+value.
+
+With 5.6kΩ/1kΩ dividers (R_th = 848Ω), simulation at +24 dBu with R_fb = 25kΩ
+shows V(n+) shifting from the nominal 1.818V to approximately 3.0V. The resulting
+codec peak reaches 5.2V — well above the 4.8V absolute maximum.
+
+Lowering the divider impedance reduces the shift. With 2.7kΩ/470Ω dividers
+(R_th = 401Ω, V_ref = 1.78V), simulation shows:
+
+    codec_pp  = 4.54V
+    codec_max = 4.77V  (30mV margin to 4.8V abs max — insufficient)
+
+This margin is too thin to survive component tolerances. The fundamental limitation
+is that resistive dividers cannot hold V_ref stiff against milliamps of rectified
+clamp current without consuming excessive quiescent power (the TMA-1212D has ~400mW
+available for reference dividers).
+
+**Note:** This reference pumping problem also affects the existing passive clamp
+topology under the same overdrive conditions. It was not identified in the original
+fault analysis because the AC reference impedance (R_th ∥ Z_cap ≈ 16.6Ω at 20Hz)
+was used instead of the DC Thevenin resistance (R_th = 909Ω) that governs the
+steady-state voltage shift.
+
+#### Status
+
+The post-clamp feedback tap is validated for normal operation and moderate overdrive.
+The outstanding problem is fault-level overdrive protection, where reference pumping
+shifts V_ref and erodes the damage margin. Possible paths forward:
+
+1. **Active voltage reference** (e.g. TL431 shunt regulator) — holds V_ref stiff
+   regardless of clamp current, eliminating the pumping problem entirely.
+2. **Lower divider impedance** — trades quiescent power for stiffer V_ref. Requires
+   R_th below ~200Ω for adequate margin, consuming ~400mW of the 1W power budget.
+3. **Hybrid approach** — keep the passive clamp with original dividers (V_ref =
+   1.091V) for fault protection, add the feedback tap for signal-zone knee
+   compression only. Requires the feedback loop to disengage cleanly before the
+   op-amp saturates.
+
+### References
+
+The feedback clamp topology is well-established in precision analog and pro audio
+design. Key references consulted for this investigation:
+
+1. Circuit Cellar, "Precision Clamps" — two-diode precision clamp topology; explains
+   why feedback-path diodes prevent op-amp saturation during clamping.
+   https://circuitcellar.com/resources/quickbits/precision-clamps/
+
+2. Analog Devices, "Op Amp Precision Positive & Negative Clipper (LT6015/6016/6017)"
+   — precision clipper application note with sub-100µV offset analysis.
+   https://www.analog.com/en/resources/technical-articles/op-amp-precision-positive-negative-clipper-using-lt6015-lt6016-lt6017.html
+
+3. Electronic Design, "Op Amps Make Precision Clipper, Protect ADC" — directly
+   addresses ADC input protection using op-amp feedback clamp.
+   https://www.electronicdesign.com/technologies/analog/article/21801600/op-amps-make-precision-clipper-protect-adc
+
+4. All About Circuits, "An Op-Amp Limiter" — tutorial on limiting amplified signal
+   amplitude using diodes in the feedback loop.
+   https://www.allaboutcircuits.com/technical-articles/an-op-amp-limiter-how-to-limit-the-amplitude-of-amplified-signals/
+
+5. Microchip AN1353, "Op Amp Rectifiers, Peak Detectors and Clamps" — comprehensive
+   application note covering precision clamp circuit variations.
+   https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ApplicationNotes/ApplicationNotes/01353A.pdf
+
+6. Analog Devices AN-402, "Replacing Output Clamping with Input Clamping" — confirms
+   input-clamping amps (AD8036/8037) are not suitable for inverting configurations;
+   output-clamping (feedback) topology is correct for our inverting amplifier.
+   https://www.analog.com/en/resources/app-notes/an-402.html
+
+7. Analog Devices, "Differential Op-Amp Driver Protects High-Resolution ADC
+   (MAX44205)" — integrated approach to the same problem with built-in output
+   clamping for ADC protection.
+   https://www.analog.com/en/resources/technical-articles/differential-opamp-driver-protects-a-highresolution-adc-from-input-overvoltage.html
+
+8. TI Precision Labs, "Op-Amps Stability — Phase Margin" — training module on
+   measuring and ensuring phase margin, applicable to feedback clamp stability.
+   https://training.ti.com/ti-precision-labs-op-amps-stability-phase-margin
 
 ## Open Design Questions
 
