@@ -332,10 +332,32 @@ The reference pumping that made the feedback clamp topology fail under overdrive
 effectively eliminated — the BJT's current gain reduces reference divider loading by
 a factor of β (≈200), keeping V_ref stable even under sustained clamp current.
 
+#### Clip Indicator LED
+
+The BJT topology enables a passive clip indicator. The PNP collector current only
+flows when the positive clamp is active, so routing it through an LED makes the
+clamping directly visible:
+
+```
+Q1 (PNP, positive clamp):
+  E → Seed_In
+  B → n+
+  C → 1kΩ → LED → -12V
+```
+
+The collector sits at approximately −12V + Vled + Ic×R ≈ −8V during clamping — far
+below the emitter voltage, so the PNP stays in active mode and clamping behaviour is
+unaffected. Only one LED (on Q1) is needed since the signal is symmetric.
+
+The LED requires ~0.5–1mA of collector current to become visible, which corresponds
+to moderate clamping rather than the theoretical onset — a useful threshold for
+indicating audible clipping.
+
 #### Component Impact
 
 Replaces 1× BAV99 (SOT-23) per channel with 1× 2N3906 + 1× 2N3904 (both SOT-23).
 Same footprint class, same cost tier. Reference dividers and capacitors unchanged.
+Adds 1× LED + 1× 1kΩ resistor per channel for optional clip indication.
 
 > TODO: Run tolerance analysis (±5% supply, ±1% resistors, BJT β variation) to
 > validate worst-case codec_max stays below 4.8V. Adjust divider values if needed to
