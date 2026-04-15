@@ -21,19 +21,19 @@ The PCM3060 codec on the Daisy Seed has an internal AC coupling capacitor and a 
 V_COM bias. All voltages below are measured at the codec (after AC coupling and bias),
 establishing three operating zones:
 
-| Zone   | Target range V(codec)                               | Sim range V(codec)                          | Seed pin equivalent | Design intent                                                               |
-|--------|-----------------------------------------------------|---------------------------------------------|---------------------|-----------------------------------------------------------------------------|
-| Signal | 1.0V to 4.0V (3V p-p nom)                           | 1.5V to 3.5V (2.0V p-p)                     | ±1.5V               | Full ADC utilisation. No diode conduction.                                  |
-| Clamp  | 4.0V to 4.5V                                        | 3.5V to 4.72V                               | ±1.5V to ±2.0V      | Progressive diode conduction limits overdrive. Keep this as low as possible |
-| Damage | -0.3V to +4.8V (Vcc + 0.3V = 4.8V, LDO Vcc is 4.5V) | Not reached (worst case 4.72V, 80mV margin) | > ±2.8V             | Must never be reached.                                                      |
+| Zone   | Target range V(codec)                               | Sim range V(codec)                           | Seed pin equivalent | Design intent                                                             |
+|--------|-----------------------------------------------------|----------------------------------------------|---------------------|---------------------------------------------------------------------------|
+| Signal | 1.0V to 4.0V (3V p-p nom)                           | 1.17V to 3.84V (2.66V p-p)                   | ±1.82V              | Full ADC utilisation. No BJT conduction.                                  |
+| Clamp  | 4.0V to 4.5V                                        | 3.84V to 4.50V                               | ±1.82V to ±2.73V    | Progressive BJT conduction limits overdrive. Keep this as low as possible |
+| Damage | -0.3V to +4.8V (Vcc + 0.3V = 4.8V, LDO Vcc is 4.5V) | Not reached (worst case 4.50V, 300mV margin) | > ±2.8V             | Must never be reached.                                                    |
 
 Design goals:
 
 1. The 3V p-p full-scale signal must remain entirely below the clamp circuit’s
-   start-of-knee — zero diode conduction at nominal operating level.
-2. The hard clamp (full diode conduction + reference rail shift under fault current)
-   targets 4.5V at the codec, providing maximum overdrive margin above 3V p-p
-   without approaching the absolute maximum rating.
+   start-of-knee — zero clamp conduction at nominal operating level.
+2. The hard clamp (full clamp conduction under fault current) targets 4.5V at the
+   codec, providing maximum overdrive margin above 3V p-p without approaching the
+   absolute maximum rating.
 3. The gape between the top of the "Clamp" zone and the "Damage" zone should be maximised without encroaching on the
    Signal Zone
 
@@ -43,9 +43,9 @@ Design goals:
 ## Signal Path
 
 ```
-Balanced in → THAT 1246 (-6dB) → R_in (10kΩ) → OPA1656 (inverting, ±12V) → R_out (2.2kΩ) → clamp → Seed pin
-                                                       ↑
-                                                 25kΩ pot (R_fb)
+Balanced in → THAT 1246 (-6dB) → R_in (10kΩ) → OPA1656 (inverting, ±12V) → R_out (2.2kΩ) → BJT clamp → Seed pin
+                                                       ↑                                         │
+                                                 25kΩ pot (R_fb)                              LED (clip)
 ```
 
 The THAT 1246 converts the balanced input to single-ended with -6dB of gain, preserving
@@ -87,7 +87,8 @@ This is within the capacity of the reference divider and clamp diodes.
 The clamp sits at the Seed pin, after the 2.2kΩ series resistor. Per-channel resistive
 dividers from the ±12V analog supply establish independent positive and negative reference
 rails (avoiding crosstalk). Electrolytic capacitors hold the references stiff at audio
-frequencies. A BAV99 dual diode (SOT-23) per channel clamps the signal to these rails:
+frequencies. A complementary BJT pair (2N3906 PNP + 2N3904 NPN, both SOT-23) per channel
+clamps the signal to these rails:
 
 ```
 Per channel:
@@ -99,22 +100,26 @@ Per channel:
                │                        │
              AGND                     AGND
 
-Per channel (BAV99, SOT-23):
+Per channel (BJT clamp):
 
-              +1.09V ref ── pin 2 (K2)
-                              │
-                             D2
-                              │
-R_out ────────────── pin 3 (K1/A2) ──── Seed pin
-                              │
-                             D1
-                              │
-              -1.09V ref ── pin 1 (A1)
+              +1.09V ref ── Base (Q1, PNP 2N3906)
+                                │
+R_out ──────────────── Emitter ──┬── Seed pin
+                                │
+              -1.09V ref ── Base (Q2, NPN 2N3904)
+
+              Q1 Collector → 1kΩ → LED → -12V  (clip indicator)
+              Q2 Collector → AGND
 ```
 
-D2 conducts when the signal exceeds +1.09V + Vf, sinking current into the positive
-reference rail. D1 conducts when the signal falls below -1.09V - Vf, sourcing current
-from the negative reference rail.
+Q1 (PNP) conducts when the signal exceeds V(n+) + Vbe, sinking current from
+Seed_In to -12V through the clip indicator LED. Q2 (NPN) conducts when the signal
+falls below V(n-) − Vbe, sourcing current from ground into Seed_In. The transistors'
+current gain (β≈200) means only Ic/β flows through the reference divider base
+connection, largely eliminating reference pumping under overdrive. The base-emitter
+forward ideality factor (NF≈1.24) provides a sharper clamp knee than diode
+alternatives (BAV99 N=1.82). See "Other Clamp Designs Considered" appendix for the
+investigation that led to this choice.
 
 ### Reference Divider Calculations
 
@@ -129,22 +134,30 @@ At 20Hz (worst case for capacitor impedance):
 
 ### Fault Analysis
 
-Under fault conditions (op-amp clipping at ±11V):
+Under fault conditions (op-amp clipping at ±11V), the clamp current flows through the
+BJT collector to ground (or -12V via the LED). Only the base current loads the
+reference divider:
 
-    I_fault = (11V − 1.82V) / 2.2kΩ = 4.2mA
-    ΔV      = 4.2mA × 16.6Ω = 0.070V
-    V_clamp = 1.09V + 0.07V + 0.66V (Vf at 4mA) = 1.82V at Seed pin
+    I_clamp = (11V − V_clamp) / 2.2kΩ ≈ 4mA
+    I_base  = I_clamp / β ≈ 4mA / 200 = 20µA
+    ΔV_ref  = I_base × R_th = 20µA × 909Ω = 18mV  (negligible)
 
-SPICE simulation (LTspice, 5-corner tolerance sweep with ±5% supply, ±1% resistors,
-±20% caps) validates worst-case hard clamp at **4.72V at the codec — 80mV margin** to
-the 4.8V absolute maximum.
+SPICE simulation (LTspice, +24 dBu overdrive at R_fb = 25kΩ) shows **codec_max =
+4.50V — 300mV margin** to the 4.8V absolute maximum. The BJT's current gain
+eliminates the reference pumping that plagues diode-based clamps under the same
+conditions.
+
+> TODO: Re-run 5-corner tolerance sweep (±5% supply, ±1% resistors, ±20% caps,
+> β variation) with BJT clamp to validate worst-case margin.
 
 ### Signal Interaction at Normal Levels
 
-At the ±1.5V signal peak (3V p-p, 100% ADC utilisation), the diode forward bias is
-0.41V. Using BAV99 SPICE model parameters (Is = 3.18nA, N = 1.82), diode current at
-this bias is ~19µA, producing a ~42mV drop through the 2.2kΩ series resistor — 2.8%
-peak compression. This is below the threshold of audibility for musical signals.
+At the ±1.5V signal peak (3V p-p, 100% ADC utilisation), the BJT base-emitter bias
+is V_peak − V_ref = 1.5 − 1.091 = 0.41V. With 2N3904/2N3906 model parameters
+(NF≈1.24), the collector current at this bias is negligible — the sharper knee
+(NF=1.24 vs N=1.82 for BAV99) means less sub-threshold conduction. SPICE simulation
+confirms THD remains at the noise floor (0.071%) up to R_fb = 21kΩ, corresponding
+to codec p-p = 2.31V (77% ADC utilisation).
 
 ### Tolerance Analysis
 
@@ -173,7 +186,9 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 * 10kΩ input resistor (R_in)
 * 25kΩ trim pot (R_fb)
 * 2.2kΩ series output resistor
-* 1× BAV99 dual diode, SOT-23 (symmetric clamp to reference rails)
+* 1× 2N3906 PNP transistor, SOT-23 (positive clamp)
+* 1× 2N3904 NPN transistor, SOT-23 (negative clamp)
+* 1× LED + 1kΩ resistor (clip indicator, on Q1 collector to -12V)
 * 2× 10kΩ resistors, 1% (R1, reference dividers)
 * 2× 1kΩ resistors, 1% (R2, reference dividers)
 * 2× 470µF electrolytic capacitors, 25V (reference rail filtering)
@@ -181,6 +196,8 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 **Shared:**
 
 * 1× OPA1656 dual op-amp (SOIC-8)
+* 2× 100nF MLCC, 0402 or 0603 (op-amp supply decoupling, V+ and V-)
+* 2× 1nF MLCC, 0402 (op-amp supply decoupling, VHF, V+ and V-)
 
 ## Power Budget (TMA-1212D, 1W)
 
@@ -195,40 +212,117 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 
 | Condition                    | Op-amp output | At Seed pin    | ADC utilisation |
 |------------------------------|---------------|----------------|-----------------|
-| +4 dBu, trim at 86%          | ±1.86V        | ±1.60V         | 89%             |
-| +24 dBu, trim at ~10%        | ±2.09V        | ±1.80V         | 100%            |
-| +24 dBu, trim at max (fault) | clips ±11V    | clamped ±1.82V | protected       |
+| +4 dBu, R_fb = 21kΩ (clean)  | ±1.82V        | ±1.57V         | 77%             |
+| +4 dBu, R_fb = 25kΩ (max)    | ±2.17V        | ±1.82V (clamp) | 89%             |
+| +24 dBu, R_fb = 25kΩ (fault) | clips ±11V    | clamped ±2.73V | protected       |
 | Muted (trim at 0%)           | 0V            | 0V             | —               |
 
-> TODO: Recalculate signal rows once pot values are finalised — target ±1.50V at Seed pin
-> for 100% ADC utilisation (3V p-p at codec).
+> TODO: Recalculate signal rows once pot values are finalised.
 
 ### THD vs Gain (SPICE, +4 dBu input)
 
-LTspice `.four` analysis at 1kHz with nominal component values. Three configurations
-compared:
+LTspice `.four` analysis at 1kHz with nominal component values:
 
-**Passive clamp (BAV99, V_ref = 1.091V, feedback from V_out):** Distortion-free up to
-R_fb ≈ 18.3kΩ (gain ≈ -1.83). Above this point THD rises steeply — ~0.15% at 19kΩ,
-~0.5% at 20kΩ, ~5.8% at 25kΩ. At the knee the codec sees 2.0V p-p (67% ADC
-utilisation).
+**BJT clamp (2N3906/2N3904, V_ref = 1.091V):** Distortion-free up to R_fb ≈ 21.5kΩ.
+THD rises gradually — 0.083% at 22kΩ, 0.105% at 23kΩ, 1.16% at 25kΩ. At the knee
+the codec sees 2.36V p-p (79% ADC utilisation). At R_fb = 25kΩ the codec reaches
+2.66V p-p (89%) with codec_max = 3.84V (signal zone). Under +24 dBu overdrive,
+codec_max = 4.50V with 300mV damage margin.
 
-**Post-clamp feedback tap (BAV99, V_ref = 1.818V, feedback from Seed_In):**
-Distortion-free up to R_fb ≈ 22kΩ (gain = -2.2). The loop gain compresses the BAV99
-knee so THD rises gently — 0.074% at 22.5kΩ, 0.082% at 23kΩ, 0.109% at 25kΩ. At
-the knee the codec sees 2.81V p-p (94% ADC utilisation). At R_fb = 25kΩ the codec
-reaches 3.19V p-p with THD still under 0.11% — but fails under overdrive due to
-reference pumping (see below).
+For comparison with alternative clamp designs (BAV99 passive, post-clamp feedback
+tap), see the appendix. The BJT clamp outperforms the BAV99 passive clamp (knee at
+18.3kΩ, 67% utilisation) and avoids the reference pumping failure that disqualified
+the feedback tap under overdrive.
 
-**BJT clamp (2N3906/2N3904, V_ref = 1.091V, feedback from V_out):** Distortion-free
-up to R_fb ≈ 21.5kΩ. THD rises gradually — 0.083% at 22kΩ, 0.105% at 23kΩ, 1.16%
-at 25kΩ. At the knee the codec sees 2.36V p-p (79% ADC utilisation). At R_fb = 25kΩ
-the codec reaches 2.66V p-p (89%) with codec_max = 3.84V (signal zone). Under +24 dBu
-overdrive, codec_max = 4.50V with 300mV damage margin — reference pumping is
-eliminated by the BJT's current gain.
+See `sim/input/sharper-diode.csv` for the BJT clamp dataset and
+`sim/input/thd-plus4db.csv` for the BAV99 baseline.
 
-See `sim/input/thd-plus4db.csv` for the passive and feedback clamp datasets, and
-`sim/input/sharper-diode.csv` for the BJT clamp dataset.
+## Stability Analysis
+
+The BJT clamp sits after R_out, entirely outside the op-amp feedback loop. The loop
+gain, phase margin, and compensation are determined solely by R_fb, R_in, and the
+OPA1656’s internal compensation — the clamp engaging does not alter the feedback
+network. This is the primary reason the topology is inherently stable.
+
+### Feedback Loop
+
+The OPA1656’s unity-gain crossover frequency depends on the closed-loop gain:
+
+    f_crossover = GBW / (R_fb / R_in)
+    At R_fb = 10kΩ (gain = 1): 53 MHz
+    At R_fb = 25kΩ (gain = 2.5): 21 MHz
+
+These are RF frequencies. The op-amp’s load is R_fb (10k–25kΩ) in parallel with R_out
+(2.2kΩ) — approximately 2.2kΩ resistive. This is a benign load with no reactive
+component at the output node.
+
+### BJT Parasitic Capacitances
+
+The 2N3904/2N3906 present Cbe ≈ 4–5pF and Ccb ≈ 3–4pF at the Seed_In node. Behind
+the 2.2kΩ series resistor, the associated pole is at:
+
+    f_pole = 1 / (2π × 2.2kΩ × 10pF) ≈ 7.2 MHz
+
+This pole is outside the feedback loop and does not affect phase margin. When the BJTs
+turn on, the emitter impedance drops (re ≈ 26mV/Ic) but the op-amp only sees
+increased current draw through R_out — no change to the feedback path.
+
+### Clamp Transition Transients
+
+At the clamp threshold, Cbe charges through R_out, producing a small current spike
+(picojoules of energy). On a PCB with short traces this settles in nanoseconds. On a
+breadboard prototype, lead inductance may produce visible ringing at a few MHz during
+clamp onset — this is a breadboard artifact, not a circuit deficiency.
+
+### Op-Amp Decoupling
+
+The OPA1656’s 53 MHz GBW requires decoupling effective into the VHF range. A single
+100nF MLCC resonates at ~20 MHz (depending on package); above that, its impedance
+rises. A parallel smaller capacitor with a higher self-resonant frequency covers the
+gap:
+
+* **100nF (0402 or 0603 MLCC)** — effective to ~20 MHz
+* **1nF (0402 MLCC)** — effective from ~20 MHz to ~200 MHz
+
+Both capacitors on each supply pin (V+ and V-), placed within 5mm of the OPA1656
+supply pins, with short returns to the analog ground pour.
+
+## Layout Guidelines
+
+### Component Placement
+
+* **OPA1656, R_in, R_fb (pot):** Place as a tight group. The inverting input node
+  (junction of R_in, R_fb wiper, and pin 2) is the most sensitive node in the circuit
+  — minimise its trace length and area.
+* **Decoupling caps (100nF + 1nF per rail):** Within 5mm of OPA1656 pins 4 and 8,
+  with vias directly to the ground pour. Place the 1nF closer to the pin than the
+  100nF.
+* **R_out (2.2kΩ):** Place close to the op-amp output (pin 1). This resistor isolates
+  the op-amp from all downstream parasitics — everything after it is non-critical for
+  stability.
+* **BJT clamp (Q1, Q2):** Place close to the Seed input pin, not close to the op-amp.
+  The clamp protects the Seed pin, so short traces to the protected node matter more
+  than proximity to the op-amp.
+* **Reference dividers and caps:** Place near the BJT bases. The 470µF electrolytics
+  are large — route them with short traces to the BJT base nodes and to AGND.
+* **Clip LED + resistor:** Non-critical placement. Route from Q1 collector to -12V
+  wherever convenient.
+
+### Trace Routing
+
+* **Inverting input trace (pin 2):** Keep short. Do not run parallel to the output
+  trace (pin 1) — parasitic capacitance between these traces creates unwanted feedback
+  at tens of MHz, potentially causing ringing or oscillation above the audio band.
+* **R_fb traces:** Route the pot wiper and CCW terminal to pin 2 and pin 1
+  respectively with no parallel segments to each other or to the input signal path.
+* **Analog ground pour:** Continuous copper pour under the OPA1656 and the entire
+  signal path from R_in to Seed_In. No splits or slots under the op-amp. Digital
+  ground (Seed, USB, MIDI) should not share this pour.
+* **Supply traces (±12V):** Route as a pair to the decoupling caps. Avoid long runs
+  from the TMA-1212D — place the module close to the analog section or use wide
+  traces (≥0.5mm).
+* **Seed_In to Seed pin:** Short, direct trace. This node carries the clamped signal
+  and connects to both BJT emitters, R_out, and R4/C1 (Seed input network).
 
 ## Ground Rules
 
@@ -236,335 +330,10 @@ All components in this circuit are in the analog signal path and connect to Anal
 Ground. The clamp reference dividers derive from the ±12V analog supply (TMA-1212D
 secondary) and terminate at AGND.
 
-## Reducing the Clamp Zone
-
-The current passive clamp limits clean ADC utilisation to 67% (2.0V p-p at the codec
-vs 3.0V p-p full scale). The root cause is the BAV99's wide conduction knee: with an
-ideality factor of N=1.82, the transition from negligible diode current to hard
-limiting spans approximately 200mV at the Seed pin. This forces V_ref to be set low
-enough that the hard clamp stays within damage margin, leaving the signal zone
-under-utilised.
-
-Two approaches to narrowing the clamp zone Under investigation:
-
-### Sharper Clamp Element — BJT Clamp
-
-Simple diode substitution does not help: the standard 1N4148 SPICE model has N=1.752,
-nearly identical to the BAV99's N=1.82. All common silicon PN signal diodes cluster in
-the N=1.7–1.9 range. Schottky diodes (e.g. BAT54) have lower ideality factors but
-exhibit significant clamping asymmetry and very low Vf that eats into signal headroom —
-this was confirmed on the Rev 1 board.
-
-The solution is to replace each clamp diode with a BJT transistor. A PNP (2N3906)
-clamps positive excursions; an NPN (2N3904) clamps negative excursions. The base-
-emitter junction has a forward ideality factor NF≈1.24 (vs N=1.82 for BAV99),
-producing a meaningfully sharper knee. More importantly, the transistor's current gain
-(β≈200) means only microamps of base current flow through the reference divider, while
-the collector handles the full clamp current — largely eliminating reference pumping.
-
-```
-BJT clamp topology (replaces BAV99 diodes):
-
-                n+ ref ──── Base (Q1, PNP 2N3906)
-                                │
-R_out ──────────────── Emitter ──┬── Seed_In
-                                │
-                n- ref ──── Base (Q2, NPN 2N3904)
-                                │
-                Collectors ──── AGND
-```
-
-**How it works:**
-
-- **Positive clamp (Q1, PNP):** When V(Seed_In) exceeds V(n+) + Vbe, the PNP turns
-  on and sinks current from Seed_In to ground through its collector. The base current
-  (Ic/β) is the only load on the reference divider.
-- **Negative clamp (Q2, NPN):** When V(Seed_In) drops below V(n-) − Vbe, the NPN
-  turns on and sources current from ground into Seed_In.
-
-**Knee width comparison (10µA to 1mA transition):**
-
-    BAV99:  ΔVf  = N × Vt × ln(100) = 1.82 × 25.85mV × 4.605 = 216mV
-    2N3904: ΔVbe = NF × Vt × ln(100) = 1.259 × 25.85mV × 4.605 = 150mV  (31% narrower)
-
-**Reference pumping comparison (at 1mA clamp current, R_th = 909Ω):**
-
-    BAV99:  ΔV_ref = I_clamp × R_th = 1mA × 909Ω = 909mV  (catastrophic)
-    BJT:    ΔV_ref = I_base × R_th = 5µA × 909Ω = 4.5mV   (negligible)
-
-#### SPICE Validation — Normal Levels (+4 dBu)
-
-LTspice simulation (`sim/input/sharper-diode.asc`) with 10kΩ/1kΩ dividers
-(V_ref = 1.091V), 2N3904/2N3906 models (NF = 1.259/1.232):
-
-| Metric                   | BAV99 passive   | BJT clamp        |
-|--------------------------|-----------------|------------------|
-| Knee onset (R_fb)        | ~18.3kΩ         | ~21.5kΩ          |
-| codec p-p at knee        | 2.01V (67%)     | 2.36V (79%)      |
-| THD at R_fb = 25kΩ       | 5.80%           | 1.16%            |
-| codec p-p at R_fb = 25kΩ | hard clamp      | 2.66V (89%)      |
-| codec_max at R_fb = 25kΩ | 4.72V           | 3.84V            |
-
-The BJT clamp extends the clean gain range by ~3kΩ and keeps THD under 1.2% even at
-maximum gain, where the BAV99 was already at 5.8%. At rfb = 25k, the codec peak
-(3.84V) is still within the signal zone.
-
-#### SPICE Validation — Overdrive (+24 dBu, full rfb sweep)
-
-Simulation (`sim/input/sharper-diode-overdrive.asc`) at +24 dBu (8.68V) across the
-full rfb range confirms the BJT clamp survives heavy overdrive:
-
-| Metric            | At R_fb = 10kΩ | At R_fb = 25kΩ |
-|-------------------|----------------|----------------|
-| codec_max         | 4.19V          | 4.50V          |
-| codec_pp          | 3.38V          | 4.00V          |
-| seed_max          | 2.32V          | 2.73V          |
-| seed_min          | −2.28V         | −2.69V         |
-| Clamp asymmetry   | 34mV           | 44mV (1.6%)    |
-| THD               | 31.6%          | 39.9%          |
-
-**codec_max = 4.50V at worst case (rfb = 25kΩ) — 300mV margin to the 4.8V damage
-threshold.** The clamp asymmetry (44mV between positive and negative thresholds) comes
-from the NF mismatch between the two transistors (1.232 vs 1.259) and is well within
-acceptable limits.
-
-The reference pumping that made the feedback clamp topology fail under overdrive is
-effectively eliminated — the BJT's current gain reduces reference divider loading by
-a factor of β (≈200), keeping V_ref stable even under sustained clamp current.
-
-#### Clip Indicator LED
-
-The BJT topology enables a passive clip indicator. The PNP collector current only
-flows when the positive clamp is active, so routing it through an LED makes the
-clamping directly visible:
-
-```
-Q1 (PNP, positive clamp):
-  E → Seed_In
-  B → n+
-  C → 1kΩ → LED → -12V
-```
-
-The collector sits at approximately −12V + Vled + Ic×R ≈ −8V during clamping — far
-below the emitter voltage, so the PNP stays in active mode and clamping behaviour is
-unaffected. Only one LED (on Q1) is needed since the signal is symmetric.
-
-The LED requires ~0.5–1mA of collector current to become visible, which corresponds
-to moderate clamping rather than the theoretical onset — a useful threshold for
-indicating audible clipping.
-
-#### Component Impact
-
-Replaces 1× BAV99 (SOT-23) per channel with 1× 2N3906 + 1× 2N3904 (both SOT-23).
-Same footprint class, same cost tier. Reference dividers and capacitors unchanged.
-Adds 1× LED + 1× 1kΩ resistor per channel for optional clip indication.
-
-> TODO: Run tolerance analysis (±5% supply, ±1% resistors, BJT β variation) to
-> validate worst-case codec_max stays below 4.8V. Adjust divider values if needed to
-> optimise signal zone utilisation vs damage margin.
-
-### Post-Clamp Feedback Tap (Active Limiting)
-
-Instead of moving the clamp diodes, the feedback resistor R_fb is reconnected from
-the op-amp output to the Seed_In node (after R_out and the passive clamp). This puts
-the existing passive clamp inside the feedback loop, using the op-amp's loop gain to
-sharpen the diode knee without changing any clamp components.
-
-This is not automatic gain control. The limiter only acts when the signal enters the
-clamp zone. All gain below the threshold is set entirely by R_fb/R_in.
-
-```
-Current topology (feedback from V_out):
-
-V_in → R_in → V_inv → op-amp → V_out → R_out → [BAV99 clamp] → Seed_In
-                ↑                  ↑
-                └──── R_fb ────────┘
-
-Proposed topology (feedback from Seed_In):
-
-V_in → R_in → V_inv → op-amp → V_out → R_out → [BAV99 clamp] → Seed_In
-                ↑                                                   ↑
-                └──────────────── R_fb ─────────────────────────────┘
-```
-
-The passive clamp (BAV99 diodes, reference dividers, filter capacitors) remains
-exactly as specified above. The only physical change is reconnecting R_fb from the
-op-amp output to the Seed_In node.
-
-#### Operating Modes
-
-**Normal operation (below clamp):** The op-amp maintains virtual ground at V_inv.
-Gain at the Seed_In node is exactly -R_fb/R_in. The R_out signal loss (~14%) is
-automatically compensated by the loop — the op-amp increases its output to maintain
-the correct voltage at Seed_In. This is an improvement over the current topology,
-where the gain at Seed_In is reduced by the R_out / Seed impedance divider.
-
-**At the clamp threshold:** When V(Seed_In) reaches V_ref + Vf, the BAV99 starts
-conducting. The op-amp responds by increasing V_out to maintain virtual ground, but
-the clamp diode absorbs the excess current, holding Seed_In near V_ref + Vf. The loop
-gain compresses the BAV99's soft exponential knee into a near-ideal brick-wall limit
-at the Seed_In node — the exact node that determines ADC headroom.
-
-**Heavy overdrive (op-amp saturation):** Under extreme input levels, the op-amp
-output saturates at the rail (~±12V). The clamp reverts to passive behaviour.
-However, the half-wave rectified clamp current (each diode conducts on one polarity
-only) charges the reference capacitors through the divider's Thevenin resistance
-(R_th), shifting V_ref away from its nominal value. This **reference pumping** is the
-primary limitation of the feedback clamp topology with resistive dividers — see
-"Reference Pumping" below.
-
-#### Advantages
-
-1. **Precision:** V_ref is set by the existing resistive divider (1% resistors), not
-   by diode forward voltage which varies with current and temperature.
-2. **Minimal change:** Only R_fb reconnection — no new components, no removed
-   components, no change to the clamp or reference dividers.
-3. **Direct control:** V_ref sets the clamp voltage directly at the Seed_In node
-   (V_clamp ≈ V_ref + Vf). No R_out divider correction needed.
-4. **Gain accuracy:** Gain at Seed_In is exactly R_fb/R_in, automatically
-   compensating for R_out loss that the current topology must account for.
-
-#### Fault Protection
-
-No additional passive protection is required. If the ±12V supply is lost, the op-amp
-has no output swing and gain drops to zero — there is no signal to clamp. The
-existing R_out (2.2kΩ) remains in the signal path and limits current in any scenario.
-
-#### Stability
-
-The feedback loop now includes R_out (2.2kΩ). The additional pole from R_out and
-stray capacitance at Seed_In is at very high frequency (few pF → pole well above
-10MHz). The Seed input impedance (R4=3.6kΩ, C1=4.7µF) is a load at Seed_In, not in
-the feedback path, and does not add a pole to the loop.
-
-When the clamp engages, the effective impedance at Seed_In drops (clamp diode
-provides a low-impedance path to V_ref). Audio quality in the clamp region is
-irrelevant — the concern is that an unstable loop could oscillate and produce voltage
-spikes that overshoot into the damage zone (4.8V at codec). The reference capacitors
-(470µF) hold V_ref stiff, limiting the impedance change. SPICE transient simulation
-driving hard into the clamp will verify that no overshoot exceeds the damage
-threshold.
-
-#### V_ref Adjustment
-
-With the feedback loop compensating for R_out loss, the original V_ref (1.091V, from
-10kΩ/1kΩ dividers) causes the clamp to engage too early — the op-amp drives Seed_In
-to exactly R_fb/R_in × V_in, so the signal reaches V_ref at a lower R_fb than with
-the passive topology. Raising the divider to 5.6kΩ/1kΩ sets V_ref = 1.818V,
-shifting the clamp knee to R_fb ≈ 22kΩ.
-
-    V_ref = 12V × 1kΩ / (5.6kΩ + 1kΩ) = 1.818V
-
-#### SPICE Validation — Normal Levels (+4 dBu)
-
-LTspice transient simulation (`sim/input/feedback-clamp.asc`) with V_ref = 1.818V
-at +4 dBu input confirms the feedback tap dramatically outperforms the passive clamp
-at normal operating levels:
-
-| Metric                          | Passive clamp     | Feedback clamp     |
-|---------------------------------|-------------------|--------------------|
-| V_ref                           | 1.091V (10k/1k)  | 1.818V (5k6/1k)   |
-| Knee onset (R_fb)               | ~18.3kΩ           | ~22kΩ              |
-| codec p-p at knee               | 2.01V (67%)       | 2.81V (94%)        |
-| THD at R_fb = 25kΩ              | 5.80%             | 0.11%              |
-| codec p-p at R_fb = 25kΩ        | hard clamp        | 3.19V              |
-
-The feedback loop compresses the BAV99 knee from ~200mV of soft transition into a
-near-ideal clamp. THD rises from the noise floor (0.071%) to only 0.109% across the
-full 10kΩ–25kΩ gain range. ADC utilisation at the clean headroom limit **improves
-from 67% to 94%.**
-
-See `sim/input/thd-plus4db.csv` for the complete dataset.
-
-#### Reference Pumping — Overdrive (+24 dBu, R_fb = 25kΩ)
-
-Under heavy overdrive the op-amp saturates at the supply rails and the clamp reverts
-to passive behaviour. The clamp current is half-wave rectified at each reference
-node — D2 conducts into n+ on positive excursions only, D1 conducts from n- on
-negative excursions only. This DC current charges the reference capacitors through
-the divider's Thevenin resistance (R_th), shifting V_ref away from its nominal
-value.
-
-With 5.6kΩ/1kΩ dividers (R_th = 848Ω), simulation at +24 dBu with R_fb = 25kΩ
-shows V(n+) shifting from the nominal 1.818V to approximately 3.0V. The resulting
-codec peak reaches 5.2V — well above the 4.8V absolute maximum.
-
-Lowering the divider impedance reduces the shift. With 2.7kΩ/470Ω dividers
-(R_th = 401Ω, V_ref = 1.78V), simulation shows:
-
-    codec_pp  = 4.54V
-    codec_max = 4.77V  (30mV margin to 4.8V abs max — insufficient)
-
-This margin is too thin to survive component tolerances. The fundamental limitation
-is that resistive dividers cannot hold V_ref stiff against milliamps of rectified
-clamp current without consuming excessive quiescent power (the TMA-1212D has ~400mW
-available for reference dividers).
-
-**Note:** This reference pumping problem also affects the existing passive clamp
-topology under the same overdrive conditions. It was not identified in the original
-fault analysis because the AC reference impedance (R_th ∥ Z_cap ≈ 16.6Ω at 20Hz)
-was used instead of the DC Thevenin resistance (R_th = 909Ω) that governs the
-steady-state voltage shift.
-
-#### Status
-
-The post-clamp feedback tap is validated for normal operation and moderate overdrive.
-The outstanding problem is fault-level overdrive protection, where reference pumping
-shifts V_ref and erodes the damage margin. Possible paths forward:
-
-1. **Active voltage reference** (e.g. TL431 shunt regulator) — holds V_ref stiff
-   regardless of clamp current, eliminating the pumping problem entirely.
-2. **Lower divider impedance** — trades quiescent power for stiffer V_ref. Requires
-   R_th below ~200Ω for adequate margin, consuming ~400mW of the 1W power budget.
-3. **Hybrid approach** — keep the passive clamp with original dividers (V_ref =
-   1.091V) for fault protection, add the feedback tap for signal-zone knee
-   compression only. Requires the feedback loop to disengage cleanly before the
-   op-amp saturates.
-
-### References
-
-The feedback clamp topology is well-established in precision analog and pro audio
-design. Key references consulted for this investigation:
-
-1. Circuit Cellar, "Precision Clamps" — two-diode precision clamp topology; explains
-   why feedback-path diodes prevent op-amp saturation during clamping.
-   https://circuitcellar.com/resources/quickbits/precision-clamps/
-
-2. Analog Devices, "Op Amp Precision Positive & Negative Clipper (LT6015/6016/6017)"
-   — precision clipper application note with sub-100µV offset analysis.
-   https://www.analog.com/en/resources/technical-articles/op-amp-precision-positive-negative-clipper-using-lt6015-lt6016-lt6017.html
-
-3. Electronic Design, "Op Amps Make Precision Clipper, Protect ADC" — directly
-   addresses ADC input protection using op-amp feedback clamp.
-   https://www.electronicdesign.com/technologies/analog/article/21801600/op-amps-make-precision-clipper-protect-adc
-
-4. All About Circuits, "An Op-Amp Limiter" — tutorial on limiting amplified signal
-   amplitude using diodes in the feedback loop.
-   https://www.allaboutcircuits.com/technical-articles/an-op-amp-limiter-how-to-limit-the-amplitude-of-amplified-signals/
-
-5. Microchip AN1353, "Op Amp Rectifiers, Peak Detectors and Clamps" — comprehensive
-   application note covering precision clamp circuit variations.
-   https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ApplicationNotes/ApplicationNotes/01353A.pdf
-
-6. Analog Devices AN-402, "Replacing Output Clamping with Input Clamping" — confirms
-   input-clamping amps (AD8036/8037) are not suitable for inverting configurations;
-   output-clamping (feedback) topology is correct for our inverting amplifier.
-   https://www.analog.com/en/resources/app-notes/an-402.html
-
-7. Analog Devices, "Differential Op-Amp Driver Protects High-Resolution ADC
-   (MAX44205)" — integrated approach to the same problem with built-in output
-   clamping for ADC protection.
-   https://www.analog.com/en/resources/technical-articles/differential-opamp-driver-protects-a-highresolution-adc-from-input-overvoltage.html
-
-8. TI Precision Labs, "Op-Amps Stability — Phase Margin" — training module on
-   measuring and ensuring phase margin, applicable to feedback clamp stability.
-   https://training.ti.com/ti-precision-labs-op-amps-stability-phase-margin
-
 ## Open Design Questions
 
 * **Pot taper:** Audio (logarithmic) taper provides finer control in the low-gain region
   where hot signals are trimmed. Linear taper provides uniform gain-per-rotation.
-* **Op-amp decoupling:** 100nF ceramic on each supply pin, placed close to the OPA1656.
 * **Anti-alias filtering:** The OPA1656’s low output impedance changes the filtering
   requirements at the Seed input pin. The 1.5–2.2nF capacitor may still be useful for
   attenuating wideband op-amp noise above the audio band.
@@ -590,4 +359,121 @@ design. Key references consulted for this investigation:
 * Caps wrong voltage and dimension [github Issue](https://github.com/squeedee/daisy-studio/issues/2)
 * Completely ignored layout rules for the buck
   converter [Github Issue](https://github.com/squeedee/daisy-studio/issues/1)
+
+---
+
+# Appendix: Other Clamp Designs Considered
+
+## BAV99 Passive Diode Clamp
+
+The original Rev 2 design used a BAV99 dual diode (SOT-23) per channel in place of
+the BJT clamp. The topology was identical (diodes between Seed_In and the ±V_ref
+rails) but with the full clamp current flowing through the reference divider.
+
+The BAV99's high ideality factor (N=1.82) produces a ~200mV wide conduction knee,
+limiting clean ADC utilisation to **67% (2.0V p-p at codec)** at the clamp onset
+(R_fb ≈ 18.3kΩ). At R_fb = 25kΩ, THD reached 5.8%.
+
+Under overdrive (+24 dBu), the full clamp current (~4mA) flows through the reference
+divider's Thevenin resistance (R_th = 909Ω), producing a DC reference shift of up to
+909mV — **reference pumping**. This was not identified in the original fault analysis,
+which incorrectly used the AC impedance (R_th ∥ Z_cap ≈ 16.6Ω at 20Hz) instead of
+the DC R_th.
+
+The BJT clamp solves both problems: sharper knee (NF≈1.24) and β-reduced reference
+loading (ΔV_ref = 4.5mV vs 909mV).
+
+Simulation data: `sim/input/thd-plus4db.csv`, `sim/input/thd-plus4db.asc`
+
+## Diode Substitution (1N4148, BAT54)
+
+Investigated as a simpler alternative to the BJT clamp.
+
+**1N4148:** Standard SPICE model has N=1.752 — nearly identical to BAV99's N=1.82.
+All common silicon PN signal diodes cluster in the N=1.7–1.9 range, so no meaningful
+knee improvement is available from diode selection alone.
+
+**BAT54 (Schottky):** Lower ideality factor (N≈1.04) but exhibited significant
+clamping asymmetry and very low Vf on the Rev 1 board. The high reverse leakage and
+part-to-part variation within the package made it unsuitable for a precision symmetric
+clamp.
+
+## Post-Clamp Feedback Tap (Active Limiting)
+
+Instead of changing the clamp element, the feedback resistor R_fb is reconnected from
+the op-amp output to the Seed_In node (after R_out and the passive clamp). This puts
+the BAV99 clamp inside the feedback loop, using loop gain to compress the diode knee
+into a near-ideal brick-wall limiter.
+
+```
+Feedback from V_out (standard):
+
+V_in → R_in → V_inv → op-amp → V_out → R_out → [clamp] → Seed_In
+                ↑                  ↑
+                └──── R_fb ────────┘
+
+Feedback from Seed_In (post-clamp tap):
+
+V_in → R_in → V_inv → op-amp → V_out → R_out → [clamp] → Seed_In
+                ↑                                              ↑
+                └──────────────── R_fb ────────────────────────┘
+```
+
+### Normal-Level Performance (+4 dBu)
+
+With V_ref raised to 1.818V (5.6kΩ/1kΩ dividers) to compensate for R_out loss:
+
+| Metric                   | Passive clamp | Feedback clamp |
+|--------------------------|---------------|----------------|
+| Knee onset (R_fb)        | ~18.3kΩ       | ~22kΩ          |
+| codec p-p at knee        | 2.01V (67%)   | 2.81V (94%)    |
+| THD at R_fb = 25kΩ       | 5.80%         | 0.11%          |
+| codec p-p at R_fb = 25kΩ | hard clamp    | 3.19V          |
+
+The best normal-level performance of any topology tested — 94% ADC utilisation at the
+clean headroom limit.
+
+### Failure Mode: Reference Pumping Under Overdrive
+
+Under heavy overdrive (+24 dBu), the op-amp saturates and the clamp reverts to
+passive behaviour. The half-wave rectified clamp current charges the reference
+capacitors through R_th, shifting V_ref away from nominal.
+
+With 5.6kΩ/1kΩ dividers (R_th = 848Ω), V(n+) shifted from 1.818V to ~3.0V, pushing
+codec_max to 5.2V — well above the 4.8V damage threshold. Lowering divider impedance
+to 2.7kΩ/470Ω improved this to codec_max = 4.77V, but only 30mV margin — insufficient
+for component tolerances.
+
+The fundamental limitation is that resistive dividers cannot hold V_ref stiff against
+milliamps of rectified clamp current without consuming excessive quiescent power.
+
+**This topology was not selected** because the overdrive protection failure cannot be
+solved without adding an active voltage reference (e.g. TL431) or consuming most of
+the remaining power budget for lower-impedance dividers. The BJT clamp achieves
+comparable knee improvement with inherent overdrive protection via β-reduced reference
+loading.
+
+Simulation data: `sim/input/feedback-clamp.asc`, `sim/input/thd-plus4db.csv`
+
+### References
+
+The feedback clamp topology is well-established in precision analog and pro audio
+design. Key references consulted:
+
+1. Circuit Cellar, "Precision Clamps" —
+   https://circuitcellar.com/resources/quickbits/precision-clamps/
+2. Analog Devices, "Op Amp Precision Positive & Negative Clipper" —
+   https://www.analog.com/en/resources/technical-articles/op-amp-precision-positive-negative-clipper-using-lt6015-lt6016-lt6017.html
+3. Electronic Design, "Op Amps Make Precision Clipper, Protect ADC" —
+   https://www.electronicdesign.com/technologies/analog/article/21801600/op-amps-make-precision-clipper-protect-adc
+4. All About Circuits, "An Op-Amp Limiter" —
+   https://www.allaboutcircuits.com/technical-articles/an-op-amp-limiter-how-to-limit-the-amplitude-of-amplified-signals/
+5. Microchip AN1353, "Op Amp Rectifiers, Peak Detectors and Clamps" —
+   https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ApplicationNotes/ApplicationNotes/01353A.pdf
+6. Analog Devices AN-402, "Replacing Output Clamping with Input Clamping" —
+   https://www.analog.com/en/resources/app-notes/an-402.html
+7. Analog Devices, "Differential Op-Amp Driver Protects High-Resolution ADC" —
+   https://www.analog.com/en/resources/technical-articles/differential-opamp-driver-protects-a-highresolution-adc-from-input-overvoltage.html
+8. TI Precision Labs, "Op-Amps Stability — Phase Margin" —
+   https://training.ti.com/ti-precision-labs-op-amps-stability-phase-margin
 
