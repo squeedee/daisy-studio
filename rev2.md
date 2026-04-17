@@ -86,8 +86,8 @@ This is within the capacity of the reference divider and clamp diodes.
 
 The clamp sits at the Seed pin, after the 2.2kΩ series resistor. Per-channel resistive
 dividers from the ±12V analog supply establish independent positive and negative reference
-rails (avoiding crosstalk). Electrolytic capacitors hold the references stiff at audio
-frequencies. A complementary BJT pair (2N3906 PNP + 2N3904 NPN, both SOT-23) per channel
+rails (avoiding crosstalk). Ceramic capacitors (47µF MLCC) hold the references stiff at
+audio frequencies. A complementary BJT pair (2N3906 PNP + 2N3904 NPN, both SOT-23) per channel
 clamps the signal to these rails:
 
 ```
@@ -96,7 +96,7 @@ Per channel:
             (+1.09V)                  (-1.09V)
 +12V ── 10kΩ ──┬── 1kΩ ── AGND ── 1kΩ ──┬── 10kΩ ── -12V
                │                        │
-             470µF                    470µF
+             47µF                     47µF
                │                        │
              AGND                     AGND
 
@@ -129,8 +129,8 @@ investigation that led to this choice.
 
 At 20Hz (worst case for capacitor impedance):
 
-    Z_cap = 1 / (2π × 20Hz × 470µF) = 16.9Ω
-    Z_eff = 909Ω ∥ 16.9Ω = 16.6Ω
+    Z_cap = 1 / (2π × 20Hz × 47µF) = 169Ω
+    Z_eff = 909Ω ∥ 169Ω = 143Ω
 
 ### Fault Analysis
 
@@ -191,7 +191,7 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 * 1× LED + 1kΩ resistor (clip indicator, on Q1 collector to -12V)
 * 2× 10kΩ resistors, 1% (R1, reference dividers)
 * 2× 1kΩ resistors, 1% (R2, reference dividers)
-* 2× 470µF electrolytic capacitors, 25V (reference rail filtering)
+* 2× 47µF MLCC, 1206 or 1210, X5R/X7R (reference rail filtering)
 
 **Shared:**
 
@@ -303,8 +303,9 @@ supply pins, with short returns to the analog ground pour.
 * **BJT clamp (Q1, Q2):** Place close to the Seed input pin, not close to the op-amp.
   The clamp protects the Seed pin, so short traces to the protected node matter more
   than proximity to the op-amp.
-* **Reference dividers and caps:** Place near the BJT bases. The 470µF electrolytics
-  are large — route them with short traces to the BJT base nodes and to AGND.
+* **Reference dividers and caps:** Place near the BJT bases. The 47µF MLCCs are
+  compact (1206/1210) — place directly at the BJT base nodes with short returns to
+  AGND.
 * **Clip LED + resistor:** Non-critical placement. Route from Q1 collector to -12V
   wherever convenient.
 

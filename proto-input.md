@@ -5,20 +5,20 @@ Uses the Rev 1 PCB for power supply and THAT 1246 differential receiver.
 
 ## Parts List (all THT)
 
-| Ref      | Value     | Part                       | Notes                                                                                          |
-|----------|-----------|----------------------------|------------------------------------------------------------------------------------------------|
-| U1       | Op-amp    | TL072CP (DIP-8)            | Use one half. OPA1656 is SMD only — TL072 is fine for clamp testing (JFET input, ±15V, DIP-8). |
-| R_in     | 10k       | 1/4W metal film            |                                                                                                |
-| R_fb     | 25k pot   | 16mm panel pot or trim pot | Linear taper for testing                                                                       |
-| R_out    | 2.2k      | 1/4W metal film            |                                                                                                |
-| Q1       | 2N3906    | TO-92 (EBC pinout)         | PNP positive clamp                                                                             |
-| Q2       | 2N3904    | TO-92 (EBC pinout)         | NPN negative clamp                                                                             |
-| R11, R14 | 10k       | 1/4W metal film, 1%        | Reference divider high side                                                                    |
-| R12, R13 | 1k        | 1/4W metal film, 1%        | Reference divider low side                                                                     |
-| C5, C6   | 470uF/25V | Electrolytic, radial       | Reference filtering                                                                            |
-| R_led    | 1k        | 1/4W                       | LED current limit                                                                              |
-| LED      | Red 3mm   | Standard                   | Clip indicator                                                                                 |
-| C3, C4   | 100nF     | MLCC ceramic               | Op-amp decoupling, one per supply pin                                                          |
+| Ref      | Value    | Part                       | Notes                                                                                          |
+|----------|----------|----------------------------|------------------------------------------------------------------------------------------------|
+| U1       | Op-amp   | TL072CP (DIP-8)            | Use one half. OPA1656 is SMD only — TL072 is fine for clamp testing (JFET input, ±15V, DIP-8). |
+| R_in     | 10k      | 1/4W metal film            |                                                                                                |
+| R_fb     | 25k pot  | 16mm panel pot or trim pot | Linear taper for testing                                                                       |
+| R_out    | 2.2k     | 1/4W metal film            |                                                                                                |
+| Q1       | 2N3906   | TO-92 (EBC pinout)         | PNP positive clamp                                                                             |
+| Q2       | 2N3904   | TO-92 (EBC pinout)         | NPN negative clamp                                                                             |
+| R11, R14 | 10k      | 1/4W metal film, 1%        | Reference divider high side                                                                    |
+| R12, R13 | 1k       | 1/4W metal film, 1%        | Reference divider low side                                                                     |
+| C5, C6   | 47uF/25V | Electrolytic, radial       | Reference filtering. Observe polarity — long leg (+) to n+/n- node.                            |
+| R_led    | 1k       | 1/4W                       | LED current limit                                                                              |
+| LED      | Red 3mm  | Standard                   | Clip indicator                                                                                 |
+| C3, C4   | 100nF    | MLCC ceramic               | Op-amp decoupling, one per supply pin                                                          |
 
 ## Connections to Rev 1 Board
 
@@ -47,13 +47,13 @@ Uses the Rev 1 PCB for power supply and THAT 1246 differential receiver.
 
 +12V ─┤R11 10k├─ n+ ─┤R12 1k├─ AGND    IN ─┤R_in 10k├─┬─ U1:2 (inv-)                   Seed_In ─┬─ Q1.E (PNP)
                   │                                      │                                      │
-                 C5 470u                        R_fb pot │              U1:1 (out)           Q2.E (NPN)
+                 C5 47u                        R_fb pot │              U1:1 (out)           Q2.E (NPN)
                   │                               wiper──┘                 │                    │
                 AGND                                                       ├─┤R_out 2.2k├─── Seed_In ─── to Seed
                                                                            │                    │
 AGND ─┤R13 1k├─ n- ─┤R14 10k├─ -12V    U1:3 (non-inv+)                  Q1.B ── n+            Q1.C
                  │                          │                                                   │
-                C6 470u                   AGND              Q2.B ── n-                       R_led 1k
+                C6 47u                   AGND              Q2.B ── n-                       R_led 1k
                  │                                          Q2.C ── AGND                        │
                AGND                      U1:8  +12V (+ C3 100nF to AGND)                       LED
                                          U1:4  -12V (+ C4 100nF to AGND)                        │
