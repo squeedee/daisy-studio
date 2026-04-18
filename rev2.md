@@ -392,8 +392,175 @@ secondary) and terminate at AGND.
 
 # Part 4: Output Section
 
-* TODO: The output section still needs review on the Rev1 Board
-* Remove the 3.5mm input output jacks. [Github Issue](https://github.com/squeedee/daisy-studio/issues/11)
+## Design Objectives
+
+1. Bring the Daisy Seed's digital full-scale output up to a standard studio peak level
+   (~+24 dBu) — as close to rail-to-rail on the ±12V analog supply as headroom allows.
+2. Preserve the balanced XLR output and its tolerance to hot-plug mishaps
+   (phantom power on the line).
+3. Remove the 3.5mm input/output jacks. [Github Issue](https://github.com/squeedee/daisy-studio/issues/11)
+
+## Signal Path
+
+```
+Seed audio out → OPA1656 (inverting, ±12V, calibrated gain) → Output level pot → THAT1646 balanced driver → clamp diodes → XLR
+```
+
+The Seed's PCM3060 outputs ~2.0 V p-p at digital full scale (0.6 × AVCC, AC-coupled
+through the Seed's 4.7µF / 47k / 100R network — DC-blocked, 0V-centred, ~100Ω
+source). That lands at roughly −1 dBu single-ended, or +5 dBu across the Rev 1
+THAT1646 differential output — ~20 dB short of the rails. Rev 2 adds an OPA1656
+gain stage ahead of the THAT1646 to close that gap, plus a user-facing output
+level control to match downstream gear.
+
+## Op-Amp Gain Stage (OPA1656)
+
+Inverting configuration on the ±12V rails, same part and topology as the Part 1
+input stage. The op-amp runs at a **fixed calibrated gain** set by a bring-up
+trimmer; output level is varied downstream by a passive pot (see below).
+
+    Gain = -R_fb / R_in
+    R_in     = 2.2kΩ  (fixed, 1%)
+    R_fb     = 15kΩ fixed + 10kΩ multi-turn trimmer (rheostat, in series)
+    Range    = 15kΩ to 25kΩ → gain 6.8× to 11.4× → peak +21.0 to +25.6 dBu
+    Nominal  = 20kΩ (trim mid-travel) → gain 9.1× → peak +23.7 dBu at XLR
+
+The **15kΩ fixed + 10kΩ trim** split puts the calibration window exactly where
+it matters — the 25-turn cermet trimmer (e.g. Bourns 3296W-1-103) gives ~400Ω
+per turn, resolving to ~0.5% of R_fb. The fixed 15kΩ floor prevents the gain
+from dropping into unusable territory if the wiper loses contact; the 25kΩ
+ceiling prevents accidental hard clipping (sim shows onset at R_fb ≈ 23kΩ).
+
+Sim results (`sim/output/gain-controlled-output.asc`, swept `R_fb`) confirm
+the signal path is clean (THD ≈ 0.07%, behavioural-model floor) up to
+`R_fb = 22kΩ` (+24.8 dBu peak), then clips hard at `R_fb = 25kΩ` (THD = 1.18%,
+3rd/5th/7th harmonics dominant). On ±12V supplies the THAT1646 reaches its
+±10.5V single-ended limit just before the OPA1656 hits its ±11V rails — the
+line driver is the tighter constraint.
+
+The 100Ω Seed source impedance is absorbed into R_in (≈ 4.5% gain error,
+trimmed out during calibration). DC coupling is acceptable — the Seed pin is
+already AC-coupled by the Rev 7 4.7µF cap, so no offset reaches the op-amp
+input. The op-amp's own input bias current through R_in develops a negligible
+DC offset at the output given the gain and rail budget.
+
+### Calibration procedure
+
+1. Set output level pot fully clockwise (no attenuation).
+2. Play a digital full-scale 1 kHz sine from the Seed.
+3. Measure differential XLR output with a scope or audio analyser.
+4. Adjust R_fb trimmer until differential output reads +24 dBu peak
+   (12.28 V p-p, nominal mid-trim should land close to this).
+5. Lock trimmer with a dab of nail polish or trim paint.
+
+## Output Level Pot
+
+A **10kΩ log stereo pot** sits between `OPA_Out` and the THAT1646 input,
+acting as a passive voltage divider. Output level knob on the front/rear
+panel attenuates from "calibrated peak" down to mute.
+
+```
+OPA_Out ──┬── R_top of pot
+          │
+       wiper ── to THAT1646 input (high-Z, no loading)
+          │
+         GND ── R_bot of pot
+```
+
+Placed **after** the op-amp, not inside its feedback loop:
+
+* Op-amp always runs at calibrated gain → consistent noise floor, stable
+  feedback phase margin regardless of pot position.
+* Passive attenuator at a low-impedance node → signal and noise scale together
+  cleanly; no gain-dependent hiss.
+* THAT1646 input is high-Z, so a 10kΩ pot presents negligible load to the
+  op-amp and no meaningful source impedance variation to the THAT1646.
+
+Log (audio) taper gives smooth perceived level control at low settings, where
+the ear is most sensitive to small adjustments. Stereo ganged so L and R track
+within typical pot tolerance (~3 dB imbalance worst case on budget pots —
+acceptable for a rear-panel trim, tighter if front-panel mixing control).
+
+## THAT1646 Balanced Driver
+
+Unchanged from Rev 1. Converts the single-ended op-amp output into a balanced
+differential pair with fixed unity S.E.-to-each-output gain (+6 dB hot-to-cold).
+Sense pins close the feedback loop at the XLR connector, giving cross-coupled
+output impedance control and immunity to load imbalance on the two legs. On ±12V
+the THAT1646 can swing ~±21V differentially before clipping — well above the
+op-amp's clipping point, so the op-amp sets the clean ceiling.
+
+## Phantom-Power Protection Diodes
+
+Retained from Rev 1: four SM4004 diodes per channel, two per output pin
+(hot and cold), clamping each XLR output to the ±12V rails.
+
+```
++12V ────┬──────┬────
+         │K     │K         (cathodes to +12V)
+         ▼      ▼
+         D      D
+         ▲      ▲          (anodes to -12V)
+         │A     │A
+-12V ────┴──────┴────
+         │      │
+        Hot    Cold   → XLR pins 2, 3
+```
+
+Protects the THAT1646 output stage when an XLR output is accidentally plugged
+into a mic preamp with phantom power asserted. +48V through the preamp's 6.8kΩ
+phantom feed produces ~5 mA per pin into the clamp — SM4004 (1A SMA) handles
+this with huge margin and provides surge capacity for hot-plug transients.
+
+## Signal Budget
+
+| Node                              | Full-scale level        | Notes                                 |
+|-----------------------------------|-------------------------|---------------------------------------|
+| PCM3060 VOUTL/R (on Seed die)     | 1.98 V p-p, V_COM ±     | 0.6 × AVCC, AVCC=3.3V                 |
+| Seed audio-out pin (post Rev 7 net) | 2.0 V p-p, 0V-centred | 4.7µF HPF @ 0.72 Hz, 100Ω source      |
+| OPA1656 output (calibrated, mid-trim) | ~18.2 V p-p         | 9.1× gain, ~2V margin to ±11V op-amp clip |
+| Output pot wiper (pot at 100%)    | ~18.2 V p-p             | Passive divider, full level           |
+| XLR pin 2 vs pin 3 (calibrated, pot 100%) | ~24.6 V p-p ≈ +24 dBu peak | Calibration target                |
+| Clean ceiling (sim-verified)      | ~38 V p-p ≈ +24.8 dBu   | THAT1646 hits ±10.5V limit first      |
+| Hard clip (sim-verified)          | ~42 V p-p ≈ +25.6 dBu   | THD 1.18%, beyond usable range        |
+
+## Components
+
+**Per channel:**
+
+* 1× R_in (2.2kΩ, 1%) — op-amp inverting input resistor
+* 1× R_fb_fixed (15kΩ, 1%) — op-amp feedback floor
+* 1× R_fb_trim (10kΩ multi-turn cermet, e.g. Bourns 3296W-1-103) — gain
+  calibration, wired rheostat-mode in series with R_fb_fixed
+* 4× SM4004 (SMA) — XLR output clamp to ±12V rails
+* 1× THAT1646 balanced line driver (SOIC-8)
+
+**Shared:**
+
+* 1× OPA1656 dual op-amp (SOIC-8) — both output channels
+* 1× 10kΩ log stereo pot — output level control (between OPA_Out and
+  THAT1646 input, one section per channel)
+* 2× 100nF + 2× 1nF MLCC — OPA1656 supply decoupling (V+ and V-), same
+  scheme as the input stage
+* THAT1646 decoupling per datasheet (unchanged from Rev 1)
+
+## Open Design Questions
+
+* **Output pot location (panel vs rear):** Front-panel level is the studio
+  convention for "master out" on mixers and synths; rear-panel is typical for
+  outboard effects that live in a rack and are set once. Pick based on intended
+  use case.
+* **Pot tolerance matching:** Budget stereo pots have 2–3 dB L/R imbalance.
+  For a master-out control that's acceptable; for anything critical to imaging
+  specify a matched or stepped attenuator (expensive, usually not worth it).
+* **Input coupling cap:** The Seed pin is already DC-blocked by the Rev 7 4.7µF.
+  A second series cap at the op-amp input is likely redundant — confirm on
+  measurement.
+* **Rail-sink capability under phantom fault:** The TMA-1212D cannot sink current.
+  A sustained phantom fault dumps ~5 mA into the +12V rail, which must be absorbed
+  by quiescent load or a rail clamp. Verify the Rev 1 rail behaviour before
+  finalising — may need a TVS or zener across the ±12V rails if the quiescent
+  load is insufficient.
 
 # Part 5: Additional Power section issues
 
