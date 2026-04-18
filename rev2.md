@@ -115,7 +115,7 @@ Clip indicator (per channel):
 
               Seed_In ─────────── Comparator non-inv+ input
               Trim pot (AGND to n+) ── Comparator inv- input  (threshold, 0V to +1.09V)
-              Comparator output → 1kΩ → LED → AGND
+              +12V → 1kΩ → LED anode; LED cathode → Comparator output (open collector)
 ```
 
 Q1 (PNP) conducts when the signal exceeds V(n+) + Vbe, sinking current from
@@ -184,8 +184,12 @@ The full trim pot range (0V to 1.091V) corresponds directly to the useful signal
 range at Seed_In, giving fine adjustment with no dead zone. The threshold is set
 during calibration to the onset of audible clipping.
 
-A single dual comparator or op-amp (LM2903, LM358, or similar) covers both channels.
-The comparator runs on the existing ±12V rails.
+A single LM2903 dual comparator covers both channels, running on the existing ±12V
+rails. The LM2903's open-collector output wires naturally against the +12V rail to
+drive the LED (see diagram above) — when the output pulls low, the LED lights; when
+it floats, the LED has no current path and is cleanly off with no reverse bias on
+the LED junction. Fast response (~1.3µs) cleanly tracks individual signal peaks at
+audio frequencies.
 
     Seed_In signal range:   0V to ±1.82V (clean), ±2.73V (clamp)
     Threshold range:        0V to +1.091V (trim pot)
@@ -229,9 +233,10 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 **Shared:**
 
 * 1× OPA1656 dual op-amp (SOIC-8)
-* 1× LM2903 or LM358 dual (clip indicator comparators, both channels)
-* 2× 100nF MLCC, 0402 or 0603 (op-amp supply decoupling, V+ and V-)
-* 2× 1nF MLCC, 0402 (op-amp supply decoupling, VHF, V+ and V-)
+* 1× LM2903 dual comparator (clip indicator, both channels)
+* 2× 100nF MLCC, 0402 or 0603 (OPA1656 supply decoupling, V+ and V-)
+* 2× 1nF MLCC, 0402 (OPA1656 supply decoupling, VHF, V+ and V-)
+* 2× 100nF MLCC, 0402 or 0603 (LM2903 supply decoupling, V+ and V-)
 
 ## Power Budget (TMA-1212D, 1W)
 
@@ -240,7 +245,7 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 | 2× THAT 1246             | ~16mA          | 384mW     |
 | OPA1656 (both channels)  | 7.8mA          | 187mW     |
 | Clamp reference dividers | 4.3mA          | 52mW      |
-| LM2903/LM358 comparator | ~1mA           | 24mW      |
+| LM2903 comparator        | ~1mA           | 24mW      |
 | **Total**                | **~29mA**      | **647mW** |
 
 ## Performance Summary
