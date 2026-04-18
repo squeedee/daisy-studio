@@ -108,13 +108,20 @@ R_out ──────────────── Emitter ──┬── S
                                 │
               -1.09V ref ── Base (Q2, NPN 2N3904)
 
-              Q1 Collector → 1kΩ → LED → -12V  (clip indicator)
+              Q1 Collector → AGND
               Q2 Collector → AGND
+
+Clip indicator (per channel):
+
+              Seed_In ─────────── Comparator non-inv+ input
+              Trim pot (AGND to n+) ── Comparator inv- input  (threshold, 0V to +1.09V)
+              Comparator output → 1kΩ → LED → AGND
 ```
 
 Q1 (PNP) conducts when the signal exceeds V(n+) + Vbe, sinking current from
-Seed_In to -12V through the clip indicator LED. Q2 (NPN) conducts when the signal
-falls below V(n-) − Vbe, sourcing current from ground into Seed_In. The transistors'
+Seed_In through the transistor to -12V via the 1kΩ collector resistor. Q2 (NPN)
+conducts when the signal falls below V(n-) − Vbe, sourcing current from ground
+into Seed_In. The transistors'
 current gain (β≈200) means only Ic/β flows through the reference divider base
 connection, largely eliminating reference pumping under overdrive. The base-emitter
 forward ideality factor (NF≈1.24) provides a sharper clamp knee than diode
@@ -159,6 +166,31 @@ is V_peak − V_ref = 1.5 − 1.091 = 0.41V. With 2N3904/2N3906 model parameters
 confirms THD remains at the noise floor (0.071%) up to R_fb = 21kΩ, corresponding
 to codec p-p = 2.31V (77% ADC utilisation).
 
+### Clip Indicator
+
+A comparator monitors Seed_In directly and drives the LED when the signal peak
+exceeds an adjustable threshold. This approach was chosen after prototype testing
+showed that monitoring Q1's collector voltage is impractical — the onset voltage
+change at Q1.C is only millivolts above the -12V rail, indistinguishable from supply
+ripple.
+
+The comparator's non-inverting input connects to Seed_In. A trim pot between AGND
+and n+ (0V to +1.091V) sets the threshold on the inverting input. When the positive
+signal peak exceeds the threshold, the comparator output goes high and lights the
+LED. At audio frequencies the LED flickers faster than the eye can see — dim glow at
+light clipping, bright at heavy clipping.
+
+The full trim pot range (0V to 1.091V) corresponds directly to the useful signal
+range at Seed_In, giving fine adjustment with no dead zone. The threshold is set
+during calibration to the onset of audible clipping.
+
+A single dual comparator or op-amp (LM2903, LM358, or similar) covers both channels.
+The comparator runs on the existing ±12V rails.
+
+    Seed_In signal range:   0V to ±1.82V (clean), ±2.73V (clamp)
+    Threshold range:        0V to +1.091V (trim pot)
+    LED behaviour:          off below threshold, proportional glow above
+
 ### Tolerance Analysis
 
 With ±5% supply tolerance (TMA-1212D) and ±1% resistors:
@@ -188,7 +220,8 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 * 2.2kΩ series output resistor
 * 1× 2N3906 PNP transistor, SOT-23 (positive clamp)
 * 1× 2N3904 NPN transistor, SOT-23 (negative clamp)
-* 1× LED + 1kΩ resistor (clip indicator, on Q1 collector to -12V)
+* 1× LED + 1kΩ resistor (clip indicator, driven by comparator)
+* 1× trim pot, 10kΩ (clip indicator threshold, AGND to n+)
 * 2× 10kΩ resistors, 1% (R1, reference dividers)
 * 2× 1kΩ resistors, 1% (R2, reference dividers)
 * 2× 47µF MLCC, 1206 or 1210, X5R/X7R (reference rail filtering)
@@ -196,6 +229,7 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 **Shared:**
 
 * 1× OPA1656 dual op-amp (SOIC-8)
+* 1× LM2903 or LM358 dual (clip indicator comparators, both channels)
 * 2× 100nF MLCC, 0402 or 0603 (op-amp supply decoupling, V+ and V-)
 * 2× 1nF MLCC, 0402 (op-amp supply decoupling, VHF, V+ and V-)
 
@@ -206,7 +240,8 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 | 2× THAT 1246             | ~16mA          | 384mW     |
 | OPA1656 (both channels)  | 7.8mA          | 187mW     |
 | Clamp reference dividers | 4.3mA          | 52mW      |
-| **Total**                | **~28mA**      | **623mW** |
+| LM2903/LM358 comparator | ~1mA           | 24mW      |
+| **Total**                | **~29mA**      | **647mW** |
 
 ## Performance Summary
 
