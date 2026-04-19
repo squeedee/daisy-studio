@@ -481,6 +481,29 @@ the ear is most sensitive to small adjustments. Stereo ganged so L and R track
 within typical pot tolerance (~3 dB imbalance worst case on budget pots —
 acceptable for a rear-panel trim, tighter if front-panel mixing control).
 
+### Impedance behaviour
+
+One useful property of the voltage-divider wiring: the op-amp sees a **constant
+load** regardless of knob position. End-to-end pot resistance is fixed at
+10kΩ, and the THAT1646 input is high-Z (~50kΩ+), so:
+
+    Z_load(OPA_Out) = R_top + (R_bottom ∥ Z_THAT_in) ≈ R_top + R_bottom = 10kΩ
+
+Independent of wiper position. The op-amp's load line never changes as the
+user turns the knob.
+
+What does vary is the source impedance presented to the THAT1646 input:
+
+| Wiper position   | Source Z to THAT1646 input         |
+|------------------|------------------------------------|
+| Full CW (max)    | ~0Ω (direct to low-Z op-amp output) |
+| Mid-rotation     | ~2.5kΩ (R_top ∥ R_bottom at midpoint) |
+| Full CCW (mute)  | ~0Ω (direct to AGND)               |
+
+Peak source impedance ~2.5kΩ at mid-rotation is well within the THAT1646's
+tolerance — its input bias current is small enough that the resulting offset
+is negligible, and no bandwidth limitation arises at audio frequencies.
+
 ## THAT1646 Balanced Driver
 
 Unchanged from Rev 1. Converts the single-ended op-amp output into a balanced
