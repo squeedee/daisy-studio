@@ -11,7 +11,10 @@
 ## Design Objectives
 
 1. Maximise ADC headroom at +4 dBu (standard studio operating level).
-2. Continuous trim from +4 dBu to +24 dBu via a single pot per channel.
+2. Continuous trim from +4 dBu up to +24 dBu peak via a single pot per channel.
+   Gain is set by a **fixed op-amp stage** on the main PCB; the user pot is a
+   **passive attenuator after the op-amp** on the daughterboard — architecturally
+   symmetric with the Part 4 output stage.
 3. Protect the PCM3060 codec. This design is only validated for Rev7 Seeds with the PCM3060 and input schematic as
    published [here](https://daisy.nyc3.cdn.digitaloceanspaces.com/products/seed/ES_Daisy_Seed_Rev7.pdf)
 
@@ -43,21 +46,45 @@ Design goals:
 ## Signal Path
 
 ```
-Balanced in → THAT 1246 (-6dB) → R_in (10kΩ) → OPA1656 (inverting, ±12V) → R_out (2.2kΩ) → BJT clamp → Seed pin
-                                                       ↑                                         │
-                                                 25kΩ pot (R_fb)                              LED (clip)
+                                                  ┌──────────── main PCB ────────────┐
+Balanced in → THAT 1246 (-6dB) → R_in (10kΩ) → OPA1656 (inverting, ±12V, fixed gain)  │
+                                                       ↑                              │
+                                                   R_fb 12kΩ fixed                    │
+                                                                                      │
+        ┌──────── header ────────┐                                                    │
+        │  OPA_Out  ─────────────┼─────── OPA_Out (main)                              │
+        │                        │                                                    │
+        │  10kΩ log pot          │                                                    │
+        │  (3-term divider)      │                                                    │
+        │                        │                                                    │
+        │  wiper ────────────────┼─────── Wiper_Return (main) → R_out (2.2kΩ)         │
+        │                        │                              → BJT clamp          │
+        │  AGND ─────────────────┼─── AGND                      → C_aa (1nF)          │
+        └────── daughterboard ───┘                              → Seed pin            │
+                                                                                      │
+                                                                           LED (clip) │
+                                                                                      │
+                                                  └──────────────────────────────────┘
 ```
 
 The THAT 1246 converts the balanced input to single-ended with -6dB of gain, preserving
 common-mode rejection and keeping +24 dBu signals (±8.7V peak at the output) within the
 ±10V output swing of the ±12V rails.
 
-The OPA1656 is configured as an inverting amplifier with gain set by the ratio of the
-feedback pot to the input resistor (gain = -R_fb / R_in).
+The OPA1656 is configured as an inverting amplifier at a **fixed gain of 1.2×**
+(R_fb = 12kΩ / R_in = 10kΩ), chosen to keep +24 dBu peak inputs within the
+OPA1656's ±11V rail limits while running the pot input a little hotter than
+THAT1246 output alone. The user's level control is a 10kΩ log-taper pot wired
+as a three-terminal voltage divider on the daughterboard, **downstream of the
+op-amp**. The op-amp always runs at the same operating point; the user simply
+attenuates its output to taste.
 
-Todo: calculate reasonable pot values for the stated design objectives for input loudness.
+Both cable legs between main PCB and daughterboard are low-impedance: the
+op-amp drives the pot CW terminal directly, and the pot wiper feeds R_out
+on the main PCB. The op-amp's inverting summing junction never leaves the
+main PCB.
 
-The signal remains centred at 0V throughout. The Daisy Seed’s internal AC coupling
+The signal remains centred at 0V throughout. The Daisy Seed's internal AC coupling
 capacitor and V_COM bias (2.5V) handle the DC offset for the PCM3060 ADC; no external
 bias network is required.
 
@@ -67,20 +94,51 @@ The OPA1656 (TI, dual, SOIC-8) is selected for low voltage noise (4.3 nV/√Hz a
 low distortion (THD+N 0.000029% at 1kHz), and 53 MHz GBW — comfortably exceeding audio
 bandwidth requirements at the target gain range. Supply range extends to ±18V; the ±12V
 rails provide generous output headroom. Rail-to-rail output ensures the clipping threshold
-is close to the supply rails. Both channels are served by a single dual package.
+is close to the supply rails. Both channels are served by a single dual package —
+the same part (and same decoupling scheme) used in the Part 4 output stage.
+
+## Fixed Gain Selection (R_fb = 12kΩ)
+
+    Gain = -R_fb / R_in = -12kΩ / 10kΩ = -1.2× (+1.58 dB)
+
+Worst-case signal budget at the op-amp output:
+
+| Input level    | THAT1246 SE output | OPA_Out (gain 1.2×) | Rail margin |
+|----------------|--------------------|---------------------|-------------|
+| +4 dBu nominal | ±0.87V (1.74 Vpp)  | ±1.04V (2.08 Vpp)   | ~10V        |
+| +14 dBu        | ±2.75V (5.51 Vpp)  | ±3.30V (6.61 Vpp)   | ~7.7V       |
+| +24 dBu peak   | ±8.71V (17.4 Vpp)  | ±10.45V (20.9 Vpp)  | ~0.55V      |
+
+At the design maximum (+24 dBu balanced input peak) the OPA1656 output reaches
+±10.45V, leaving ~550mV to the ±11V rail clip point — tight but workable on
+nominal supplies. A ±5% supply sag shrinks this margin; if bench measurement
+shows premature rail clipping, R_fb drops to 11kΩ (gain 1.1×, +0.8 dB,
+~1.4V margin) without any other changes. **Verify in sim** before committing
+to PCB.
+
+The op-amp noise gain at this setting is 1 + R_fb/R_in = 2.2; referred to
+its input, 4.3 nV/√Hz × 2.2 over 20 kHz ≈ 1.4 µV rms output noise. Far
+below the THAT1246's own noise floor and the PCM3060 ADC's codec noise —
+negligible in the signal budget.
 
 ## Output Series Resistor (2.2kΩ)
 
-A 2.2kΩ resistor between the op-amp output and the clamp node limits fault current to a
-level the reference divider can absorb. During normal operation, the Seed’s 13.6kΩ input
-impedance draws minimal current through the 2.2kΩ, producing a small signal loss of
-approximately 14% (2.2kΩ / 15.8kΩ). The op-amp gain compensates for this loss.
+A 2.2kΩ resistor between the pot wiper (returning from the daughterboard) and
+the clamp node at the Seed input pin limits fault current to a level the clamp
+reference divider can absorb. During normal operation, the Seed's 13.6kΩ input
+impedance draws minimal current through the 2.2kΩ — the small signal loss
+(2.2kΩ / 15.8kΩ ≈ 14%) is baked into the calibration of the user pot position.
 
-During fault conditions (op-amp clipping at ±11V), the resistor limits current to:
+During fault conditions (op-amp clipping at ±11V, pot wiper at CW terminal),
+the resistor limits current to:
 
     (11V − 1.82V) / 2.2kΩ = 4.2mA
 
-This is within the capacity of the reference divider and clamp diodes.
+This is within the capacity of the reference divider and clamp diodes. With
+the pot wiper anywhere between CW and CCW, the pot's internal series
+resistance (0–2.5kΩ, peak at mid-rotation) adds to R_out, reducing fault
+current further. The worst case is pot at CW (wiper shorted to OPA_Out,
+full 4.2 mA), which is the current Rev 1 / old Rev 2 design point.
 
 ## Symmetric Clamp
 
@@ -149,22 +207,28 @@ reference divider:
     I_base  = I_clamp / β ≈ 4mA / 200 = 20µA
     ΔV_ref  = I_base × R_th = 20µA × 909Ω = 18mV  (negligible)
 
-SPICE simulation (LTspice, +24 dBu overdrive at R_fb = 25kΩ) shows **codec_max =
-4.50V — 300mV margin** to the 4.8V absolute maximum. The BJT's current gain
-eliminates the reference pumping that plagues diode-based clamps under the same
-conditions.
+SPICE simulation (LTspice, +24 dBu overdrive with the old variable-R_fb topology
+at R_fb = 25kΩ) showed **codec_max = 4.50V — 300mV margin** to the 4.8V absolute
+maximum. That fault path (OPA clips to ±11V → R_out → clamp → Seed) is unchanged
+in the new architecture; only the feedback-path R_fb has moved from variable-pot
+to fixed. With R_fb = 12kΩ the OPA no longer rail-clips at +24 dBu, so the actual
+clamp-engagement fault is rarer, but the worst-case current calculation above
+still applies when it does.
 
 > TODO: Re-run 5-corner tolerance sweep (±5% supply, ±1% resistors, ±20% caps,
-> β variation) with BJT clamp to validate worst-case margin.
+> β variation) with the new fixed-R_fb topology and a pot-model sweep to
+> validate worst-case margin and confirm OPA rail-margin at +24 dBu.
 
 ### Signal Interaction at Normal Levels
 
 At the ±1.5V signal peak (3V p-p, 100% ADC utilisation), the BJT base-emitter bias
 is V_peak − V_ref = 1.5 − 1.091 = 0.41V. With 2N3904/2N3906 model parameters
 (NF≈1.24), the collector current at this bias is negligible — the sharper knee
-(NF=1.24 vs N=1.82 for BAV99) means less sub-threshold conduction. SPICE simulation
-confirms THD remains at the noise floor (0.071%) up to R_fb = 21kΩ, corresponding
-to codec p-p = 2.31V (77% ADC utilisation).
+(NF=1.24 vs N=1.82 for BAV99) means less sub-threshold conduction. The clamp is
+unchanged from the previous Rev 2 draft; the THD and ADC utilisation results
+established for the variable-R_fb sim still apply here, but are now set by the
+**user pot position** (and fixed input level) instead of R_fb. See the THD vs
+Pot Position subsection below for the new sweep plan.
 
 ### Clip Indicator
 
@@ -219,18 +283,19 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 
 **Per channel (main PCB):**
 
-* 10kΩ input resistor (R_in)
-* 2.2kΩ series output resistor (R_out)
+* 10kΩ input resistor (R_in, 0805 1%)
+* 12kΩ feedback resistor (R_fb, 0805 1%) — fixed, sets op-amp gain 1.2×
+* 2.2kΩ series output resistor (R_out, 0805 1%)
 * 1× 2N3906 PNP transistor, SOT-23 (positive clamp)
 * 1× 2N3904 NPN transistor, SOT-23 (negative clamp)
 * 2× 10kΩ resistors, 1% (R1, reference dividers)
 * 2× 1kΩ resistors, 1% (R2, reference dividers)
 * 2× 47µF MLCC, 1206 or 1210, X5R/X7R (reference rail filtering)
-* 1× 2.2nF C0G MLCC, 0402 or 0603 (C_aa, anti-alias at Seed input)
+* 1× 1nF C0G MLCC, 0402 or 0603 (C_aa, anti-alias at Seed input)
 
 **Per channel (daughterboard — user-swappable controls):**
 
-* 1× 25kΩ audio-taper pot (R_fb) — user input gain control
+* 1× 10kΩ log-taper pot — user input level control (three-terminal voltage divider)
 * 1× LED (clip indicator)
 * 1× 1kΩ resistor (LED current limit, +12V → LED anode)
 * 1× 10kΩ trim pot (clip threshold, AGND to n+; wiper to comparator inv input)
@@ -255,51 +320,67 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 
 ## Performance Summary
 
-| Condition                    | Op-amp output | At Seed pin    | ADC utilisation |
-|------------------------------|---------------|----------------|-----------------|
-| +4 dBu, R_fb = 21kΩ (clean)  | ±1.82V        | ±1.57V         | 77%             |
-| +4 dBu, R_fb = 25kΩ (max)    | ±2.17V        | ±1.82V (clamp) | 89%             |
-| +24 dBu, R_fb = 25kΩ (fault) | clips ±11V    | clamped ±2.73V | protected       |
-| Muted (trim at 0%)           | 0V            | 0V             | —               |
+Projected (pre-sim) signal levels for the new architecture with fixed
+R_fb = 12kΩ (gain 1.2×) and pot wired as voltage divider. Pot position
+expressed as fraction of OPA_Out amplitude passed to R_out (1.0 = CW max,
+0.0 = CCW mute):
 
-> TODO: Recalculate signal rows once pot values are finalised.
+| Input level    | OPA_Out  | Pot setting | At Seed pin | ADC utilisation     |
+|----------------|----------|-------------|-------------|---------------------|
+| +4 dBu nominal | 2.08 Vpp | 1.0 (max)   | 1.8 Vpp*    | ~60%                |
+| +14 dBu        | 6.61 Vpp | ~0.45       | 2.9 Vpp     | ~97% (clean ceiling) |
+| +24 dBu peak   | 20.9 Vpp | ~0.14       | 2.9 Vpp     | ~97% (clean ceiling) |
+| +24 dBu, pot max | 20.9 Vpp | 1.0 (max) | clamped ±2.73V | protected       |
+| Any, pot mute  | n/a      | 0.0 (CCW)   | 0V          | muted               |
 
-### THD vs Gain (SPICE, +4 dBu input)
+*includes the 14% loss across R_out and the Seed's 13.6kΩ input impedance.
 
-LTspice `.four` analysis at 1kHz with nominal component values:
+> TODO: Re-verify all rows against sim (`sim/input/`) once the new architecture
+> is modelled. Rows above are calculated, not simulated.
 
-**BJT clamp (2N3906/2N3904, V_ref = 1.091V):** Distortion-free up to R_fb ≈ 21.5kΩ.
-THD rises gradually — 0.083% at 22kΩ, 0.105% at 23kΩ, 1.16% at 25kΩ. At the knee
-the codec sees 2.36V p-p (79% ADC utilisation). At R_fb = 25kΩ the codec reaches
-2.66V p-p (89%) with codec_max = 3.84V (signal zone). Under +24 dBu overdrive,
-codec_max = 4.50V with 300mV damage margin.
+### THD vs Pot Position (pending sim)
 
-For comparison with alternative clamp designs (BAV99 passive, post-clamp feedback
-tap), see the appendix. The BJT clamp outperforms the BAV99 passive clamp (knee at
-18.3kΩ, 67% utilisation) and avoids the reference pumping failure that disqualified
-the feedback tap under overdrive.
+With R_fb fixed, there is no "R_fb sweep" anymore. The new sweep of
+interest is:
 
-See `sim/input/sharper-diode.csv` for the BJT clamp dataset and
-`sim/input/thd-plus4db.csv` for the BAV99 baseline.
+* **Input level × Pot position** grid — verify ADC utilisation and clip-free
+  operation across typical operating points (+4 / +14 / +24 dBu input ×
+  pot 0.1 / 0.5 / 1.0).
+* **Op-amp rail margin at +24 dBu input** — confirm the 0.55V nominal
+  margin holds with ±5% supply and ±1% R_fb/R_in tolerance stack.
+* **LPF corner sweep across pot position** — confirm −3 dB corner stays
+  above 30 kHz at all pot positions with C_aa = 1nF.
+
+Existing sim artefacts (`sim/input/sharper-diode.asc`, `thd-plus4db.asc`,
+`tolerances-plus24db.asc`, `feedback-clamp.asc`) were all built for the
+old variable-R_fb topology. They need reworking for the new architecture:
+fix R_fb = 12k, add a pot model (two resistors in series, parameter-swept
+tap point) between OPA_Out and R_out, reduce C_aa to 1nF.
+
+For comparison with alternative clamp designs (BAV99 passive, post-clamp
+feedback tap), see the appendix. The clamp topology itself is unchanged
+from the previous Rev 2 draft.
 
 ## Stability Analysis
 
 The BJT clamp sits after R_out, entirely outside the op-amp feedback loop. The loop
 gain, phase margin, and compensation are determined solely by R_fb, R_in, and the
-OPA1656’s internal compensation — the clamp engaging does not alter the feedback
-network. This is the primary reason the topology is inherently stable.
+OPA1656's internal compensation — the clamp engaging does not alter the feedback
+network. The user pot is a passive voltage divider downstream of the op-amp, also
+outside the feedback loop. This is the primary reason the topology is inherently
+stable, and why pot position has **no effect** on loop phase margin.
 
 ### Feedback Loop
 
-The OPA1656’s unity-gain crossover frequency depends on the closed-loop gain:
+The OPA1656's unity-gain crossover frequency at the fixed gain:
 
-    f_crossover = GBW / (R_fb / R_in)
-    At R_fb = 10kΩ (gain = 1): 53 MHz
-    At R_fb = 25kΩ (gain = 2.5): 21 MHz
+    f_crossover = GBW / (1 + R_fb / R_in) = 53 MHz / 2.2 ≈ 24 MHz
 
-These are RF frequencies. The op-amp’s load is R_fb (10k–25kΩ) in parallel with R_out
-(2.2kΩ) — approximately 2.2kΩ resistive. This is a benign load with no reactive
-component at the output node.
+An RF frequency. The op-amp's output load is R_fb (12kΩ) back to the inverting
+node in parallel with the 10kΩ pot seen from OPA_Out (constant load regardless
+of wiper position — voltage-divider wiring) and, through that pot, the 2.2kΩ
+R_out plus clamp bias. Net load is approximately 5–6kΩ resistive. Benign, no
+reactive component at the output node.
 
 ### BJT Parasitic Capacitances
 
@@ -336,31 +417,38 @@ supply pins, with short returns to the analog ground pour.
 
 ### Component Placement
 
-* **OPA1656, R_in, R_fb (pot):** Place as a tight group. The inverting input node
-  (junction of R_in, R_fb wiper, and pin 2) is the most sensitive node in the circuit
-  — minimise its trace length and area.
+* **OPA1656, R_in, R_fb:** Place as a tight group. The inverting input node
+  (junction of R_in and R_fb) is the most sensitive node in the circuit — and
+  it lives entirely on the main PCB in this architecture, never crossing a
+  header. Minimise its trace length and area. R_fb is a fixed 0805 1%, not a
+  pot — so the node is just three component terminals (R_in, R_fb, op-amp pin
+  2) clustered together.
 * **Decoupling caps (100nF + 1nF per rail):** Within 5mm of OPA1656 pins 4 and 8,
   with vias directly to the ground pour. Place the 1nF closer to the pin than the
   100nF.
-* **R_out (2.2kΩ):** Place close to the op-amp output (pin 1). This resistor isolates
-  the op-amp from all downstream parasitics — everything after it is non-critical for
-  stability.
+* **Daughterboard header pins for input pot:** The `OPA_Out_In` pin should sit
+  close to the op-amp output (pin 1); the `Wiper_Return_In` pin should sit
+  close to R_out. Adjacent AGND pins on both pairs keep return loop area small.
+* **R_out (2.2kΩ):** Place close to the `Wiper_Return_In` header pin (not at
+  the op-amp output, as in Rev 1 and the older Rev 2 drafts). The pot wiper
+  returns via cable and feeds directly into R_out; the clamp and C_aa are on
+  the Seed side of R_out.
 * **BJT clamp (Q1, Q2):** Place close to the Seed input pin, not close to the op-amp.
   The clamp protects the Seed pin, so short traces to the protected node matter more
   than proximity to the op-amp.
 * **Reference dividers and caps:** Place near the BJT bases. The 47µF MLCCs are
   compact (1206/1210) — place directly at the BJT base nodes with short returns to
   AGND.
-* **Clip LED + resistor:** Non-critical placement. Route from Q1 collector to -12V
-  wherever convenient.
 
 ### Trace Routing
 
-* **Inverting input trace (pin 2):** Keep short. Do not run parallel to the output
-  trace (pin 1) — parasitic capacitance between these traces creates unwanted feedback
-  at tens of MHz, potentially causing ringing or oscillation above the audio band.
-* **R_fb traces:** Route the pot wiper and CCW terminal to pin 2 and pin 1
-  respectively with no parallel segments to each other or to the input signal path.
+* **Inverting input trace (pin 2):** Keep short, on the main PCB only. Do not
+  run parallel to the output trace (pin 1) — parasitic capacitance between
+  these traces creates unwanted feedback at tens of MHz, potentially causing
+  ringing or oscillation above the audio band.
+* **R_fb trace:** Route R_fb directly between op-amp pin 1 and pin 2 with no
+  parallel segments to the input signal path. Because R_fb is fixed and both
+  nodes are on the main PCB, this is a short, tightly-controlled trace.
 * **Analog ground pour:** Continuous copper pour under the OPA1656 and the entire
   signal path from R_in to Seed_In. No splits or slots under the op-amp. Digital
   ground (Seed, USB, MIDI) should not share this pour.
@@ -369,10 +457,10 @@ supply pins, with short returns to the analog ground pour.
   traces (≥0.5mm).
 * **Seed_In to Seed pin:** Short, direct trace. This node carries the clamped signal
   and connects to both BJT emitters, R_out, C_aa, and R4/C1 (Seed input network).
-* **C_aa (2.2nF anti-alias):** Place directly at the Seed input pin, short trace
+* **C_aa (1nF anti-alias):** Place directly at the Seed input pin, short trace
   from the pin to the cap, short return to the AGND pour under the Seed. The
-  filter's R side is R_out (already placed at the op-amp output), so the cap
-  must be on the Seed end of that resistor.
+  filter's R side is R_out plus the pot wiper Z, so the cap must be on the
+  Seed end of R_out.
 
 ## Ground Rules
 
@@ -380,88 +468,99 @@ All components in this circuit are in the analog signal path and connect to Anal
 Ground. The clamp reference dividers derive from the ±12V analog supply (TMA-1212D
 secondary) and terminate at AGND.
 
-## R_fb Pot Taper
-
-**Audio (logarithmic) taper.** Gain-per-rotation is most useful in the
-low-gain region where hot signals are trimmed (+4 to +14 dBu), and log taper
-compresses that region across the bulk of knob travel. Linear taper would
-waste most of the rotation in the rarely-used high-gain end.
-
 ## Anti-Alias Filter at Seed Input
 
-A **2.2nF C0G capacitor from Seed_In to AGND**, placed immediately at the
+A **1nF C0G capacitor from Seed_In to AGND**, placed immediately at the
 Seed input pin (after the BJT clamp node), forms a single-pole low-pass
-with R_out = 2.2kΩ:
+with the series resistance between the OPA_Out and the Seed pin:
 
-    f_LPF = 1 / (2π × 2.2kΩ × 2.2nF) = 32.9 kHz
+    R_series = Z_pot_wiper + R_out
+    Z_pot_wiper = 0 to 2.5 kΩ (peak at mid-rotation of the 10kΩ user pot)
+    R_out = 2.2 kΩ
+    → R_series varies from 2.2 kΩ (pot at CW or CCW) to 4.7 kΩ (pot at mid)
 
-This attenuates wideband noise from the OPA1656 (noise bandwidth extends into
+    f_LPF = 1 / (2π × R_series × 1nF)
+          = 72.3 kHz (pot at ends) → 33.9 kHz (pot at mid)
+
+The LPF corner stays safely above the audio band across pot travel. This
+attenuates wideband noise from the OPA1656 (noise bandwidth extends into
 the MHz range due to the 53 MHz GBW) and any out-of-band content above the
 audio band before it reaches the PCM3060's sigma-delta ADC. The Seed's own
 internal input network (R4/C1) contributes additional filtering upstream of
 the codec but is insufficient on its own for this purpose.
 
+**Why 1nF and not the earlier 2.2nF value:** with the old architecture
+(fixed R_out, no pot in the series path), 2.2nF gave a 32.9 kHz corner. In
+the new architecture the pot wiper source impedance adds to R_out, so 2.2nF
+would sag the corner to ~15 kHz at mid-rotation — inside the audio band, not
+acceptable. Dropping to 1nF restores sub-audio-band flatness across all pot
+positions.
+
 **Placement:** 0402 or 0603 C0G (NP0) MLCC, directly at the Seed input pin,
 short trace from the pin to the cap and short return to the analog ground
-pour. Do not place it at the op-amp output — the R_out resistor is what makes
-the filter work, so the cap must be on the Seed side of R_out.
+pour. Do not place it on the daughterboard or at the op-amp output — the
+R_out resistor plus pot wiper Z is what makes the filter work, so the cap
+must be on the Seed side of R_out.
 
-Value tradeoff:
+Value tradeoff (corner frequencies given at worst-case pot-mid R_series = 4.7kΩ):
 
-| C_aa | f_LPF | Notes                                          |
-|------|-------|------------------------------------------------|
-| 1.5nF | 48.2 kHz | Wider audio bandwidth, less noise rejection |
-| 2.2nF | 32.9 kHz | Balanced — chosen value                     |
-| 3.3nF | 21.9 kHz | Starts rolling off top of audio band (-3 dB ≈ 22 kHz); audible high-frequency attenuation |
-
-2.2nF keeps the audio band flat while rolling off the ultrasonic region where
-op-amp noise density becomes relevant to fold-down under sigma-delta
-oversampling.
+| C_aa  | f_LPF (pot ends) | f_LPF (pot mid)    | Notes                                            |
+|-------|------------------|--------------------|--------------------------------------------------|
+| 680pF | 106 kHz          | 49.8 kHz           | Wider, less noise rejection                     |
+| 1nF   | 72.3 kHz         | 33.9 kHz           | **Chosen** — clear of audio band across all pot positions |
+| 1.5nF | 48.2 kHz         | 22.6 kHz           | Marginal — corner touches top of audio at pot mid |
+| 2.2nF | 32.9 kHz         | 15.4 kHz           | Unacceptable — audible rolloff at pot mid        |
 
 ## User Controls on Daughterboard
 
-The **R_fb gain pot**, the **clip-indicator threshold trim pot**, and the
+The **input level pot**, the **clip-indicator threshold trim pot**, and the
 **clip LED** for each channel are not populated on the main PCB. They live
 on a separate control PCB connected via a header. This lets users design
 their own front panel (pot types, LED colours/packages, panel layout)
 without forking the main board.
 
-Signals on the header (per channel):
+The input level pot is a **10kΩ log-taper voltage divider downstream of the
+op-amp** — architecturally identical to the Part 4 output pot (same part,
+same wiring, same impedance behaviour). See "Output Level Pot" and its
+"Impedance behaviour" subsection in Part 4 for the full analysis of
+constant op-amp load and wiper-position-dependent source impedance.
 
-* `OPA_InvNode` — junction of R_in (on main PCB) and the R_fb pot wiper
-  side. **Most sensitive signal on the header.** Runs to the pot's wiper
-  and top/bottom terminals so the pot acts as the feedback element.
-* `OPA_Out` — from the op-amp output (main PCB) to the R_fb pot's output
-  terminal.
-* `Seed_In` (after BJT clamp) — comparator non-inverting input, also for
-  optional metering taps.
-* `n+` (upper reference rail) — clip-threshold trim pot top (threshold
-  range ceiling).
-* `AGND` — clip-threshold trim pot bottom, LED cathode return via
-  comparator output; also the return for all signal pairs.
+Signals on the header (per channel, input stage):
+
+* `OPA_Out_In` — op-amp output (main PCB, low-Z) to the pot CW terminal.
+* `Wiper_Return_In` — pot wiper back to main PCB (moderate-Z: 0 to ~2.5kΩ
+  depending on pot position) into R_out.
+* `AGND` (pot CCW terminal) — proper mute leg; return for the signal pair.
+* `n+` (upper reference rail) — clip-threshold trim pot top.
 * Comparator inverting input — clip-threshold trim pot wiper.
 * `+12V` — LED anode supply through 1kΩ.
 * Comparator open-collector output — LED cathode.
 
+Both audio signal legs on the cable (`OPA_Out_In` and `Wiper_Return_In`)
+are low-impedance — the op-amp directly drives one end, and the pot wiper
+source impedance peaks at 2.5kΩ at mid-rotation on the other. No
+summing-junction / high-Z feedback node leaves the main PCB. This makes
+the daughterboard cable routing substantially less critical than in the
+previous Rev 2 draft.
+
 See Part 4 for the shared header pinout; a single stereo header carries all
 L/R input and output control signals.
 
-### Signal-integrity implications of R_fb on the daughterboard
+### Signal-integrity notes for the input-stage cable
 
-The junction of R_in and the R_fb pot wiper is the op-amp's inverting input
-node — the most noise-sensitive node in the circuit. Running it through a
-header and cable to an off-board pot introduces parasitic capacitance and
-antenna area. Mitigations:
-
-* Keep the daughterboard close to the main PCB (≤ 50mm cable length ideally).
-* Use a short shielded cable or a ribbon with dedicated AGND returns
-  adjacent to the `OPA_InvNode` and `OPA_Out` pins on every pair.
-* Place R_in on the main PCB as physically close to the header pin as
-  possible — the inverting node should extend no further on-board than it
-  must before exiting through the header.
-* If the daughterboard is further than 50mm, add a small compensation
-  capacitor (a few pF, C0G) across R_fb on the daughterboard to stabilise
-  against the added cable capacitance. Tune on measurement.
+* Pair each signal with an adjacent AGND return pin on the header. A
+  ground pin every two or three signal pins keeps loop area small.
+* The `Wiper_Return_In` line is moderate-Z (up to 2.5kΩ at pot mid). Keep
+  it physically separate from the comparator open-collector output (which
+  carries fast digital edges when clipping) — ideally not on an adjacent
+  header pin to it. Use ribbon cable pinout or bundle grouping to enforce
+  separation.
+* Interaction with C_aa: C_aa sees R_out + wiper Z as its series R. The
+  LPF corner varies from 72 kHz (pot at ends) to 34 kHz (pot at mid) — all
+  safely above the audio band. See "Anti-Alias Filter at Seed Input" above.
+* Cable length guideline: ≤ 150mm is comfortable; ≤ 50mm is conservative.
+  Unlike the old Rev 2 draft, there is no hard upper bound driven by
+  inverting-input sensitivity.
 
 # Part 2: Midi Section
 
