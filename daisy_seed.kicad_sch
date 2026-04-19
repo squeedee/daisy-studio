@@ -4558,6 +4558,28 @@
 		)
 		(uuid "a200a9b9-17f4-476c-8fa6-c342e5685a78")
 	)
+	(text "Todo: C_AA (anti alias from input section)"
+		(exclude_from_sim no)
+		(at 123.952 51.308 90)
+		(effects
+			(font
+				(size 2.54 2.54)
+				(color 255 26 37 1)
+			)
+		)
+		(uuid "bb4036a2-7a11-4b3a-a15d-8ab36ca6e79e")
+	)
+	(text "Todo: Use Best routing to update the pin assignments."
+		(exclude_from_sim no)
+		(at 216.662 136.398 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+				(color 255 26 37 1)
+			)
+		)
+		(uuid "f5bbbbcf-9bb2-49a4-b80b-a25e2c00f747")
+	)
 	(text "Midi In/Out/Through\n"
 		(exclude_from_sim no)
 		(at 192.024 37.592 0)

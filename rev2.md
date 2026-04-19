@@ -217,18 +217,23 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 
 ## Components
 
-**Per channel:**
+**Per channel (main PCB):**
 
 * 10kΩ input resistor (R_in)
-* 25kΩ trim pot (R_fb)
-* 2.2kΩ series output resistor
+* 2.2kΩ series output resistor (R_out)
 * 1× 2N3906 PNP transistor, SOT-23 (positive clamp)
 * 1× 2N3904 NPN transistor, SOT-23 (negative clamp)
-* 1× LED + 1kΩ resistor (clip indicator, driven by comparator)
-* 1× trim pot, 10kΩ (clip indicator threshold, AGND to n+)
 * 2× 10kΩ resistors, 1% (R1, reference dividers)
 * 2× 1kΩ resistors, 1% (R2, reference dividers)
 * 2× 47µF MLCC, 1206 or 1210, X5R/X7R (reference rail filtering)
+* 1× 2.2nF C0G MLCC, 0402 or 0603 (C_aa, anti-alias at Seed input)
+
+**Per channel (daughterboard — user-swappable controls):**
+
+* 1× 25kΩ audio-taper pot (R_fb) — user input gain control
+* 1× LED (clip indicator)
+* 1× 1kΩ resistor (LED current limit, +12V → LED anode)
+* 1× 10kΩ trim pot (clip threshold, AGND to n+; wiper to comparator inv input)
 
 **Shared:**
 
@@ -363,7 +368,11 @@ supply pins, with short returns to the analog ground pour.
   from the TMA-1212D — place the module close to the analog section or use wide
   traces (≥0.5mm).
 * **Seed_In to Seed pin:** Short, direct trace. This node carries the clamped signal
-  and connects to both BJT emitters, R_out, and R4/C1 (Seed input network).
+  and connects to both BJT emitters, R_out, C_aa, and R4/C1 (Seed input network).
+* **C_aa (2.2nF anti-alias):** Place directly at the Seed input pin, short trace
+  from the pin to the cap, short return to the AGND pour under the Seed. The
+  filter's R side is R_out (already placed at the op-amp output), so the cap
+  must be on the Seed end of that resistor.
 
 ## Ground Rules
 
@@ -371,13 +380,88 @@ All components in this circuit are in the analog signal path and connect to Anal
 Ground. The clamp reference dividers derive from the ±12V analog supply (TMA-1212D
 secondary) and terminate at AGND.
 
-## Open Design Questions
+## R_fb Pot Taper
 
-* **Pot taper:** Audio (logarithmic) taper provides finer control in the low-gain region
-  where hot signals are trimmed. Linear taper provides uniform gain-per-rotation.
-* **Anti-alias filtering:** The OPA1656’s low output impedance changes the filtering
-  requirements at the Seed input pin. The 1.5–2.2nF capacitor may still be useful for
-  attenuating wideband op-amp noise above the audio band.
+**Audio (logarithmic) taper.** Gain-per-rotation is most useful in the
+low-gain region where hot signals are trimmed (+4 to +14 dBu), and log taper
+compresses that region across the bulk of knob travel. Linear taper would
+waste most of the rotation in the rarely-used high-gain end.
+
+## Anti-Alias Filter at Seed Input
+
+A **2.2nF C0G capacitor from Seed_In to AGND**, placed immediately at the
+Seed input pin (after the BJT clamp node), forms a single-pole low-pass
+with R_out = 2.2kΩ:
+
+    f_LPF = 1 / (2π × 2.2kΩ × 2.2nF) = 32.9 kHz
+
+This attenuates wideband noise from the OPA1656 (noise bandwidth extends into
+the MHz range due to the 53 MHz GBW) and any out-of-band content above the
+audio band before it reaches the PCM3060's sigma-delta ADC. The Seed's own
+internal input network (R4/C1) contributes additional filtering upstream of
+the codec but is insufficient on its own for this purpose.
+
+**Placement:** 0402 or 0603 C0G (NP0) MLCC, directly at the Seed input pin,
+short trace from the pin to the cap and short return to the analog ground
+pour. Do not place it at the op-amp output — the R_out resistor is what makes
+the filter work, so the cap must be on the Seed side of R_out.
+
+Value tradeoff:
+
+| C_aa | f_LPF | Notes                                          |
+|------|-------|------------------------------------------------|
+| 1.5nF | 48.2 kHz | Wider audio bandwidth, less noise rejection |
+| 2.2nF | 32.9 kHz | Balanced — chosen value                     |
+| 3.3nF | 21.9 kHz | Starts rolling off top of audio band (-3 dB ≈ 22 kHz); audible high-frequency attenuation |
+
+2.2nF keeps the audio band flat while rolling off the ultrasonic region where
+op-amp noise density becomes relevant to fold-down under sigma-delta
+oversampling.
+
+## User Controls on Daughterboard
+
+The **R_fb gain pot**, the **clip-indicator threshold trim pot**, and the
+**clip LED** for each channel are not populated on the main PCB. They live
+on a separate control PCB connected via a header. This lets users design
+their own front panel (pot types, LED colours/packages, panel layout)
+without forking the main board.
+
+Signals on the header (per channel):
+
+* `OPA_InvNode` — junction of R_in (on main PCB) and the R_fb pot wiper
+  side. **Most sensitive signal on the header.** Runs to the pot's wiper
+  and top/bottom terminals so the pot acts as the feedback element.
+* `OPA_Out` — from the op-amp output (main PCB) to the R_fb pot's output
+  terminal.
+* `Seed_In` (after BJT clamp) — comparator non-inverting input, also for
+  optional metering taps.
+* `n+` (upper reference rail) — clip-threshold trim pot top (threshold
+  range ceiling).
+* `AGND` — clip-threshold trim pot bottom, LED cathode return via
+  comparator output; also the return for all signal pairs.
+* Comparator inverting input — clip-threshold trim pot wiper.
+* `+12V` — LED anode supply through 1kΩ.
+* Comparator open-collector output — LED cathode.
+
+See Part 4 for the shared header pinout; a single stereo header carries all
+L/R input and output control signals.
+
+### Signal-integrity implications of R_fb on the daughterboard
+
+The junction of R_in and the R_fb pot wiper is the op-amp's inverting input
+node — the most noise-sensitive node in the circuit. Running it through a
+header and cable to an off-board pot introduces parasitic capacitance and
+antenna area. Mitigations:
+
+* Keep the daughterboard close to the main PCB (≤ 50mm cable length ideally).
+* Use a short shielded cable or a ribbon with dedicated AGND returns
+  adjacent to the `OPA_InvNode` and `OPA_Out` pins on every pair.
+* Place R_in on the main PCB as physically close to the header pin as
+  possible — the inverting node should extend no further on-board than it
+  must before exiting through the header.
+* If the daughterboard is further than 50mm, add a small compensation
+  capacitor (a few pF, C0G) across R_fb on the daughterboard to stabilise
+  against the added cable capacitance. Tune on measurement.
 
 # Part 2: Midi Section
 
@@ -455,9 +539,11 @@ DC offset at the output given the gain and rail budget.
 
 ## Output Level Pot
 
-A **10kΩ log stereo pot** sits between `OPA_Out` and the THAT1646 input,
-acting as a passive voltage divider. Output level knob on the front/rear
-panel attenuates from "calibrated peak" down to mute.
+Two **10kΩ log pots** (one per channel, **not ganged** by default) sit between
+each channel's `OPA_Out` and its THAT1646 input, acting as passive voltage
+dividers. The pots live on the daughterboard (see "User Controls on
+Daughterboard" below) so users can choose their own taper, package, or swap
+to a ganged stereo pot if they want linked L/R behaviour.
 
 ```
 OPA_Out ──┬── R_top of pot
@@ -477,9 +563,10 @@ Placed **after** the op-amp, not inside its feedback loop:
   op-amp and no meaningful source impedance variation to the THAT1646.
 
 Log (audio) taper gives smooth perceived level control at low settings, where
-the ear is most sensitive to small adjustments. Stereo ganged so L and R track
-within typical pot tolerance (~3 dB imbalance worst case on budget pots —
-acceptable for a rear-panel trim, tighter if front-panel mixing control).
+the ear is most sensitive to small adjustments. Because L and R are separate
+pots, users pick their own tolerance/matching strategy: two budget pots ≈ 2–3
+dB imbalance worst case (user-trimmable by ear); a matched stereo pot
+eliminates imbalance at the cost of forcing the same taper on both channels.
 
 ### Impedance behaviour
 
@@ -547,9 +634,66 @@ this with huge margin and provides surge capacity for hot-plug transients.
 | Clean ceiling (sim-verified)      | ~38 V p-p ≈ +24.8 dBu   | THAT1646 hits ±10.5V limit first      |
 | Hard clip (sim-verified)          | ~42 V p-p ≈ +25.6 dBu   | THD 1.18%, beyond usable range        |
 
+## User Controls on Daughterboard
+
+All user-facing controls (output level pots L+R, plus the input-stage clip
+LEDs and clip-threshold trim pots from Part 1) live on a separate PCB
+connected to the main board via a single header. This lets users build their
+own panel layout without forking the main PCB.
+
+**Per channel signals on the header (output stage):**
+
+* `OPA_Out` — pot CW terminal (input to attenuator)
+* `THAT_In` — pot wiper (output, feeds THAT1646 input)
+* `AGND` — pot CCW terminal (attenuator ground leg for proper mute)
+
+Pot is wired as a three-terminal voltage divider; all three pins are
+required.
+
+**Signal-integrity notes for the header:**
+
+* Keep the `OPA_Out` ↔ `THAT_In` loop short and close to AGND. The return
+  path (AGND pin adjacent to each signal pair on the header) matters — a
+  ground pin every two or three signal pins keeps loop area small.
+* Use a shielded cable or flat ribbon with dedicated ground between header
+  and daughterboard if the daughterboard is more than ~50mm away from the
+  main board.
+* The `THAT_In` node is high-Z at the THAT1646 input — route it through the
+  lowest-noise pair on the cable.
+
+## Rail Protection (TVS per rail)
+
+The TMA-1212D is a switching DC-DC converter: it can source current but
+cannot sink it. If current is forced **into** the ±12V rails from outside,
+the rail voltage rises uncontrollably.
+
+**The fault scenario:** our gear is powered off, but the XLR output stays
+connected to a mic preamp with +48V phantom asserted. The THAT1646 outputs
+float (no supply), the clamp diodes conduct from each XLR pin toward the
+dead +12V rail, and ~7 mA per pin (up to 28 mA stereo) sustains into a node
+with no sink. Rail caps charge up; eventually the rail can pump toward the
+phantom supply voltage, destroying the OPA1656 (±22V abs max) and THAT1646
+(±20V abs max) when the gear is next powered on.
+
+**Mitigation:** one TVS per rail to AGND:
+
+* `+12V → AGND`: unidirectional 15V TVS (e.g. SMAJ15A), cathode on +12V,
+  anode on AGND. Reverse-biased in normal operation, clamps when +12V pumps
+  above ~16V.
+* `-12V → AGND`: unidirectional 15V TVS, cathode on AGND, anode on -12V.
+* Or a single bidirectional 15V TVS (SMAJ15CA) per rail works equally well
+  and simplifies BOM by part-number consolidation.
+
+Under a sustained 28 mA fault the TVS dissipates ~0.4 W — well within the
+1 W rating of a SMAJ part. Also handles hot-plug surge transients.
+
+Place the TVS physically close to where the clamp-diode return currents
+enter the rail — i.e. near the THAT1646s, not near the TMA-1212D output —
+so fault current has the shortest possible path.
+
 ## Components
 
-**Per channel:**
+**Per channel (main PCB):**
 
 * 1× R_in (2.2kΩ, 1%) — op-amp inverting input resistor
 * 1× R_fb_fixed (15kΩ, 1%) — op-amp feedback floor
@@ -558,32 +702,19 @@ this with huge margin and provides surge capacity for hot-plug transients.
 * 4× SM4004 (SMA) — XLR output clamp to ±12V rails
 * 1× THAT1646 balanced line driver (SOIC-8)
 
-**Shared:**
+**Per channel (daughterboard — user-swappable controls):**
+
+* 1× 10kΩ log pot — output level (three-terminal voltage divider)
+
+**Shared (main PCB):**
 
 * 1× OPA1656 dual op-amp (SOIC-8) — both output channels
-* 1× 10kΩ log stereo pot — output level control (between OPA_Out and
-  THAT1646 input, one section per channel)
 * 2× 100nF + 2× 1nF MLCC — OPA1656 supply decoupling (V+ and V-), same
   scheme as the input stage
+* 2× SMAJ15A (or 1× SMAJ15CA per rail) — rail protection against
+  powered-off phantom faults
 * THAT1646 decoupling per datasheet (unchanged from Rev 1)
 
-## Open Design Questions
-
-* **Output pot location (panel vs rear):** Front-panel level is the studio
-  convention for "master out" on mixers and synths; rear-panel is typical for
-  outboard effects that live in a rack and are set once. Pick based on intended
-  use case.
-* **Pot tolerance matching:** Budget stereo pots have 2–3 dB L/R imbalance.
-  For a master-out control that's acceptable; for anything critical to imaging
-  specify a matched or stepped attenuator (expensive, usually not worth it).
-* **Input coupling cap:** The Seed pin is already DC-blocked by the Rev 7 4.7µF.
-  A second series cap at the op-amp input is likely redundant — confirm on
-  measurement.
-* **Rail-sink capability under phantom fault:** The TMA-1212D cannot sink current.
-  A sustained phantom fault dumps ~5 mA into the +12V rail, which must be absorbed
-  by quiescent load or a rail clamp. Verify the Rev 1 rail behaviour before
-  finalising — may need a TVS or zener across the ±12V rails if the quiescent
-  load is insufficient.
 
 # Part 5: Additional Power section issues
 
