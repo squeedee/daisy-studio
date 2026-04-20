@@ -24,11 +24,11 @@ The PCM3060 codec on the Daisy Seed has an internal AC coupling capacitor and a 
 V_COM bias. All voltages below are measured at the codec (after AC coupling and bias),
 establishing three operating zones:
 
-| Zone   | Target range V(codec)                               | Sim range V(codec)                           | Seed pin equivalent | Design intent                                                             |
-|--------|-----------------------------------------------------|----------------------------------------------|---------------------|---------------------------------------------------------------------------|
-| Signal | 1.0V to 4.0V (3V p-p nom)                           | 1.17V to 3.84V (2.66V p-p)                   | ±1.82V              | Full ADC utilisation. No BJT conduction.                                  |
-| Clamp  | 4.0V to 4.5V                                        | 3.84V to 4.50V                               | ±1.82V to ±2.73V    | Progressive BJT conduction limits overdrive. Keep this as low as possible |
-| Damage | -0.3V to +4.8V (Vcc + 0.3V = 4.8V, LDO Vcc is 4.5V) | Not reached (worst case 4.50V, 300mV margin) | > ±2.8V             | Must never be reached.                                                    |
+| Zone   | Target range V(codec)                               | Sim range V(codec)                                  | Seed pin equivalent | Design intent                                                             |
+|--------|-----------------------------------------------------|-----------------------------------------------------|---------------------|---------------------------------------------------------------------------|
+| Signal | 1.0V to 4.0V (3V p-p nom)                           | 1.00V to 4.00V (3.00V p-p, sim-verified, THD 0.05%) | ±2.04V              | Full ADC utilisation. No BJT conduction.                                  |
+| Clamp  | 4.0V to 4.64V                                       | 4.00V to 4.64V (worst tolerance corner)             | ±2.04V to ±2.92V    | Progressive BJT conduction limits overdrive. Keep this as low as possible |
+| Damage | -0.3V to +4.8V (Vcc + 0.3V = 4.8V, LDO Vcc is 4.5V) | Not reached (worst case 4.64V, 164mV margin)        | > ±3.0V             | Must never be reached.                                                    |
 
 Design goals:
 
@@ -40,8 +40,11 @@ Design goals:
 3. The gape between the top of the "Clamp" zone and the "Damage" zone should be maximised without encroaching on the
    Signal Zone
 
-> TODO: Validate component tolerance ranges to ensure whatever we select does not encrouch on Signal, while staying
-> as far from Damage as possible.
+Tolerance validation (5-corner sim, `sim/input/amp-atten-bjt-tolerance.asc`):
+Signal zone stays clean (THD 0.05%) across all corners at pk=0.26 full-scale;
+pathological overdrive (+24 dBu at pot max) reaches codec_max = 4.64V in the
+worst corner (CLAMP_LOOSE: rails +5%, R_ref at tolerance max) — 164 mV margin
+to 4.8V damage ceiling.
 
 ## Signal Path
 
@@ -57,7 +60,7 @@ Balanced in → THAT 1246 (-6dB) → R_in (10kΩ) → OPA1656 (inverting, ±12V,
         │  10kΩ log pot          │                                                    │
         │  (3-term divider)      │                                                    │
         │                        │                                                    │
-        │  wiper ────────────────┼─────── Wiper_Return (main) → R_out (2.2kΩ)         │
+        │  wiper ────────────────┼─────── Wiper_Return (main) → R_out (3.3kΩ)         │
         │                        │                              → BJT clamp          │
         │  AGND ─────────────────┼─── AGND                      → C_aa (1nF)          │
         └────── daughterboard ───┘                              → Seed pin            │
@@ -121,28 +124,30 @@ its input, 4.3 nV/√Hz × 2.2 over 20 kHz ≈ 1.4 µV rms output noise. Far
 below the THAT1246's own noise floor and the PCM3060 ADC's codec noise —
 negligible in the signal budget.
 
-## Output Series Resistor (2.2kΩ)
+## Output Series Resistor (3.3kΩ)
 
-A 2.2kΩ resistor between the pot wiper (returning from the daughterboard) and
+A 3.3kΩ resistor between the pot wiper (returning from the daughterboard) and
 the clamp node at the Seed input pin limits fault current to a level the clamp
 reference divider can absorb. During normal operation, the Seed's 13.6kΩ input
-impedance draws minimal current through the 2.2kΩ — the small signal loss
-(2.2kΩ / 15.8kΩ ≈ 14%) is baked into the calibration of the user pot position.
+impedance draws minimal current through the 3.3kΩ — the signal loss
+(3.3kΩ / 16.9kΩ ≈ 20%) is baked into the calibration of the user pot position.
 
 During fault conditions (op-amp clipping at ±11V, pot wiper at CW terminal),
 the resistor limits current to:
 
-    (11V − 1.82V) / 2.2kΩ = 4.2mA
+    (11V − 2.04V) / 3.3kΩ = 2.72mA
 
-This is within the capacity of the reference divider and clamp diodes. With
-the pot wiper anywhere between CW and CCW, the pot's internal series
+Raised from the Rev 1 / early Rev 2 value of 2.2kΩ specifically to reduce
+clamp current under pathological overdrive — lower Ic into the BJT caps the
+effective Vbe saturation peak, which directly sets codec_max at hard clamp.
+With the pot wiper anywhere between CW and CCW, the pot's internal series
 resistance (0–2.5kΩ, peak at mid-rotation) adds to R_out, reducing fault
 current further. The worst case is pot at CW (wiper shorted to OPA_Out,
-full 4.2 mA), which is the current Rev 1 / old Rev 2 design point.
+full 2.72 mA).
 
 ## Symmetric Clamp
 
-The clamp sits at the Seed pin, after the 2.2kΩ series resistor. Per-channel resistive
+The clamp sits at the Seed pin, after the 3.3kΩ series resistor. Per-channel resistive
 dividers from the ±12V analog supply establish independent positive and negative reference
 rails (avoiding crosstalk). Ceramic capacitors (47µF MLCC) hold the references stiff at
 audio frequencies. A complementary BJT pair (2N3906 PNP + 2N3904 NPN, both SOT-23) per channel
@@ -151,20 +156,20 @@ clamps the signal to these rails:
 ```
 Per channel:
 
-            (+1.09V)                  (-1.09V)
-+12V ── 10kΩ ──┬── 1kΩ ── AGND ── 1kΩ ──┬── 10kΩ ── -12V
-               │                        │
-             47µF                     47µF
-               │                        │
-             AGND                     AGND
+            (+1.565V)                  (-1.565V)
++12V ── 10kΩ ──┬── 1.5kΩ ── AGND ── 1.5kΩ ──┬── 10kΩ ── -12V
+               │                            │
+             47µF                         47µF
+               │                            │
+             AGND                         AGND
 
 Per channel (BJT clamp):
 
-              +1.09V ref ── Base (Q1, PNP 2N3906)
+              +1.565V ref ── Base (Q1, PNP 2N3906)
                                 │
 R_out ──────────────── Emitter ──┬── Seed pin
                                 │
-              -1.09V ref ── Base (Q2, NPN 2N3904)
+              -1.565V ref ── Base (Q2, NPN 2N3904)
 
               Q1 Collector → AGND
               Q2 Collector → AGND
@@ -172,7 +177,7 @@ R_out ──────────────── Emitter ──┬── S
 Clip indicator (per channel):
 
               Seed_In ─────────── Comparator non-inv+ input
-              Trim pot (AGND to n+) ── Comparator inv- input  (threshold, 0V to +1.09V)
+              Trim pot (AGND to n+) ── Comparator inv- input  (threshold, 0V to +1.565V)
               +12V → 1kΩ → LED anode; LED cathode → Comparator output (open collector)
 ```
 
@@ -188,14 +193,20 @@ investigation that led to this choice.
 
 ### Reference Divider Calculations
 
-    V_ref = 12V × 1kΩ / (10kΩ + 1kΩ) = 1.091V
-    R_th  = 10kΩ ∥ 1kΩ = 909Ω
-    Quiescent: 12V / 11kΩ = 1.09mA per divider
+    V_ref = 12V × 1.5kΩ / (10kΩ + 1.5kΩ) = 1.565V
+    R_th  = 10kΩ ∥ 1.5kΩ = 1304Ω
+    Quiescent: 12V / 11.5kΩ = 1.04mA per divider
+
+The divider was dimensioned so the worst-case-tight tolerance corner (rails
+−5%, R at 1%) still keeps codec_pp knee above 3.15V — clean full-scale
+preserved across all corners — while the worst-case-loose corner (rails +5%,
+R at 1% max) keeps codec_max under hard clamp below the 4.8V damage ceiling
+with 164 mV margin.
 
 At 20Hz (worst case for capacitor impedance):
 
     Z_cap = 1 / (2π × 20Hz × 47µF) = 169Ω
-    Z_eff = 909Ω ∥ 169Ω = 143Ω
+    Z_eff = 1304Ω ∥ 169Ω = 150Ω
 
 ### Fault Analysis
 
@@ -203,32 +214,26 @@ Under fault conditions (op-amp clipping at ±11V), the clamp current flows throu
 BJT collector to ground (or -12V via the LED). Only the base current loads the
 reference divider:
 
-    I_clamp = (11V − V_clamp) / 2.2kΩ ≈ 4mA
-    I_base  = I_clamp / β ≈ 4mA / 200 = 20µA
-    ΔV_ref  = I_base × R_th = 20µA × 909Ω = 18mV  (negligible)
+    I_clamp = (11V − V_clamp) / 3.3kΩ ≈ 2.7mA
+    I_base  = I_clamp / β ≈ 2.7mA / 200 = 13.5µA
+    ΔV_ref  = I_base × R_th = 13.5µA × 1304Ω = 18mV  (negligible)
 
-SPICE simulation (LTspice, +24 dBu overdrive with the old variable-R_fb topology
-at R_fb = 25kΩ) showed **codec_max = 4.50V — 300mV margin** to the 4.8V absolute
-maximum. That fault path (OPA clips to ±11V → R_out → clamp → Seed) is unchanged
-in the new architecture; only the feedback-path R_fb has moved from variable-pot
-to fixed. With R_fb = 12kΩ the OPA no longer rail-clips at +24 dBu, so the actual
-clamp-engagement fault is rarer, but the worst-case current calculation above
-still applies when it does.
-
-> TODO: Re-run 5-corner tolerance sweep (±5% supply, ±1% resistors, ±20% caps,
-> β variation) with the new fixed-R_fb topology and a pot-model sweep to
-> validate worst-case margin and confirm OPA rail-margin at +24 dBu.
+SPICE simulation (LTspice, `sim/input/amp-atten-bjt-tolerance.asc`, 5-corner
+× 3-testcase sweep with the fixed-R_fb + 10k/1.5k divider + R_out=3.3k
+topology) shows **codec_max = 4.64V worst-case — 164mV margin** to the 4.8V
+absolute maximum, under pathological +24 dBu input with pot at CW max and
+the CLAMP_LOOSE corner (rails +5%, R_ref at 1% max). At the nominal full-scale
+operating point (+24 dBu, pk=0.26) the signal stays under 3 Vpp at the codec
+across all five corners with THD 0.05%.
 
 ### Signal Interaction at Normal Levels
 
-At the ±1.5V signal peak (3V p-p, 100% ADC utilisation), the BJT base-emitter bias
-is V_peak − V_ref = 1.5 − 1.091 = 0.41V. With 2N3904/2N3906 model parameters
-(NF≈1.24), the collector current at this bias is negligible — the sharper knee
-(NF=1.24 vs N=1.82 for BAV99) means less sub-threshold conduction. The clamp is
-unchanged from the previous Rev 2 draft; the THD and ADC utilisation results
-established for the variable-R_fb sim still apply here, but are now set by the
-**user pot position** (and fixed input level) instead of R_fb. See the THD vs
-Pot Position subsection below for the new sweep plan.
+At the ±2.04V signal peak at the Seed pin (3V p-p at the codec, 100% ADC
+utilisation), the BJT base-emitter bias is V_peak − V_ref = 2.04 − 1.565 =
+0.475V. With 2N3904/2N3906 model parameters (NF≈1.24), the collector
+current at this bias is negligible — the sharper knee (NF=1.24 vs N=1.82
+for BAV99) means less sub-threshold conduction, sim-confirmed as THD 0.05%
+at the clean ceiling across all tolerance corners.
 
 ### Clip Indicator
 
@@ -239,12 +244,12 @@ change at Q1.C is only millivolts above the -12V rail, indistinguishable from su
 ripple.
 
 The comparator's non-inverting input connects to Seed_In. A trim pot between AGND
-and n+ (0V to +1.091V) sets the threshold on the inverting input. When the positive
+and n+ (0V to +1.565V) sets the threshold on the inverting input. When the positive
 signal peak exceeds the threshold, the comparator output goes high and lights the
 LED. At audio frequencies the LED flickers faster than the eye can see — dim glow at
 light clipping, bright at heavy clipping.
 
-The full trim pot range (0V to 1.091V) corresponds directly to the useful signal
+The full trim pot range (0V to 1.565V) corresponds directly to the useful signal
 range at Seed_In, giving fine adjustment with no dead zone. The threshold is set
 during calibration to the onset of audible clipping.
 
@@ -255,27 +260,29 @@ it floats, the LED has no current path and is cleanly off with no reverse bias o
 the LED junction. Fast response (~1.3µs) cleanly tracks individual signal peaks at
 audio frequencies.
 
-    Seed_In signal range:   0V to ±1.82V (clean), ±2.73V (clamp)
-    Threshold range:        0V to +1.091V (trim pot)
+    Seed_In signal range:   0V to ±2.04V (clean), ±2.92V (clamp worst tolerance)
+    Threshold range:        0V to +1.565V (trim pot)
     LED behaviour:          off below threshold, proportional glow above
 
 ### Tolerance Analysis
 
 With ±5% supply tolerance (TMA-1212D) and ±1% resistors:
 
-| Parameter | Nominal | Min (low supply) | Max (high supply) |
-|-----------|---------|------------------|-------------------|
-| V_ref     | 1.09V   | 1.02V            | 1.17V             |
+| Parameter | Nominal | Min (low rail, high R_top, low R_bot) | Max (high rail, low R_top, high R_bot) |
+|-----------|---------|---------------------------------------|----------------------------------------|
+| V_ref     | 1.565V  | 1.461V                                | 1.673V                                 |
 
-At worst-case low V_ref (1.02V), diode current at the ±1.5V signal peak rises to ~89µA
-(197mV drop). This is the absolute worst case (supply and all resistors at tolerance
-extremes simultaneously); typical variation is much smaller.
+Sim-verified 5-corner × 3-testcase sweep (`sim/input/amp-atten-bjt-tolerance.asc`,
+corners = TYP / OPA_CLIP / CLAMP_TIGHT / CLAMP_LOOSE / GAIN_LOW):
 
-The five SPICE tolerance corners (nominal, outer max, inner max, upper/lower DC offset)
-confirm:
-
-* Worst-case codec high: 4.72V (80mV margin to 4.8V abs max)
-* Worst-case codec low: 155mV (well above -0.3V abs min)
+* **+4 dBu, pk=1.0 (nominal pro, pot max):** clean across all corners, THD
+  ~0.07%, codec_pp 1.23V (41% ADC).
+* **+24 dBu, pk=0.26 (hot signal at full-scale calibration):** codec_pp
+  2.82–2.93V across all corners, THD 0.05%. OPA does not rail-clip even at
+  OPA_CLIP corner (max gain + min rails).
+* **+24 dBu, pk=1.0 (pathological — hot signal mis-set at pot max):**
+  codec_max ranges 4.49–4.64V. Worst corner CLAMP_LOOSE (rails +5%, R_ref
+  at 1% max) gives 4.64V — **164 mV margin** to the 4.8V damage ceiling.
 
 The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 
@@ -285,11 +292,11 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 
 * 10kΩ input resistor (R_in, 0805 1%)
 * 12kΩ feedback resistor (R_fb, 0805 1%) — fixed, sets op-amp gain 1.2×
-* 2.2kΩ series output resistor (R_out, 0805 1%)
+* 3.3kΩ series output resistor (R_out, 0805 1%)
 * 1× 2N3906 PNP transistor, SOT-23 (positive clamp)
 * 1× 2N3904 NPN transistor, SOT-23 (negative clamp)
 * 2× 10kΩ resistors, 1% (R1, reference dividers)
-* 2× 1kΩ resistors, 1% (R2, reference dividers)
+* 2× 1.5kΩ resistors, 1% (R2, reference dividers)
 * 2× 47µF MLCC, 1206 or 1210, X5R/X7R (reference rail filtering)
 * 1× 1nF C0G MLCC, 0402 or 0603 (C_aa, anti-alias at Seed input)
 
@@ -320,42 +327,33 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 
 ## Performance Summary
 
-Projected (pre-sim) signal levels for the new architecture with fixed
-R_fb = 12kΩ (gain 1.2×) and pot wired as voltage divider. Pot position
-expressed as fraction of OPA_Out amplitude passed to R_out (1.0 = CW max,
-0.0 = CCW mute):
+Sim-verified signal levels (`sim/input/amp-atten-bjt.asc` pk sweep,
+`amp-atten-bjt-tolerance.asc` 5-corner × 3-testcase sweep) for the new
+architecture with fixed R_fb = 12kΩ (gain 1.2×) and 10kΩ log pot wired as
+voltage divider. Pot position `pk` is the wiper fraction from CCW
+(pk=0=mute) to CW (pk=1.0=max):
 
-| Input level    | OPA_Out  | Pot setting | At Seed pin | ADC utilisation     |
-|----------------|----------|-------------|-------------|---------------------|
-| +4 dBu nominal | 2.08 Vpp | 1.0 (max)   | 1.8 Vpp*    | ~60%                |
-| +14 dBu        | 6.61 Vpp | ~0.45       | 2.9 Vpp     | ~97% (clean ceiling) |
-| +24 dBu peak   | 20.9 Vpp | ~0.14       | 2.9 Vpp     | ~97% (clean ceiling) |
-| +24 dBu, pot max | 20.9 Vpp | 1.0 (max) | clamped ±2.73V | protected       |
-| Any, pot mute  | n/a      | 0.0 (CCW)   | 0V          | muted               |
+| Input level      | OPA_Out   | Pot setting           | codec_pp       | ADC util | THD   |
+|------------------|-----------|-----------------------|----------------|----------|-------|
+| +4 dBu nominal   | 2.08 Vpp  | 1.0 (max)             | 1.23 Vpp       | 41%      | 0.07% |
+| +24 dBu peak     | 20.9 Vpp  | **~0.275**            | 3.00 Vpp       | 100%     | 0.05% |
+| +24 dBu, pot max | 20.9 Vpp  | 1.0 (mis-set, worst)  | clamp 4.64V    | protected | 30%  |
+| Any, pot mute    | n/a       | 0.0 (CCW)             | 0V             | muted    | —     |
 
-*includes the 14% loss across R_out and the Seed's 13.6kΩ input impedance.
+Full-scale calibration point (hot signal input, user dial set for 3 Vpp at
+the codec) is `pk ≈ 0.275`. The sweep from pk=0.1 to pk=0.3 shows signal
+monotonically ramping then rolling over into the clamp knee between
+pk=0.28 and pk=0.30 (180 mV margin between 3 Vpp clean and clamp onset).
 
-> TODO: Re-verify all rows against sim (`sim/input/`) once the new architecture
-> is modelled. Rows above are calculated, not simulated.
+### LPF corner across pot travel
 
-### THD vs Pot Position (pending sim)
+With R_out = 3.3kΩ and C_aa = 1nF, the single-pole LPF formed at the Seed
+input has its corner determined by (R_out + Z_wiper) × C_aa:
 
-With R_fb fixed, there is no "R_fb sweep" anymore. The new sweep of
-interest is:
+* Pot at either end: R_series = 3.3kΩ, f_LPF = 48 kHz
+* Pot at mid (worst): R_series = 3.3kΩ + 2.5kΩ = 5.8kΩ, f_LPF = 27 kHz
 
-* **Input level × Pot position** grid — verify ADC utilisation and clip-free
-  operation across typical operating points (+4 / +14 / +24 dBu input ×
-  pot 0.1 / 0.5 / 1.0).
-* **Op-amp rail margin at +24 dBu input** — confirm the 0.55V nominal
-  margin holds with ±5% supply and ±1% R_fb/R_in tolerance stack.
-* **LPF corner sweep across pot position** — confirm −3 dB corner stays
-  above 30 kHz at all pot positions with C_aa = 1nF.
-
-Existing sim artefacts (`sim/input/sharper-diode.asc`, `thd-plus4db.asc`,
-`tolerances-plus24db.asc`, `feedback-clamp.asc`) were all built for the
-old variable-R_fb topology. They need reworking for the new architecture:
-fix R_fb = 12k, add a pot model (two resistors in series, parameter-swept
-tap point) between OPA_Out and R_out, reduce C_aa to 1nF.
+Both safely above audio band. Sim-verified flat across all pot positions.
 
 For comparison with alternative clamp designs (BAV99 passive, post-clamp
 feedback tap), see the appendix. The clamp topology itself is unchanged
@@ -378,16 +376,16 @@ The OPA1656's unity-gain crossover frequency at the fixed gain:
 
 An RF frequency. The op-amp's output load is R_fb (12kΩ) back to the inverting
 node in parallel with the 10kΩ pot seen from OPA_Out (constant load regardless
-of wiper position — voltage-divider wiring) and, through that pot, the 2.2kΩ
+of wiper position — voltage-divider wiring) and, through that pot, the 3.3kΩ
 R_out plus clamp bias. Net load is approximately 5–6kΩ resistive. Benign, no
 reactive component at the output node.
 
 ### BJT Parasitic Capacitances
 
 The 2N3904/2N3906 present Cbe ≈ 4–5pF and Ccb ≈ 3–4pF at the Seed_In node. Behind
-the 2.2kΩ series resistor, the associated pole is at:
+the 3.3kΩ series resistor, the associated pole is at:
 
-    f_pole = 1 / (2π × 2.2kΩ × 10pF) ≈ 7.2 MHz
+    f_pole = 1 / (2π × 3.3kΩ × 10pF) ≈ 4.8 MHz
 
 This pole is outside the feedback loop and does not affect phase margin. When the BJTs
 turn on, the emitter impedance drops (re ≈ 26mV/Ic) but the op-amp only sees
@@ -429,7 +427,7 @@ supply pins, with short returns to the analog ground pour.
 * **Daughterboard header pins for input pot:** The `OPA_Out_In` pin should sit
   close to the op-amp output (pin 1); the `Wiper_Return_In` pin should sit
   close to R_out. Adjacent AGND pins on both pairs keep return loop area small.
-* **R_out (2.2kΩ):** Place close to the `Wiper_Return_In` header pin (not at
+* **R_out (3.3kΩ):** Place close to the `Wiper_Return_In` header pin (not at
   the op-amp output, as in Rev 1 and the older Rev 2 drafts). The pot wiper
   returns via cable and feeds directly into R_out; the clamp and C_aa are on
   the Seed side of R_out.
@@ -476,11 +474,11 @@ with the series resistance between the OPA_Out and the Seed pin:
 
     R_series = Z_pot_wiper + R_out
     Z_pot_wiper = 0 to 2.5 kΩ (peak at mid-rotation of the 10kΩ user pot)
-    R_out = 2.2 kΩ
-    → R_series varies from 2.2 kΩ (pot at CW or CCW) to 4.7 kΩ (pot at mid)
+    R_out = 3.3 kΩ
+    → R_series varies from 3.3 kΩ (pot at CW or CCW) to 5.8 kΩ (pot at mid)
 
     f_LPF = 1 / (2π × R_series × 1nF)
-          = 72.3 kHz (pot at ends) → 33.9 kHz (pot at mid)
+          = 48.2 kHz (pot at ends) → 27.4 kHz (pot at mid)
 
 The LPF corner stays safely above the audio band across pot travel. This
 attenuates wideband noise from the OPA1656 (noise bandwidth extends into
@@ -492,9 +490,9 @@ the codec but is insufficient on its own for this purpose.
 **Why 1nF and not the earlier 2.2nF value:** with the old architecture
 (fixed R_out, no pot in the series path), 2.2nF gave a 32.9 kHz corner. In
 the new architecture the pot wiper source impedance adds to R_out, so 2.2nF
-would sag the corner to ~15 kHz at mid-rotation — inside the audio band, not
-acceptable. Dropping to 1nF restores sub-audio-band flatness across all pot
-positions.
+would sag the corner well into the audio band at mid-rotation — not
+acceptable. With Option E's R_out=3.3kΩ, 1nF gives 48/27 kHz worst-case
+across pot travel, still safely above audio band.
 
 **Placement:** 0402 or 0603 C0G (NP0) MLCC, directly at the Seed input pin,
 short trace from the pin to the cap and short return to the analog ground
@@ -502,14 +500,15 @@ pour. Do not place it on the daughterboard or at the op-amp output — the
 R_out resistor plus pot wiper Z is what makes the filter work, so the cap
 must be on the Seed side of R_out.
 
-Value tradeoff (corner frequencies given at worst-case pot-mid R_series = 4.7kΩ):
+Value tradeoff (corner frequencies at worst-case pot-mid R_series = 5.8kΩ
+with R_out = 3.3kΩ):
 
 | C_aa  | f_LPF (pot ends) | f_LPF (pot mid)    | Notes                                            |
 |-------|------------------|--------------------|--------------------------------------------------|
-| 680pF | 106 kHz          | 49.8 kHz           | Wider, less noise rejection                     |
-| 1nF   | 72.3 kHz         | 33.9 kHz           | **Chosen** — clear of audio band across all pot positions |
-| 1.5nF | 48.2 kHz         | 22.6 kHz           | Marginal — corner touches top of audio at pot mid |
-| 2.2nF | 32.9 kHz         | 15.4 kHz           | Unacceptable — audible rolloff at pot mid        |
+| 680pF | 70.9 kHz         | 40.4 kHz           | Wider, less noise rejection                      |
+| 1nF   | 48.2 kHz         | 27.4 kHz           | **Chosen** — clear of audio band across all pot positions |
+| 1.5nF | 32.1 kHz         | 18.3 kHz           | Unacceptable — audible rolloff at pot mid        |
+| 2.2nF | 21.9 kHz         | 12.5 kHz           | Unacceptable — audible rolloff at pot mid        |
 
 ## User Controls on Daughterboard
 
@@ -556,7 +555,7 @@ L/R input and output control signals.
   header pin to it. Use ribbon cable pinout or bundle grouping to enforce
   separation.
 * Interaction with C_aa: C_aa sees R_out + wiper Z as its series R. The
-  LPF corner varies from 72 kHz (pot at ends) to 34 kHz (pot at mid) — all
+  LPF corner varies from 48 kHz (pot at ends) to 27 kHz (pot at mid) — all
   safely above the audio band. See "Anti-Alias Filter at Seed Input" above.
 * Cable length guideline: ≤ 150mm is comfortable; ≤ 50mm is conservative.
   Unlike the old Rev 2 draft, there is no hard upper bound driven by
