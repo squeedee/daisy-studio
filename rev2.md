@@ -585,7 +585,7 @@ L/R input and output control signals.
 ## Signal Path
 
 ```
-Seed audio out → OPA1656 (inverting, ±12V, calibrated gain) → Output level pot → THAT1646 balanced driver → clamp diodes → XLR
+Seed audio out → OPA1656 (inverting, ±12V, calibrated gain + C_fb reconstruction LPF) → Output level pot → THAT1646 balanced driver → clamp diodes → XLR
 ```
 
 The Seed's PCM3060 outputs ~2.0 V p-p at digital full scale (0.6 × AVCC, AC-coupled
@@ -634,6 +634,77 @@ DC offset at the output given the gain and rail budget.
 4. Adjust R_fb trimmer until differential output reads +24 dBu peak
    (12.28 V p-p, nominal mid-trim should land close to this).
 5. Lock trimmer with a dab of nail polish or trim paint.
+
+### Reconstruction Low-Pass Filter (C_fb across R_fb)
+
+**Purpose.** The Daisy Seed Rev 7's PCM3060 codec has out-of-band
+delta-sigma noise above the audio band. Per the PCM3060 datasheet, the
+codec's internal continuous-time RC alone is insufficient "for many
+applications" — an external LPF is expected. The Seed carries no
+additional reconstruction filter, and a community report on PedalPCB
+traced an audible Rev 7 noise-floor issue to this and resolved it with a
+post-Seed RC. See
+https://forum.pedalpcb.com/threads/terrarium-rev-1-with-daisy-seed-v1-2-rev-7-noise-issue-work-around-applies-to-old-terrarium-rev-1-board-only.21901/
+and the PCM3060 datasheet output-filter section.
+
+**Topology.** A single C0G capacitor, C_fb, in parallel with R_fb turns
+the inverting gain stage into a 1-pole LPF. DC gain is unchanged; only
+the high-frequency behaviour shifts:
+
+    f_c = 1 / (2π × R_fb × C_fb)
+
+No series parts added to the signal path, no change in source impedance
+to the THAT1646, and — because the OPA1656 is unity-gain stable at 53 MHz
+GBW — no stability margin cost.
+
+**Chosen value: C_fb = 100 pF C0G.** At R_fb_nominal = 20 kΩ, f_c = 80 kHz.
+
+Sim-verified AC sweep (`sim/output/output-lpf.asc`,
+`sim/output/output-lpf.csv`; R_in = 2.2kΩ, R_fb = 20kΩ, DC gain = 18.79 dB):
+
+| C_fb       | f_c       | 20 kHz   | 100 kHz  | 500 kHz  | 1 MHz    |
+|------------|-----------|----------|----------|----------|----------|
+| 47 pF      | 169 kHz   | −0.06 dB | −1.4 dB  | −10.1 dB | −15.8 dB |
+| **100 pF** | **80 kHz**| **−0.27 dB** | **−4.2 dB**  | **−16.2 dB** | **−22.1 dB** |
+| 220 pF     | 36 kHz    | −1.17 dB | −9.4 dB  | −22.9 dB | −28.9 dB |
+| 470 pF     | 17 kHz    | −3.79 dB | −15.6 dB | −29.4 dB | −35.4 dB |
+
+100 pF is the sweet spot: audio band effectively untouched (−0.27 dB at
+20 kHz is below audibility), meaningful rejection into the codec noise
+band (−22 dB at 1 MHz). 47 pF leaves too much noise through; 220 pF
+starts nibbling the audible top octave; 470 pF is audibly dark.
+
+Across the R_fb trim range (15 kΩ → 25 kΩ), f_c at 100 pF varies from
+106 kHz (min trim) down to 64 kHz (max trim) — all safely above audio.
+After bring-up calibration the trimmer is locked, so per-unit f_c is
+effectively fixed.
+
+Phase response is monotonic across all four C_fb values — no peaking, no
+ringing. 1-pole inverting LPF behaviour as expected.
+
+**TODO — bench validation on Seed Rev 7.**
+Sim confirms the filter does what it's designed to do, but cannot predict
+whether 1-pole at 80 kHz provides *enough* attenuation for the PCM3060's
+actual noise spectrum (no validated codec noise model available). Bench
+procedure:
+
+1. On a Seed Rev 7 unit playing digital silence (all-zero output),
+   capture XLR differential output noise with C_fb unpopulated.
+2. Repeat with C_fb = 100 pF populated.
+3. Compare broadband noise floor and spectral content using a
+   192 kHz-capable ADC + FFT or a scope with FFT — look for residual
+   spectral content above 40 kHz.
+4. If the 1-pole at 80 kHz is insufficient, **escalate to a 2-pole
+   Sallen-Key post-gain-stage** (−40 dB/dec past f_c) rather than
+   increasing C_fb (which would eat the audio top octave). Larger-scope
+   change — deferred until bench data shows the simpler fix is not
+   enough.
+
+**Placement.** 0402 or 0603 C0G (NP0) MLCC, directly across R_fb with the
+shortest possible traces between the op-amp inverting input node and
+output node. C0G chosen for voltage-coefficient stability — X5R/X7R
+exhibit voltage-dependent capacitance shift that would modulate f_c with
+signal level and introduce low-order distortion in a feedback-path cap.
 
 ## Output Level Pot
 
@@ -797,6 +868,8 @@ so fault current has the shortest possible path.
 * 1× R_fb_fixed (15kΩ, 1%) — op-amp feedback floor
 * 1× R_fb_trim (10kΩ multi-turn cermet, e.g. Bourns 3296W-1-103) — gain
   calibration, wired rheostat-mode in series with R_fb_fixed
+* 1× C_fb (100pF C0G MLCC, 0402 or 0603) — reconstruction LPF across
+  R_fb; see "Reconstruction Low-Pass Filter" subsection
 * 4× SM4004 (SMA) — XLR output clamp to ±12V rails
 * 1× THAT1646 balanced line driver (SOIC-8)
 
