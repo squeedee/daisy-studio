@@ -159,8 +159,11 @@ breakout) instead, where +5V, +3V3D, DGND and GPIO are available.
 ## Codec Voltage Budget
 
 The PCM3060 codec on the Daisy Seed has an internal AC coupling capacitor and a 2.5V
-V_COM bias. All voltages below are measured at the codec (after AC coupling and bias),
-establishing three operating zones:
+V_COM bias. The Seed Rev 7 input network additionally attenuates the Seed input pin's
+AC signal before it reaches the codec (series resistor + 47 kΩ shunt after the
+AC-coupling cap). All voltages below are measured at the codec; the "Seed pin
+equivalent" column back-translates through this network, so Seed pin ±2.04V
+corresponds to 3.0 V p-p at the codec. Three operating zones:
 
 | Zone   | Target range V(codec)                               | Sim range V(codec)                                  | Seed pin equivalent | Design intent                                                             |
 |--------|-----------------------------------------------------|-----------------------------------------------------|---------------------|---------------------------------------------------------------------------|
@@ -271,9 +274,10 @@ impedance draws minimal current through the 3.3kΩ — the signal loss
 (3.3kΩ / 16.9kΩ ≈ 20%) is baked into the calibration of the user pot position.
 
 During fault conditions (op-amp clipping at ±11V, pot wiper at CW terminal),
-the resistor limits current to:
+the clamp pulls the Seed pin to V_ref + Vbe ≈ 1.565V + 0.7V = 2.26V, and the
+resistor limits current to:
 
-    (11V − 2.04V) / 3.3kΩ = 2.72mA
+    (11V − 2.26V) / 3.3kΩ = 2.65mA
 
 Raised from the Rev 1 / early Rev 2 value of 2.2kΩ specifically to reduce
 clamp current under pathological overdrive — lower Ic into the BJT caps the
@@ -281,7 +285,7 @@ effective Vbe saturation peak, which directly sets codec_max at hard clamp.
 With the pot wiper anywhere between CW and CCW, the pot's internal series
 resistance (0–2.5kΩ, peak at mid-rotation) adds to R_out, reducing fault
 current further. The worst case is pot at CW (wiper shorted to OPA_Out,
-full 2.72 mA).
+full 2.65 mA).
 
 ## Symmetric Clamp
 
@@ -314,8 +318,8 @@ R_out ──────────────── Emitter ──┬── S
 
 Clip indicator (per channel):
 
-              Seed_In ─────────── Comparator non-inv+ input
-              Trim pot (AGND to n+) ── Comparator inv- input  (threshold, 0V to +1.565V)
+              Seed_In ─────────── Comparator inv- input
+              Trim pot (AGND to n+) ── Comparator non-inv+ input  (threshold, 0V to +1.565V)
               +12V → 1kΩ → LED anode; LED cathode → Comparator output (open collector)
 ```
 
@@ -381,11 +385,12 @@ showed that monitoring Q1's collector voltage is impractical — the onset volta
 change at Q1.C is only millivolts above the -12V rail, indistinguishable from supply
 ripple.
 
-The comparator's non-inverting input connects to Seed_In. A trim pot between AGND
-and n+ (0V to +1.565V) sets the threshold on the inverting input. When the positive
-signal peak exceeds the threshold, the comparator output goes high and lights the
-LED. At audio frequencies the LED flickers faster than the eye can see — dim glow at
-light clipping, bright at heavy clipping.
+The comparator's inverting input connects to Seed_In. A trim pot between AGND
+and n+ (0V to +1.565V) sets the threshold on the non-inverting input. When the
+positive signal peak exceeds the threshold, V(inv) > V(non-inv) and the
+open-collector output pulls low, lighting the LED. At audio frequencies the LED
+flickers faster than the eye can see — dim glow at light clipping, bright at
+heavy clipping.
 
 The full trim pot range (0V to 1.565V) corresponds directly to the useful signal
 range at Seed_In, giving fine adjustment with no dead zone. The threshold is set
@@ -1108,15 +1113,21 @@ Retained from Rev 1: four SM4004 diodes per channel, two per output pin
 (hot and cold), clamping each XLR output to the ±12V rails.
 
 ```
-+12V ────┬──────┬────
-         │K     │K         (cathodes to +12V)
-         ▼      ▼
-         D      D
-         ▲      ▲          (anodes to -12V)
-         │A     │A
--12V ────┴──────┴────
-         │      │
-        Hot    Cold   → XLR pins 2, 3
+Per XLR pin (Hot and Cold, identical):
+
+     +12V
+      │
+      K                  (cathode up — conducts when pin > +12V + Vf)
+      ▲
+      D_up
+      │
+      ├─── Hot (or Cold) → XLR pin 2 (or 3), THAT1646 output
+      │
+      D_dn
+      ▼
+      A                  (anode down — conducts when pin < -12V - Vf)
+      │
+     -12V
 ```
 
 Protects the THAT1646 output stage when an XLR output is accidentally plugged
