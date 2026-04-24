@@ -561,10 +561,65 @@ L/R input and output control signals.
   Unlike the old Rev 2 draft, there is no hard upper bound driven by
   inverting-input sensitivity.
 
-# Part 2: Midi Section
+# Part 2: MIDI Section
 
-* TODO: Midi section still needs review on the Rev1 Board
-* Obtain correct footprint for the Midi Optocoupler. [Github Issue](https://github.com/squeedee/daisy-studio/issues/6)
+## Design Objectives
+
+1. Standard MIDI 1.0 IN / OUT / THRU on DIN-5 connectors, galvanically
+   isolated on the input per the MIDI 1.0 electrical spec.
+2. Fix the Rev 1 optocoupler footprint defect
+   ([Issue #6](https://github.com/squeedee/daisy-studio/issues/6)).
+
+## Topology (unchanged from Rev 1)
+
+```
+DIN-5 IN ── 220R × 2 ── 1N4148W ── H11L1SM (opto, Schmitt-out) ── MIDI_RX → Seed UART RX
+                                         │
+                                         └── 270R pull-up to +5V
+                                         │
+                                         └── 33R × 2 ── DIN-5 THRU
+
+Seed UART TX ── MIDI_TX ── 10R ── 33R ── DIN-5 OUT
+```
+
+Textbook MIDI 1.0: 5 mA current loop driven at 31.25 kbaud, 220 Ω series
+resistors at the DIN-5 IN pins, reverse-polarity protection via a 1N4148W,
+H11L1SM Schmitt-trigger optocoupler for edge-clean UART. Output side is
+pulled up to +5V through 270 Ω; MIDI_THRU buffers the opto output through
+a second pair of 33 Ω series resistors to a parallel DIN-5 jack. MIDI OUT
+driven directly from the Seed UART TX through a series 33 Ω, with a 10 Ω
+to the jack's sink pin.
+
+No signal-path changes for Rev 2.
+
+## Changes vs. Rev 1
+
+* **U4 (H11L1SM) footprint:** current `Package_SO:SO-6_4.4x3.6mm_P1.27mm`
+  is wrong for the actual H11L1SM package
+  ([Issue #6](https://github.com/squeedee/daisy-studio/issues/6)). Fix:
+  verify the correct pad dimensions against the ON Semi H11L1SM datasheet
+  and either use a vetted standard footprint or draw a matched one in
+  `daisy-studio.pretty`. No schematic change; footprint assignment only.
+
+## Components (Rev 2, unchanged from Rev 1 except footprint fix)
+
+* 3× SDS-50J DIN-5 jack (J_MIDI_IN_1, J_MIDI_OUT_1, J_MIDI_THRU_1)
+* 1× H11L1SM optocoupler (U4) — **footprint corrected**
+* 1× 1N4148W diode, SOD-123 (D3)
+* 2× 220 Ω 0805 (R14, R15) — MIDI IN current limit
+* 1× 270 Ω 0805 (R16) — H11L1 output pull-up to +5V
+* 2× 33 Ω 0805 (R17, R18) — MIDI THRU series
+* 1× 33 Ω 0805 (R12) — MIDI OUT series
+* 1× 10 Ω 0805 (R13) — MIDI OUT sink series
+* 1× 100 nF 0402/0603 MLCC (C9) — H11L1 supply decouple
+
+## Verification
+
+* `kicad-cli sch erc daisy_seed.kicad_sch` — ERC clean.
+* Footprint visual check against the ON Semi H11L1SM datasheet pad diagram
+  before the board order; confirm pad pitch, size, and land length match.
+* Bench: MIDI loopback test (IN → THRU, OUT → external synth) at 31.25
+  kbaud once the Rev 2 board is built.
 
 # Part 3: Output Section
 
