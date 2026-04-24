@@ -1,10 +1,100 @@
-# Part 0: General changes in design
+# Part 0: Design-Wide Changes
 
-* Annotate all components in the schematic with ideal placement notes - make a property for them called
-  `ideal-placement`.
-* Add some details about the project to the
-  silkscreen. [Github Issue](https://github.com/squeedee/daisy-studio/issues/4)
-* GPIO component is wrong [Github Issue](https://github.com/squeedee/daisy-studio/issues/3)
+Cross-cutting decisions and housekeeping for Rev 2 — concerns that don't
+belong to a specific functional block. Each subsection stands alone.
+
+## Schematic Conventions
+
+### `ideal-placement` component property
+
+Every component in the schematic gets an `ideal-placement` custom property
+(free-text). It records any non-obvious layout requirement — proximity to a
+specific pin, trace-length constraint, loop-area rule, thermal concern —
+that the layout engineer should respect. Examples:
+
+* `R_fb`: "adjacent to OPA1656 pin 1 and pin 2; short summing-junction
+  trace, no parallel run to pin 1 output"
+* `C6`: "directly at U2 Vin and PGND pads, input-cap loop < 20 mm²"
+* `Q1` (clamp BJT): "close to Seed input pin; short traces to emitter"
+
+Components with no layout constraint leave the property empty. The
+property never holds behavioural spec — values, footprints, and references
+live in their normal KiCad fields.
+
+## J2 — Seed GPIO Breakout (Issue #3)
+
+Rev 1's J2 declared a `Conn_02x12_Odd_Even` symbol and
+`PinHeader_2x12_P2.54mm_Vertical_SMD` footprint, but the physical Rev 1
+board shipped a 2×5. Rev 2 standardises on a **2×12 vertical through-hole
+pin header** (2.54 mm pitch) and commits symbol, footprint, and BOM to the
+same truth.
+
+J2 carries:
+
+* `+5V`, `+3V3D`, and `DGND` — digital supply rails and return for user
+  extensions. Both rails available so downstream circuits can pick whichever
+  matches their logic family.
+* Every Seed GPIO not already committed to audio I/O (ADC/DAC pins), MIDI
+  UART (UART_RX/TX), or USB (D+/D−, VBUS). No Seed GPIO is omitted unless
+  it's already in use.
+
+(Analog ±12V rails distribute via the existing dedicated power header J1 —
+see Part 4. They do not appear on J2 or on the daughterboard header.)
+
+### Pin assignment deferred to PCB layout
+
+The schematic declares nets for each Seed GPIO brought out (`SEED_D0`,
+`SEED_D1`, ..., `+3V3D`, `DGND`) but **leaves J2's pin-to-net mapping
+flexible**. Pin-to-net assignment is decided at PCB layout time to
+minimise via count and trace crossings between the Seed and J2. Either
+use KiCad pin-swap on the J2 symbol or edit the symbol's pin numbers
+after routing — the spec is that schematic pin order is not authoritative
+for this connector.
+
+## Silkscreen Artwork (Issue #4)
+
+Candidate top-silk content, to be decided and placed at PCB layout time
+(not committed in the schematic):
+
+1. Board name: "Daisy Studio"
+2. Revision marker: "Rev 2"
+3. Author handle / signature
+4. Daisy illustration — contingent on trademark / licensing review
+5. GitHub URL: `github.com/squeedee/daisy-studio`
+6. Board version date
+
+Treated as suggestions, not requirements — revisit during layout once the
+board outline is stable and free silk real estate is known.
+
+## Daughterboard Architectural Invariant
+
+Daughterboard PCBs (user front panel) are **fully passive**. They populate
+only:
+
+* Input level pots (10 kΩ log, 1 per channel)
+* Output level pots (10 kΩ log, 1 per channel)
+* Clip-threshold trim pots (10 kΩ, 1 per channel)
+* Clip LEDs (1 per channel)
+
+No ICs, no raw power rails, and no high-impedance feedback nodes cross
+the daughterboard header. The header carries only:
+
+* Low-impedance audio signals (op-amp outputs and pot-wiper returns)
+* AGND returns (interleaved with signal pins)
+* Low-current voltage references (`n+` per channel, Thevenin ~1.3 kΩ)
+* Current-limited LED drive pairs (`LED_+` is 1 kΩ-limited from +12 V
+  on the main PCB, max ~12 mA; `LED_−` is the LM2903 open-collector
+  output)
+
+See **Part 3 → "Daughterboard Control Header"** for the pin-by-pin spec
+and connector choice.
+
+This invariant simplifies user daughterboard design: shorting any two
+daughterboard signals together will not damage the main PCB. The tradeoff
+is that users can't draw power off the header for their own active
+circuits — out of scope for Rev 2's "attenuators + clip indicators" panel
+goal. User extensions that need active circuitry use J2 (Seed GPIO
+breakout) instead, where +5V, +3V3D, DGND and GPIO are available.
 
 # Part 1: Op-Amp Gain-Staged Audio Input
 
@@ -266,7 +356,9 @@ audio frequencies.
 
 ### Tolerance Analysis
 
-With ±5% supply tolerance (TMA-1212D) and ±1% resistors:
+With ±5% supply tolerance (conservative; the Rev 2 TMR 3-1222 is
+regulated to ±2% — the sim analysis below stays worst-case under the
+looser bound) and ±1% resistors:
 
 | Parameter | Nominal | Min (low rail, high R_top, low R_bot) | Max (high rail, low R_top, high R_bot) |
 |-----------|---------|---------------------------------------|----------------------------------------|
@@ -284,7 +376,10 @@ corners = TYP / OPA_CLIP / CLAMP_TIGHT / CLAMP_LOOSE / GAIN_LOW):
   codec_max ranges 4.49–4.64V. Worst corner CLAMP_LOOSE (rails +5%, R_ref
   at 1% max) gives 4.64V — **164 mV margin** to the 4.8V damage ceiling.
 
-The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
+The ±12V rails carry the clamp-divider base-current shift (~13 µA per
+active clamp) and the continuous divider quiescent (~1 mA per side) with
+negligible rail sag — well within the TMR 3-1222's ±125 mA per-rail
+rating.
 
 ## Components
 
@@ -299,12 +394,13 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 * 2× 1.5kΩ resistors, 1% (R2, reference dividers)
 * 2× 47µF MLCC, 1206 or 1210, X5R/X7R (reference rail filtering)
 * 1× 1nF C0G MLCC, 0402 or 0603 (C_aa, anti-alias at Seed input)
+* 1× 1kΩ resistor, 0805 1% (LED current limit, +12V → `LED_+` header pin;
+  the daughterboard sees only the current-limited node)
 
 **Per channel (daughterboard — user-swappable controls):**
 
 * 1× 10kΩ log-taper pot — user input level control (three-terminal voltage divider)
 * 1× LED (clip indicator)
-* 1× 1kΩ resistor (LED current limit, +12V → LED anode)
 * 1× 10kΩ trim pot (clip threshold, AGND to n+; wiper to comparator inv input)
 
 **Shared:**
@@ -315,15 +411,20 @@ The ±12V analog supply (TMA-1212D) can sink fault current in both directions.
 * 2× 1nF MLCC, 0402 (OPA1656 supply decoupling, VHF, V+ and V-)
 * 2× 100nF MLCC, 0402 or 0603 (LM2903 supply decoupling, V+ and V-)
 
-## Power Budget (TMA-1212D, 1W)
+## Power Budget (input-stage contribution)
 
 | Source                   | Current (±12V) | Power     |
 |--------------------------|----------------|-----------|
-| 2× THAT 1246             | ~16mA          | 384mW     |
-| OPA1656 (both channels)  | 7.8mA          | 187mW     |
-| Clamp reference dividers | 4.3mA          | 52mW      |
-| LM2903 comparator        | ~1mA           | 24mW      |
-| **Total**                | **~29mA**      | **647mW** |
+| 2× THAT 1246             | ~16 mA         | 384 mW    |
+| OPA1656 (both channels)  | 7.8 mA         | 187 mW    |
+| Clamp reference dividers | 4.3 mA         | 52 mW     |
+| LM2903 comparator        | ~1 mA          | 24 mW     |
+| **Input-stage subtotal** | **~29 mA**     | **647 mW** |
+
+This subtotal rolls into the Part 4 whole-board power budget alongside the
+output-stage draw. The ±12V module selection (Traco TMR 3-1222) is sized
+against that total, not this line-item subtotal — see Part 4 for the full
+sizing argument.
 
 ## Performance Summary
 
@@ -424,10 +525,10 @@ supply pins, with short returns to the analog ground pour.
 * **Decoupling caps (100nF + 1nF per rail):** Within 5mm of OPA1656 pins 4 and 8,
   with vias directly to the ground pour. Place the 1nF closer to the pin than the
   100nF.
-* **Daughterboard header pins for input pot:** The `OPA_Out_In` pin should sit
-  close to the op-amp output (pin 1); the `Wiper_Return_In` pin should sit
+* **Daughterboard header pins for input pot:** The `InOPA_Out` pin should sit
+  close to the op-amp output (pin 1); the `InWiper` pin should sit
   close to R_out. Adjacent AGND pins on both pairs keep return loop area small.
-* **R_out (3.3kΩ):** Place close to the `Wiper_Return_In` header pin (not at
+* **R_out (3.3kΩ):** Place close to the `InWiper` header pin (not at
   the op-amp output, as in Rev 1 and the older Rev 2 drafts). The pot wiper
   returns via cable and feeds directly into R_out; the clamp and C_aa are on
   the Seed side of R_out.
@@ -451,7 +552,7 @@ supply pins, with short returns to the analog ground pour.
   signal path from R_in to Seed_In. No splits or slots under the op-amp. Digital
   ground (Seed, USB, MIDI) should not share this pour.
 * **Supply traces (±12V):** Route as a pair to the decoupling caps. Avoid long runs
-  from the TMA-1212D — place the module close to the analog section or use wide
+  from the TMR 3-1222 — place the module close to the analog section or use wide
   traces (≥0.5mm).
 * **Seed_In to Seed pin:** Short, direct trace. This node carries the clamped signal
   and connects to both BJT emitters, R_out, C_aa, and R4/C1 (Seed input network).
@@ -463,8 +564,8 @@ supply pins, with short returns to the analog ground pour.
 ## Ground Rules
 
 All components in this circuit are in the analog signal path and connect to Analog
-Ground. The clamp reference dividers derive from the ±12V analog supply (TMA-1212D
-secondary) and terminate at AGND.
+Ground. The clamp reference dividers derive from the ±12V analog supply
+(TMR 3-1222 secondary, Part 4) and terminate at AGND.
 
 ## Anti-Alias Filter at Seed Input
 
@@ -526,16 +627,17 @@ constant op-amp load and wiper-position-dependent source impedance.
 
 Signals on the header (per channel, input stage):
 
-* `OPA_Out_In` — op-amp output (main PCB, low-Z) to the pot CW terminal.
-* `Wiper_Return_In` — pot wiper back to main PCB (moderate-Z: 0 to ~2.5kΩ
+* `InOPA_Out` — op-amp output (main PCB, low-Z) to the pot CW terminal.
+* `InWiper` — pot wiper back to main PCB (moderate-Z: 0 to ~2.5kΩ
   depending on pot position) into R_out.
 * `AGND` (pot CCW terminal) — proper mute leg; return for the signal pair.
 * `n+` (upper reference rail) — clip-threshold trim pot top.
-* Comparator inverting input — clip-threshold trim pot wiper.
-* `+12V` — LED anode supply through 1kΩ.
-* Comparator open-collector output — LED cathode.
+* `Threshold` — clip-threshold trim pot wiper, back to comparator inverting input.
+* `LED_+` — current-limited LED anode drive (1 kΩ to +12 V lives on main
+  PCB; max ~12 mA, safe to short to any other daughterboard net).
+* `LED_−` — LED cathode, driven by the LM2903 open-collector output.
 
-Both audio signal legs on the cable (`OPA_Out_In` and `Wiper_Return_In`)
+Both audio signal legs on the cable (`InOPA_Out` and `InWiper`)
 are low-impedance — the op-amp directly drives one end, and the pot wiper
 source impedance peaks at 2.5kΩ at mid-rotation on the other. No
 summing-junction / high-Z feedback node leaves the main PCB. This makes
@@ -549,7 +651,7 @@ L/R input and output control signals.
 
 * Pair each signal with an adjacent AGND return pin on the header. A
   ground pin every two or three signal pins keeps loop area small.
-* The `Wiper_Return_In` line is moderate-Z (up to 2.5kΩ at pot mid). Keep
+* The `InWiper` line is moderate-Z (up to 2.5kΩ at pot mid). Keep
   it physically separate from the comparator open-collector output (which
   carries fast digital edges when clipping) — ideally not on an adjacent
   header pin to it. Use ribbon cable pinout or bundle grouping to enforce
@@ -852,37 +954,92 @@ this with huge margin and provides surge capacity for hot-plug transients.
 | Clean ceiling (sim-verified)      | ~38 V p-p ≈ +24.8 dBu   | THAT1646 hits ±10.5V limit first      |
 | Hard clip (sim-verified)          | ~42 V p-p ≈ +25.6 dBu   | THD 1.18%, beyond usable range        |
 
-## User Controls on Daughterboard
+## Daughterboard Control Header
 
-All user-facing controls (output level pots L+R, plus the input-stage clip
-LEDs and clip-threshold trim pots from Part 1) live on a separate PCB
-connected to the main board via a single header. This lets users build their
-own panel layout without forking the main PCB.
+A single 2×12 header (J_DB) carries every user-control signal for both
+channels of both stages — input attenuator, output attenuator, clip
+threshold trim, and clip LED. This is the canonical pinout spec; Part 1
+and Part 0 both reference it.
 
-**Per channel signals on the header (output stage):**
+### Architectural invariant (recap from Part 0)
 
-* `OPA_Out` — pot CW terminal (input to attenuator)
-* `THAT_In` — pot wiper (output, feeds THAT1646 input)
-* `AGND` — pot CCW terminal (attenuator ground leg for proper mute)
+Daughterboard populates passives only (pots, trim, LEDs). No IC supplies,
+no raw power rails, no high-Z feedback nodes cross the header. Shorting
+any two daughterboard signals together will not damage the main PCB.
 
-Pot is wired as a three-terminal voltage divider; all three pins are
-required.
+### Signal inventory
 
-**Signal-integrity notes for the header:**
+**Input stage (per channel, from Part 1):**
 
-* Keep the `OPA_Out` ↔ `THAT_In` loop short and close to AGND. The return
-  path (AGND pin adjacent to each signal pair on the header) matters — a
-  ground pin every two or three signal pins keeps loop area small.
-* Use a shielded cable or flat ribbon with dedicated ground between header
-  and daughterboard if the daughterboard is more than ~50mm away from the
-  main board.
-* The `THAT_In` node is high-Z at the THAT1646 input — route it through the
-  lowest-noise pair on the cable.
+* `InOPA_Out` — op-amp output, low-Z, to input pot CW terminal
+* `InWiper` — input pot wiper, moderate-Z (0–2.5 kΩ), back to `R_out`
+* `n+` — clamp reference (+1.565 V), low-current, to trim pot top
+* `Threshold` — trim pot wiper, back to comparator inverting input
+* `LED_+` — current-limited LED anode (1 kΩ to +12 V on main PCB)
+* `LED_−` — LED cathode, LM2903 open-collector output
+
+**Output stage (per channel, from Part 3):**
+
+* `OutOPA_Out` — op-amp output, low-Z, to output pot CW terminal
+* `OutWiper` — output pot wiper, feeds THAT1646 input
+* (Pot CCW grounds to AGND — shared with input-stage AGND returns)
+
+### Connector
+
+* **2×12 shrouded IDC header, 2.54 mm pitch, polarised (keyed)** — e.g.
+  Samtec TSS-112-01-G-D, CNC Tech 3020-24-0300-00, or equivalent.
+* Mating: standard 24-way IDC ribbon socket on a matching key-oriented
+  connector.
+* Through-hole on the main PCB; daughterboard side is user's choice
+  (shrouded socket recommended for robustness, or pin receptacle if the
+  daughterboard mounts closely).
+
+### Pin assignment
+
+Pinout is designed to group audio together, isolate moderate-Z audio from
+fast-edge digital, and interleave AGND returns on every audio pair.
+
+| Pin | Signal          | Pin | Signal          | Notes                                 |
+|----:|-----------------|----:|-----------------|---------------------------------------|
+|   1 | AGND            |   2 | AGND            | Top-of-header AGND guard              |
+|   3 | `InOPA_Out_L`   |   4 | `InOPA_Out_R`   | Input-stage audio out (low-Z)         |
+|   5 | `InWiper_L`     |   6 | `InWiper_R`     | Input-stage audio back (moderate-Z)   |
+|   7 | AGND            |   8 | AGND            |                                       |
+|   9 | `OutOPA_Out_L`  |  10 | `OutOPA_Out_R`  | Output-stage audio out (low-Z)        |
+|  11 | `OutWiper_L`    |  12 | `OutWiper_R`    | Output-stage audio back               |
+|  13 | AGND            |  14 | AGND            | Separates audio from control block    |
+|  15 | `n+_L`          |  16 | `n+_R`          | Static clamp refs (per channel)       |
+|  17 | `Threshold_L`   |  18 | `Threshold_R`   | Static trim-pot wipers                |
+|  19 | AGND            |  20 | AGND            | Separates control from fast-edge      |
+|  21 | `LED_+_L`       |  22 | `LED_+_R`       | Current-limited LED anodes            |
+|  23 | `LED_−_L`       |  24 | `LED_−_R`       | LM2903 OC outputs (fast digital edges) |
+
+Physical separation between the moderate-Z `InWiper` pair (pins 5/6) and
+the fast-edge `LED_−` pair (pins 23/24) is 18 pins across the header —
+well clear of capacitive crosstalk concerns with a standard ribbon.
+
+### Signal-integrity notes
+
+* **AGND interleave.** Every audio signal pair is bracketed by AGND pins
+  above and below; the ribbon cable's return path is short. Do not reroute
+  to pack more signals — the AGND guards are load-bearing.
+* **Moderate-Z `InWiper` vs. fast-edge `LED_−`.** The pinout places these
+  at opposite ends of the header. On cable-side, route `InWiper` on the
+  lowest-noise ribbon pair; route `LED_−` on the opposite end or through a
+  separate cable if the daughterboard is more than ~150 mm away.
+* **`OutWiper` is high-Z at the THAT1646 input** (~50 kΩ); route through a
+  low-noise ribbon pair with its adjacent AGND.
+* **Cable length.** ≤ 150 mm comfortable, ≤ 50 mm conservative. Beyond 150
+  mm, consider a shielded cable (foil/braid tied to AGND at the main-PCB
+  end only).
+* **No power rails on the header.** If the daughterboard needs an active
+  LED driver or user IC, route through J2 (Seed GPIO breakout, +3V3D
+  available) — not this header.
 
 ## Rail Protection (TVS per rail)
 
-The TMA-1212D is a switching DC-DC converter: it can source current but
-cannot sink it. If current is forced **into** the ±12V rails from outside,
+The TMR 3-1222 is a regulated isolated DC-DC converter: it can source
+current but cannot sink it (like the Rev 1 TMA-1212D). If current is forced **into** the ±12V rails from outside,
 the rail voltage rises uncontrollably.
 
 **The fault scenario:** our gear is powered off, but the XLR output stays
@@ -906,7 +1063,7 @@ Under a sustained 28 mA fault the TVS dissipates ~0.4 W — well within the
 1 W rating of a SMAJ part. Also handles hot-plug surge transients.
 
 Place the TVS physically close to where the clamp-diode return currents
-enter the rail — i.e. near the THAT1646s, not near the TMA-1212D output —
+enter the rail — i.e. near the THAT1646s, not near the TMR 3-1222 output —
 so fault current has the shortest possible path.
 
 ## Components
@@ -989,9 +1146,11 @@ Barrel jack (J_DC1, 2.1mm)
 
 * **±12V DC/DC module:** Traco **TMA-1212D** (1 W, ±42 mA/rail) → Traco
   **TMR 3-1222** (3 W regulated ±2%, ±125 mA/rail). Driven by the Rev 2
-  load budget (OPA1656 input + output gain stages, LM2903 comparator, BJT
-  clamp reference dividers) plus 25 mA/rail of reserved daughterboard
-  headroom. New SIP-8 footprint; pinout re-verify against datasheet.
+  load budget: OPA1656 input + output gain stages, LM2903 comparator, and
+  BJT clamp reference dividers on top of the Rev 1 THAT1246/THAT1646 draw.
+  The daughterboard is fully passive (Part 0) and consumes no ±12V, so the
+  budget is entirely main-PCB consumers plus a defensive margin. New SIP-8
+  footprint; pinout re-verify against datasheet.
 * **+5V rail caps C6 and C7:** 22 µF 0805 10 V → **22 µF 1206 25 V** X7R.
   10 V rating was insufficient derating for a 5 V MLCC
   ([Issue #2](https://github.com/squeedee/daisy-studio/issues/2)). 1206 /
@@ -1037,19 +1196,23 @@ Per rail, quiescent:
 | BJT clamp ref dividers            | 2.1       | 2.1       | Rev 2; 1.04 mA per 11.5 kΩ divider   |
 | LM2903 quiescent                  | 0.5       | 0.5       | Rev 2; ~0.4 mA/comparator            |
 | Clip LEDs (peak, +12V only)       | up to 10  | —         | Intermittent; excluded from sizing   |
-| Daughterboard reserve             | 25.0      | 25.0      | Available to user                    |
-| **Total nominal**                 | **~77**   | **~77**   |                                      |
+| **Main-board total**              | **~52**   | **~52**   |                                      |
 
-Total output power ≈ 2 × 12 V × 77 mA = **1.85 W**. TMR 3-1222 rating 3 W /
-±125 mA per rail gives 1.6× headroom.
+Total output power ≈ 2 × 12 V × 52 mA = **1.25 W**. TMR 3-1222 rating 3 W
+/ ±125 mA per rail gives **~2.4× headroom** — defensive margin against
+component-tolerance, temperature, and Rev 1 part-to-part variation; not
+allocated to any user extension.
 
-The daughterboard header already exposes ±12V, +5V, and AGND (existing
-Rev 1 stereo header, unchanged in Rev 2). Users can consume up to the
-reserved 25 mA/rail on ±12V without re-checking module sizing; beyond
-that, the budget needs re-running. +5V headroom off the TPS54302 is
-effectively unlimited at this load level — Daisy Seed + MIDI draw is
-~200 mA against a 3 A buck rating, so daughterboard +5V consumption is
-not power-budget-constrained.
+±12V does **not** appear on the daughterboard header (Part 0 invariant —
+passive only) or on J2 (digital only — +5V/+3V3D/DGND + GPIO). Analog
+rails distribute through the dedicated power header J1 for on-main-PCB
+consumers only. User extensions that need power run off J2's digital
+rails.
+
++5V draw is dominated by the Daisy Seed (~150 mA typical, ~500 mA peak at
+boot/USB enumerate) plus MIDI front-end (~5 mA) plus whatever the user
+attaches via J2. TPS54302 is rated 3 A — not power-budget-constrained at
+any realistic load.
 
 ## +5V Rail (TPS54302 buck)
 
@@ -1192,7 +1355,9 @@ Bench validation (post-board):
 2. Measure ±12V rail voltage under full-scale audio drive (input +24 dBu,
    output 24 Vpp differential).
 3. Scope ±12V ripple at op-amp supply pins; verify < 10 mVpp audio band.
-4. Pull 25 mA/rail daughterboard test load; verify rails stay within ±2%.
+4. Pull a 25 mA/rail test load at the ±12V rail caps; verify rails stay
+   within the TMR 3-1222's ±2% spec. (Not a user-extension test — daughter-
+   board and J2 don't carry ±12V; this is a defensive margin check.)
 5. Verify power switch header: shunt populated → power on; shunt removed →
    power off.
 6. Reverse-polarity test with 12V wall wart on the bench — Q1 should
