@@ -14,7 +14,7 @@
 2. Continuous trim from +4 dBu up to +24 dBu peak via a single pot per channel.
    Gain is set by a **fixed op-amp stage** on the main PCB; the user pot is a
    **passive attenuator after the op-amp** on the daughterboard — architecturally
-   symmetric with the Part 4 output stage.
+   symmetric with the Part 3 output stage.
 3. Protect the PCM3060 codec. This design is only validated for Rev7 Seeds with the PCM3060 and input schematic as
    published [here](https://daisy.nyc3.cdn.digitaloceanspaces.com/products/seed/ES_Daisy_Seed_Rev7.pdf)
 
@@ -98,7 +98,7 @@ low distortion (THD+N 0.000029% at 1kHz), and 53 MHz GBW — comfortably exceedi
 bandwidth requirements at the target gain range. Supply range extends to ±18V; the ±12V
 rails provide generous output headroom. Rail-to-rail output ensures the clipping threshold
 is close to the supply rails. Both channels are served by a single dual package —
-the same part (and same decoupling scheme) used in the Part 4 output stage.
+the same part (and same decoupling scheme) used in the Part 3 output stage.
 
 ## Fixed Gain Selection (R_fb = 12kΩ)
 
@@ -519,9 +519,9 @@ their own front panel (pot types, LED colours/packages, panel layout)
 without forking the main board.
 
 The input level pot is a **10kΩ log-taper voltage divider downstream of the
-op-amp** — architecturally identical to the Part 4 output pot (same part,
+op-amp** — architecturally identical to the Part 3 output pot (same part,
 same wiring, same impedance behaviour). See "Output Level Pot" and its
-"Impedance behaviour" subsection in Part 4 for the full analysis of
+"Impedance behaviour" subsection in Part 3 for the full analysis of
 constant op-amp load and wiper-position-dependent source impedance.
 
 Signals on the header (per channel, input stage):
@@ -542,7 +542,7 @@ summing-junction / high-Z feedback node leaves the main PCB. This makes
 the daughterboard cable routing substantially less critical than in the
 previous Rev 2 draft.
 
-See Part 4 for the shared header pinout; a single stereo header carries all
+See Part 3 for the shared header pinout; a single stereo header carries all
 L/R input and output control signals.
 
 ### Signal-integrity notes for the input-stage cable
@@ -566,13 +566,7 @@ L/R input and output control signals.
 * TODO: Midi section still needs review on the Rev1 Board
 * Obtain correct footprint for the Midi Optocoupler. [Github Issue](https://github.com/squeedee/daisy-studio/issues/6)
 
-# Part 3: Optional Power Switch
-
-* Add a header with a good retention mechanism on the board near the barrel jack for an external power
-  switch [Github Issue](https://github.com/squeedee/daisy-studio/issues/5)
-* When not desired, do not populate and replace with jumper OR add a plug with jumper built in
-
-# Part 4: Output Section
+# Part 3: Output Section
 
 ## Design Objectives
 
@@ -887,11 +881,267 @@ so fault current has the shortest possible path.
 * THAT1646 decoupling per datasheet (unchanged from Rev 1)
 
 
-# Part 5: Additional Power section issues
+# Part 4: Power Section
 
-* Caps wrong voltage and dimension [github Issue](https://github.com/squeedee/daisy-studio/issues/2)
-* Completely ignored layout rules for the buck
-  converter [Github Issue](https://github.com/squeedee/daisy-studio/issues/1)
+## Design Objectives
+
+1. Deliver clean ±12V analog rails to the Rev 2 input stage, output stage,
+   comparator, and any user daughterboard circuitry, with headroom.
+2. Deliver a +5V rail to the Daisy Seed and MIDI front-end with correct
+   component derating.
+3. Protect the board from common user errors: polarity reversal, over-voltage
+   wall wart, phantom-power back-feed (handled in Part 3).
+4. Offer an optional panel power switch without forcing the switch onto users
+   who don't want one.
+5. Address Rev 1 defects: buck converter layout
+   ([Issue #1](https://github.com/squeedee/daisy-studio/issues/1)) and +5V
+   rail capacitor ratings
+   ([Issue #2](https://github.com/squeedee/daisy-studio/issues/2)).
+
+## Topology
+
+```
+Barrel jack (J_DC1, 2.1mm)
+     │
+     ▼
+  +12V_IN (local label)
+     │
+     ▼
+  JST VH 2-pin (J_SW) ── panel switch or shunt harness (Issue #5)
+     │
+     ▼
+  Q1  (SI2301 P-FET reverse-polarity protection)
+     │
+     ▼
+  D1  (SMBJ15A TVS — overvoltage clamp)
+     │
+     ▼
+  C5  (100 µF / 25 V electrolytic, bulk)
+     │
+     ▼
+  +12V_RAW ─────────┬──────────────────────────────┐
+                    │                              │
+                    ▼                              ▼
+                 U2 (TPS54302 buck)          U1 (TMR 3-1222 isolated ±12V, 3 W)
+                 + L3, C1/C2/C6/C7,          ±12V output → L1/L2 ferrites
+                 R5/R6 feedback              → +12VA / −12VA rails
+                    │
+                    ▼
+                 +5V rail → Daisy Seed, MIDI
+```
+
+## Changes vs. Rev 1
+
+* **±12V DC/DC module:** Traco **TMA-1212D** (1 W, ±42 mA/rail) → Traco
+  **TMR 3-1222** (3 W regulated ±2%, ±125 mA/rail). Driven by the Rev 2
+  load budget (OPA1656 input + output gain stages, LM2903 comparator, BJT
+  clamp reference dividers) plus 25 mA/rail of reserved daughterboard
+  headroom. New SIP-8 footprint; pinout re-verify against datasheet.
+* **+5V rail caps C6 and C7:** 22 µF 0805 10 V → **22 µF 1206 25 V** X7R.
+  10 V rating was insufficient derating for a 5 V MLCC
+  ([Issue #2](https://github.com/squeedee/daisy-studio/issues/2)). 1206 /
+  25 V restores ≥5× derating on rail voltage and supplies enough bulk for
+  the TPS54302 buck at nominal load.
+* **Buck converter PCB layout:** rework per TPS54302 datasheet layout
+  guidelines (https://www.ti.com/document-viewer/tps54302/datasheet)
+  ([Issue #1](https://github.com/squeedee/daisy-studio/issues/1)). No
+  schematic change. See Layout Guidelines below.
+* **Panel power switch:** new J_SW (JST B2P-VH, 3.96 mm pitch, 2-pin) in
+  series between the barrel jack and Q1. Ships with a pre-crimped shunt
+  harness (VHR-2N housing, two SVH-21T-P1.1 contacts bonded by a short wire
+  loop) populated by default — bypasses the switch for users who don't need
+  one ([Issue #5](https://github.com/squeedee/daisy-studio/issues/5)).
+  Selected over a pin-header + shorting jumper because users wiring a panel
+  switch want a robust, mechanically-keyed, pullable connector with
+  generous current rating (10 A); the JST VH family is the standard for
+  this.
+* **ADC bias reference (2.5V from +5V):** removed. Rev 2's input stage
+  relies on the PCM3060's internal V_COM and the Daisy Seed Rev 7 internal
+  AC coupling; no external bias network needed
+  ([Issue #9](https://github.com/squeedee/daisy-studio/issues/9) resolved —
+  node no longer exists).
+* **+5V rail fault clamp:** not required. Rev 1's concern
+  ([Issue #10](https://github.com/squeedee/daisy-studio/issues/10)) was the
+  passive input clamp dumping signal overdrive into +5V. Rev 2's BJT clamp
+  references ±1.565 V derived from ±12V and sinks clamp current to AGND via
+  the BJT collectors; +5V is no longer in the fault path. A defensive
+  SMAJ5.0A across +5V → GND near the Seed header is left as **optional** —
+  5 ¢ of insurance against future back-feeds, does nothing at nominal 5 V.
+  Recommend populating on the first Rev 2 build.
+
+## Power Budget (±12V Rails)
+
+Per rail, quiescent:
+
+| Consumer                          | +12V (mA) | −12V (mA) | Notes                                |
+|-----------------------------------|-----------|-----------|--------------------------------------|
+| 2× THAT1246 (input receiver)      | 16.0      | 16.0      | Rev 1                                |
+| 2× THAT1646 (output driver)       | 18.0      | 18.0      | Rev 1                                |
+| 1× OPA1656 (input gain, dual)     | 7.8       | 7.8       | Rev 2; 3.9 mA/channel typ × 2 ch     |
+| 1× OPA1656 (output gain, dual)    | 7.8       | 7.8       | Rev 2; same part, one per stage      |
+| BJT clamp ref dividers            | 2.1       | 2.1       | Rev 2; 1.04 mA per 11.5 kΩ divider   |
+| LM2903 quiescent                  | 0.5       | 0.5       | Rev 2; ~0.4 mA/comparator            |
+| Clip LEDs (peak, +12V only)       | up to 10  | —         | Intermittent; excluded from sizing   |
+| Daughterboard reserve             | 25.0      | 25.0      | Available to user                    |
+| **Total nominal**                 | **~77**   | **~77**   |                                      |
+
+Total output power ≈ 2 × 12 V × 77 mA = **1.85 W**. TMR 3-1222 rating 3 W /
+±125 mA per rail gives 1.6× headroom.
+
+The daughterboard header already exposes ±12V, +5V, and AGND (existing
+Rev 1 stereo header, unchanged in Rev 2). Users can consume up to the
+reserved 25 mA/rail on ±12V without re-checking module sizing; beyond
+that, the budget needs re-running. +5V headroom off the TPS54302 is
+effectively unlimited at this load level — Daisy Seed + MIDI draw is
+~200 mA against a 3 A buck rating, so daughterboard +5V consumption is
+not power-budget-constrained.
+
+## +5V Rail (TPS54302 buck)
+
+Unchanged topology from Rev 1 — FB divider R5/R6 = 100 kΩ / 13.3 kΩ,
+setting Vout ≈ 5.07 V. Inductor L3 = 10 µH (Bourns SRN6045TA). Load is the
+Daisy Seed (~150 mA typical, up to ~500 mA peak at boot/USB activity) plus
+MIDI front-end (~5 mA). TPS54302 is rated 3 A — very large headroom.
+
+Two fixes apply:
+
+* **C6, C7 cap spec:** 22 µF **1206 / 25 V X7R** (was 0805 / 10 V).
+  [Issue #2](https://github.com/squeedee/daisy-studio/issues/2).
+* **PCB layout:** follow the TPS54302 datasheet layout guidelines
+  (https://www.ti.com/document-viewer/tps54302/datasheet) — specifically
+  (a) input cap loop from Vin to PGND as short as possible, both on the
+  top layer, (b) switch-node trace from SW pin to L3 as short and fat as
+  practical, no stubs, (c) feedback sense trace from Vout to FB pin routed
+  away from the SW node, preferably on an inner layer with a ground pour
+  reference, (d) local GND pour under the IC stitched to the inner ground
+  plane with a via farm directly at the PGND pin.
+  [Issue #1](https://github.com/squeedee/daisy-studio/issues/1). No
+  schematic change.
+
+## Panel Power Switch (J_SW)
+
+JST VH 2-pin header, through-hole, placed physically close to the barrel
+jack and before the reverse-polarity FET:
+
+```
+Barrel jack (+)  ──▶  J_SW pin 1
+                         │
+                       (external switch closes loop)
+                         │
+Q1 source        ──▶  J_SW pin 2
+```
+
+* Connector: JST **B2P-VH** (vertical, 3.96 mm pitch). Unshrouded is
+  adequate for an internal harness; switch to B2PS-VH if the build
+  experience warrants keying.
+* Mating housing: JST **VHR-2N** with two **SVH-21T-P1.1** crimp contacts.
+* Default populated: pre-crimped **shunt harness** — VHR-2N housing with
+  the two contacts bonded by a ~20 mm wire loop. Users remove the shunt
+  and plug in a switch harness when they want a panel switch.
+* Current rating: 10 A — far beyond the ~200–300 mA peak input current of
+  the regulated DC/DC + buck combination.
+
+The switch is placed **after** the barrel jack and **before** Q1 so that
+reverse-polarity protection and input TVS clamping still function normally
+during a miswired wall-wart event regardless of switch state.
+
+## Grounding (unchanged from Rev 1)
+
+* JP1 (Earth-GND solder jumper) next to the Daisy Seed AGND/DGND pins,
+  default bridged; cut if chassis-ground loops become a problem in a given
+  enclosure.
+* J7, J8 mounting holes on `Earth`, bonded to chassis via M3 hardware.
+* Star topology: AGND, DGND, Earth meet only at JP1 / mounting-hole bond.
+
+## Components
+
+**Main PCB:**
+
+* 1× barrel jack 2.1 mm (J_DC1, THT) — unchanged
+* 1× JST B2P-VH 2-pin THT header (J_SW) — **new, [Issue #5](https://github.com/squeedee/daisy-studio/issues/5)**
+* 1× SI2301 P-FET, SOT-23 (Q1) — unchanged, reverse-polarity protection
+* 1× SMBJ15A TVS, SMB (D1) — unchanged, input over-voltage clamp
+* 1× 100 µF / 25 V electrolytic, CP_Elec_6.3x7.7 (C5) — unchanged
+* 1× TPS54302 buck, SOT-23-6 (U2) — unchanged
+* 1× 10 µH Bourns SRN6045TA inductor (L3) — unchanged
+* 2× 22 µF / 25 V X7R MLCC, **1206** (C6, C7) — **changed footprint & voltage**
+* Supporting R/C around the buck (C1, C2, C3, C4, C8, R1, R2, R3, R4, R5, R6)
+  — unchanged values; verify footprints during the Issue #1 layout rework
+* 1× **TMR 3-1222** isolated DC/DC, SIP-8 (U1) — **replaces TMA-1212D**
+* 2× BLM18PG121SN1 ferrite beads, 0603 (L1, L2) — unchanged, on ±12VA
+* 1× SMAJ5.0A TVS near Seed +5V input — **optional, recommended**
+
+**Shunt harness (shipped in kit):**
+
+* 1× JST VHR-2N housing
+* 2× SVH-21T-P1.1 contacts
+* 1× short bonding wire (~20 mm)
+
+## Layout Guidelines
+
+### Buck converter (TPS54302) — Issue #1 rework
+
+Per the TPS54302 datasheet layout guidelines
+(https://www.ti.com/document-viewer/tps54302/datasheet):
+
+1. **Input capacitor loop.** Place C_in (one of C3/C4, whichever is Vin
+   decoupling) directly adjacent to U2 pins 1 (Vin) and 2 (GND), both on
+   the top layer. Loop area < 20 mm².
+2. **Switch-node trace.** SW (pin 6) to L3 input pin: shortest possible,
+   wide copper (≥0.6 mm), top layer only, no stubs, no vias. This is the
+   high-dV/dt node — keep its exposed area minimum.
+3. **Feedback sense.** Route Vout → FB (pin 5) on the bottom or inner
+   layer, away from the SW trace, with a ground pour reference directly
+   underneath. Tap Vout at the output cap, not at the inductor.
+4. **Ground pour.** Continuous ground pour on the bottom layer under U2.
+   Stitch to the inner ground plane with a via farm (≥4 vias) directly at
+   U2's PGND pin and another ≥4 vias at each input/output cap's GND pad.
+5. **Bootstrap cap (C8, 75 pF across BOOT-SW):** placed directly adjacent
+   to U2 pins 3 (BOOT) and 6 (SW), short trace.
+
+### ±12V DC/DC module (TMR 3-1222)
+
+* Place the module physically close to the balanced I/O section so ±12V
+  delivery traces to THAT1246 / THAT1646 / OPA1656 are short.
+* L1, L2 ferrites immediately at the module output pins.
+* Post-ferrite bulk cap (reuse existing or increase to 10 µF X7R if
+  measurement shows ripple > 10 mVpp at the op-amp supply pins).
+* Isolation slot under the module: the TMR 3-1222 has isolated primary
+  and secondary; preserve 3 mm creepage between PGND (primary) and AGND
+  (secondary) on the PCB.
+
+### General
+
+* No split of AGND between input and output sections — continuous analog
+  ground pour across the entire analog path (Part 1 and Part 3 agree on
+  this).
+* Digital ground (Seed, USB, MIDI) stays separate from AGND; the two meet
+  only at JP1.
+
+## Verification
+
+Schematic-level checks (pre-layout):
+
+1. `kicad-cli sch export netlist --output /dev/null power.kicad_sch` — parse.
+2. `kicad-cli sch erc power.kicad_sch` — check unconnected pins, missing
+   flags, rail conflicts.
+3. Confirm TMR 3-1222 symbol / footprint present in
+   `daisy-studio.kicad_sym` or an imported library.
+4. Confirm J_SW footprint (JST VH B2P-VH) present in `daisy-studio.pretty`
+   or a library.
+
+Bench validation (post-board):
+
+1. Measure ±12V rail voltage at the op-amp supply pins under nominal Seed
+   idle load.
+2. Measure ±12V rail voltage under full-scale audio drive (input +24 dBu,
+   output 24 Vpp differential).
+3. Scope ±12V ripple at op-amp supply pins; verify < 10 mVpp audio band.
+4. Pull 25 mA/rail daughterboard test load; verify rails stay within ±2%.
+5. Verify power switch header: shunt populated → power on; shunt removed →
+   power off.
+6. Reverse-polarity test with 12V wall wart on the bench — Q1 should
+   block, no rail activity.
 
 ---
 
