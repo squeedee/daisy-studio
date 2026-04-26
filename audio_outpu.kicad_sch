@@ -11,27 +11,32 @@
 		(company "Rasheed Abdul-Aziz")
 	)
 	(lib_symbols
-		(symbol "AudioJack3_1"
+		(symbol "Amplifier_Operational:OPA1656ID"
+			(pin_names
+				(offset 0.127)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "IN_ST1"
-				(at 7.112 -8.89 0)
+			(property "Reference" "U"
+				(at 0 5.08 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Value" "STX-3100-3CB"
-				(at -2.794 -6.604 0)
+			(property "Value" "OPA1656ID"
+				(at 0 -5.08 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
 				(at 0 0 0)
 				(effects
 					(font
@@ -40,7 +45,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "~"
+			(property "Datasheet" "https://www.ti.com/lit/ds/symlink/opa1656.pdf"
 				(at 0 0 0)
 				(effects
 					(font
@@ -49,7 +54,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Audio Jack, 3 Poles (Stereo / TRS)"
+			(property "Description" "Dual Ultra-Low-Noise, Low-Distortion, FET-Input, Burr-Brown Audio Operational Amplifiers, SOIC-8"
 				(at 0 0 0)
 				(effects
 					(font
@@ -58,7 +63,15 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "audio jack receptacle stereo headphones phones TRS connector"
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "dual opamp"
 				(at 0 0 0)
 				(effects
 					(font
@@ -67,7 +80,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_fp_filters" "Jack*"
+			(property "ki_fp_filters" "SOIC*3.9x4.9mm*P1.27mm*"
 				(at 0 0 0)
 				(effects
 					(font
@@ -76,45 +89,11 @@
 					(hide yes)
 				)
 			)
-			(symbol "AudioJack3_1_0_1"
-				(rectangle
-					(start -5.08 -5.08)
-					(end -6.35 -2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
+			(symbol "OPA1656ID_1_1"
 				(polyline
 					(pts
-						(xy -1.905 -2.54) (xy -1.27 -3.175) (xy -0.635 -2.54) (xy -0.635 0) (xy 2.54 0)
+						(xy -5.08 5.08) (xy 5.08 0) (xy -5.08 -5.08) (xy -5.08 5.08)
 					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 -2.54) (xy 0.635 -3.175) (xy 1.27 -2.54) (xy 2.54 -2.54)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start 2.54 3.81)
-					(end -5.08 -5.08)
 					(stroke
 						(width 0.254)
 						(type default)
@@ -123,24 +102,46 @@
 						(type background)
 					)
 				)
-				(polyline
-					(pts
-						(xy 2.54 2.54) (xy -2.54 2.54) (xy -2.54 -2.54) (xy -3.175 -3.175) (xy -3.81 -2.54)
+				(pin input line
+					(at -7.62 2.54 0)
+					(length 2.54)
+					(name "+"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
 					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
 					)
 				)
-			)
-			(symbol "AudioJack3_1_1_1"
-				(pin passive line
-					(at 5.08 2.54 180)
+				(pin input line
+					(at -7.62 -2.54 0)
 					(length 2.54)
-					(name "S"
+					(name "-"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 7.62 0 180)
+					(length 2.54)
+					(name "~"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -155,10 +156,24 @@
 						)
 					)
 				)
-				(pin passive line
-					(at 5.08 0 180)
+			)
+			(symbol "OPA1656ID_2_1"
+				(polyline
+					(pts
+						(xy -5.08 5.08) (xy 5.08 0) (xy -5.08 -5.08) (xy -5.08 5.08)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(pin input line
+					(at -7.62 2.54 0)
 					(length 2.54)
-					(name "R"
+					(name "+"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -173,17 +188,73 @@
 						)
 					)
 				)
-				(pin passive line
-					(at 5.08 -2.54 180)
+				(pin input line
+					(at -7.62 -2.54 0)
 					(length 2.54)
-					(name "T"
+					(name "-"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "2"
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 7.62 0 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "OPA1656ID_3_1"
+				(pin power_in line
+					(at -2.54 7.62 270)
+					(length 3.81)
+					(name "V+"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -2.54 -7.62 90)
+					(length 3.81)
+					(name "V-"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1919,16 +1990,10 @@
 		(uuid "008d6482-99d1-44ea-9499-9ba4bf127ec3")
 	)
 	(junction
-		(at 196.85 135.89)
+		(at 199.39 153.67)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "00b7154b-7a7c-4e80-ae22-86bb90fb358a")
-	)
-	(junction
-		(at 153.67 88.9)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "0390a18d-873e-42c6-8567-1193524f4c96")
 	)
 	(junction
 		(at 102.87 181.61)
@@ -1961,7 +2026,7 @@
 		(uuid "3b690a1b-f8b9-47fa-be07-8ac429d963bf")
 	)
 	(junction
-		(at 153.67 93.98)
+		(at 156.21 111.76)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3d76eef1-ae75-4b37-9ea1-b03411ba7016")
@@ -1973,13 +2038,13 @@
 		(uuid "4aec0075-c3ba-4d60-8c0b-b645d89eb5be")
 	)
 	(junction
-		(at 157.48 105.41)
+		(at 160.02 123.19)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "53420541-7448-4d38-9508-c9dcaa0fd488")
 	)
 	(junction
-		(at 157.48 135.89)
+		(at 160.02 153.67)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "59a1ba2f-1699-404a-bab9-ec0c38924401")
@@ -2015,7 +2080,7 @@
 		(uuid "7b234355-751d-4411-9a5f-0bcb003d3cd3")
 	)
 	(junction
-		(at 215.9 130.81)
+		(at 218.44 148.59)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8282b8f5-5cc3-45e8-97af-c73e0e9ffa9d")
@@ -2039,25 +2104,25 @@
 		(uuid "a2a29f31-b87e-4133-9f62-8555131ba5b3")
 	)
 	(junction
-		(at 227.33 123.19)
+		(at 229.87 140.97)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "a9c78d1b-0728-44b4-a36d-ce5d47612d0d")
 	)
 	(junction
-		(at 210.82 118.11)
+		(at 213.36 135.89)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b2b60431-3b4d-48df-a559-31224a9f99f9")
 	)
 	(junction
-		(at 186.69 118.11)
+		(at 189.23 135.89)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "c7954d50-3d6f-4546-8d9c-b0446e07951f")
 	)
 	(junction
-		(at 186.69 105.41)
+		(at 189.23 123.19)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ca43b16b-d782-4e28-bf98-3f6eee139831")
@@ -2069,19 +2134,19 @@
 		(uuid "d0615434-3ce4-499e-bf2c-67963fd6d827")
 	)
 	(junction
-		(at 200.66 128.27)
+		(at 203.2 146.05)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "d9463706-795e-4f3c-a381-76b4efdd7032")
 	)
 	(junction
-		(at 190.5 128.27)
+		(at 193.04 146.05)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e7ac5c67-8a4e-4cc3-a898-fef145b596c6")
 	)
 	(junction
-		(at 196.85 118.11)
+		(at 199.39 135.89)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "eea67670-229a-4c04-a3ae-2f6a80102686")
@@ -2105,7 +2170,7 @@
 		(uuid "f89a8735-6a31-4ee0-b2e3-cd592bf3f1d4")
 	)
 	(junction
-		(at 213.36 128.27)
+		(at 215.9 146.05)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f92eec21-5097-49b8-8d44-8edd10cd84e2")
@@ -2119,11 +2184,11 @@
 		(uuid "8f484fe4-a79b-40aa-b6ff-b87a735c840c")
 	)
 	(no_connect
-		(at 185.42 120.65)
+		(at 187.96 138.43)
 		(uuid "ab8e0dce-77f4-4e13-8939-b4a20bc168e6")
 	)
 	(no_connect
-		(at 185.42 125.73)
+		(at 187.96 143.51)
 		(uuid "c5309ab1-d091-45ab-ad6e-052c92a91ee6")
 	)
 	(wire
@@ -2168,7 +2233,7 @@
 	)
 	(wire
 		(pts
-			(xy 213.36 133.35) (xy 218.44 133.35)
+			(xy 215.9 151.13) (xy 220.98 151.13)
 		)
 		(stroke
 			(width 0)
@@ -2188,23 +2253,13 @@
 	)
 	(wire
 		(pts
-			(xy 190.5 128.27) (xy 200.66 128.27)
+			(xy 193.04 146.05) (xy 203.2 146.05)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "0a77c1d0-8607-4e76-885f-ef37bc99beff")
-	)
-	(wire
-		(pts
-			(xy 218.44 92.71) (xy 153.67 92.71)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "10e1a611-7165-4579-aa78-86fcc80b694f")
 	)
 	(wire
 		(pts
@@ -2248,17 +2303,7 @@
 	)
 	(wire
 		(pts
-			(xy 153.67 90.17) (xy 153.67 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2218668b-a483-49f0-aac1-1fe0bb1557d5")
-	)
-	(wire
-		(pts
-			(xy 157.48 105.41) (xy 157.48 115.57)
+			(xy 160.02 123.19) (xy 160.02 133.35)
 		)
 		(stroke
 			(width 0)
@@ -2268,7 +2313,7 @@
 	)
 	(wire
 		(pts
-			(xy 218.44 135.89) (xy 210.82 135.89)
+			(xy 220.98 153.67) (xy 213.36 153.67)
 		)
 		(stroke
 			(width 0)
@@ -2288,7 +2333,7 @@
 	)
 	(wire
 		(pts
-			(xy 227.33 120.65) (xy 227.33 123.19)
+			(xy 229.87 138.43) (xy 229.87 140.97)
 		)
 		(stroke
 			(width 0)
@@ -2298,7 +2343,7 @@
 	)
 	(wire
 		(pts
-			(xy 142.24 93.98) (xy 153.67 93.98)
+			(xy 139.7 111.76) (xy 156.21 111.76)
 		)
 		(stroke
 			(width 0)
@@ -2338,7 +2383,7 @@
 	)
 	(wire
 		(pts
-			(xy 213.36 128.27) (xy 213.36 133.35)
+			(xy 215.9 146.05) (xy 215.9 151.13)
 		)
 		(stroke
 			(width 0)
@@ -2348,7 +2393,7 @@
 	)
 	(wire
 		(pts
-			(xy 196.85 135.89) (xy 200.66 135.89)
+			(xy 199.39 153.67) (xy 203.2 153.67)
 		)
 		(stroke
 			(width 0)
@@ -2368,7 +2413,7 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 127) (xy 157.48 135.89)
+			(xy 160.02 144.78) (xy 160.02 153.67)
 		)
 		(stroke
 			(width 0)
@@ -2378,7 +2423,7 @@
 	)
 	(wire
 		(pts
-			(xy 190.5 120.65) (xy 190.5 105.41)
+			(xy 193.04 138.43) (xy 193.04 123.19)
 		)
 		(stroke
 			(width 0)
@@ -2398,7 +2443,7 @@
 	)
 	(wire
 		(pts
-			(xy 153.67 92.71) (xy 153.67 93.98)
+			(xy 156.21 110.49) (xy 156.21 111.76)
 		)
 		(stroke
 			(width 0)
@@ -2408,7 +2453,7 @@
 	)
 	(wire
 		(pts
-			(xy 186.69 110.49) (xy 186.69 105.41)
+			(xy 189.23 128.27) (xy 189.23 123.19)
 		)
 		(stroke
 			(width 0)
@@ -2418,7 +2463,7 @@
 	)
 	(wire
 		(pts
-			(xy 232.41 113.03) (xy 232.41 123.19)
+			(xy 234.95 130.81) (xy 234.95 140.97)
 		)
 		(stroke
 			(width 0)
@@ -2448,16 +2493,6 @@
 	)
 	(wire
 		(pts
-			(xy 153.67 60.96) (xy 153.67 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6e598b4f-57b8-4dae-829e-2a09d42c96a6")
-	)
-	(wire
-		(pts
 			(xy 215.9 68.58) (xy 215.9 78.74)
 		)
 		(stroke
@@ -2468,7 +2503,7 @@
 	)
 	(wire
 		(pts
-			(xy 213.36 120.65) (xy 213.36 128.27)
+			(xy 215.9 138.43) (xy 215.9 146.05)
 		)
 		(stroke
 			(width 0)
@@ -2488,7 +2523,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 129.54) (xy 163.83 140.97)
+			(xy 166.37 147.32) (xy 166.37 158.75)
 		)
 		(stroke
 			(width 0)
@@ -2498,7 +2533,7 @@
 	)
 	(wire
 		(pts
-			(xy 218.44 130.81) (xy 215.9 130.81)
+			(xy 220.98 148.59) (xy 218.44 148.59)
 		)
 		(stroke
 			(width 0)
@@ -2508,7 +2543,7 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 105.41) (xy 186.69 105.41)
+			(xy 160.02 123.19) (xy 189.23 123.19)
 		)
 		(stroke
 			(width 0)
@@ -2548,7 +2583,7 @@
 	)
 	(wire
 		(pts
-			(xy 227.33 123.19) (xy 215.9 123.19)
+			(xy 229.87 140.97) (xy 218.44 140.97)
 		)
 		(stroke
 			(width 0)
@@ -2568,7 +2603,7 @@
 	)
 	(wire
 		(pts
-			(xy 196.85 125.73) (xy 196.85 135.89)
+			(xy 199.39 143.51) (xy 199.39 153.67)
 		)
 		(stroke
 			(width 0)
@@ -2588,7 +2623,7 @@
 	)
 	(wire
 		(pts
-			(xy 210.82 118.11) (xy 210.82 135.89)
+			(xy 213.36 135.89) (xy 213.36 153.67)
 		)
 		(stroke
 			(width 0)
@@ -2608,7 +2643,7 @@
 	)
 	(wire
 		(pts
-			(xy 213.36 120.65) (xy 224.79 120.65)
+			(xy 215.9 138.43) (xy 227.33 138.43)
 		)
 		(stroke
 			(width 0)
@@ -2618,7 +2653,7 @@
 	)
 	(wire
 		(pts
-			(xy 210.82 113.03) (xy 217.17 113.03)
+			(xy 213.36 130.81) (xy 219.71 130.81)
 		)
 		(stroke
 			(width 0)
@@ -2628,7 +2663,7 @@
 	)
 	(wire
 		(pts
-			(xy 215.9 130.81) (xy 215.9 142.24)
+			(xy 218.44 148.59) (xy 218.44 160.02)
 		)
 		(stroke
 			(width 0)
@@ -2645,16 +2680,6 @@
 			(type default)
 		)
 		(uuid "92734312-8669-4b72-aa03-4c3f520f64b3")
-	)
-	(wire
-		(pts
-			(xy 215.9 95.25) (xy 215.9 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "95c7b2ac-6675-4449-871c-0cca2551889d")
 	)
 	(wire
 		(pts
@@ -2678,16 +2703,6 @@
 	)
 	(wire
 		(pts
-			(xy 142.24 88.9) (xy 153.67 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a8c2067c-7122-4b1d-a819-deba9f687dc6")
-	)
-	(wire
-		(pts
 			(xy 157.48 53.34) (xy 165.1 53.34)
 		)
 		(stroke
@@ -2698,23 +2713,13 @@
 	)
 	(wire
 		(pts
-			(xy 185.42 118.11) (xy 186.69 118.11)
+			(xy 187.96 135.89) (xy 189.23 135.89)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "aa8e8dd3-204c-403d-9547-d0d2448aaa30")
-	)
-	(wire
-		(pts
-			(xy 153.67 90.17) (xy 218.44 90.17)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ad6d5cf6-02c1-41fe-b6a5-1d50cc2b141b")
 	)
 	(wire
 		(pts
@@ -2748,7 +2753,7 @@
 	)
 	(wire
 		(pts
-			(xy 196.85 118.11) (xy 210.82 118.11)
+			(xy 199.39 135.89) (xy 213.36 135.89)
 		)
 		(stroke
 			(width 0)
@@ -2758,7 +2763,7 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 115.57) (xy 165.1 115.57)
+			(xy 160.02 133.35) (xy 167.64 133.35)
 		)
 		(stroke
 			(width 0)
@@ -2768,7 +2773,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 129.54) (xy 165.1 129.54)
+			(xy 166.37 147.32) (xy 167.64 147.32)
 		)
 		(stroke
 			(width 0)
@@ -2788,7 +2793,7 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 135.89) (xy 157.48 140.97)
+			(xy 160.02 153.67) (xy 160.02 158.75)
 		)
 		(stroke
 			(width 0)
@@ -2808,7 +2813,7 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 127) (xy 165.1 127)
+			(xy 160.02 144.78) (xy 167.64 144.78)
 		)
 		(stroke
 			(width 0)
@@ -2838,7 +2843,7 @@
 	)
 	(wire
 		(pts
-			(xy 153.67 93.98) (xy 153.67 123.19)
+			(xy 156.21 111.76) (xy 156.21 140.97)
 		)
 		(stroke
 			(width 0)
@@ -2848,7 +2853,7 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 102.87) (xy 157.48 105.41)
+			(xy 160.02 120.65) (xy 160.02 123.19)
 		)
 		(stroke
 			(width 0)
@@ -2858,7 +2863,7 @@
 	)
 	(wire
 		(pts
-			(xy 210.82 113.03) (xy 210.82 118.11)
+			(xy 213.36 130.81) (xy 213.36 135.89)
 		)
 		(stroke
 			(width 0)
@@ -2908,7 +2913,7 @@
 	)
 	(wire
 		(pts
-			(xy 185.42 128.27) (xy 190.5 128.27)
+			(xy 187.96 146.05) (xy 193.04 146.05)
 		)
 		(stroke
 			(width 0)
@@ -2918,7 +2923,7 @@
 	)
 	(wire
 		(pts
-			(xy 153.67 123.19) (xy 165.1 123.19)
+			(xy 156.21 140.97) (xy 167.64 140.97)
 		)
 		(stroke
 			(width 0)
@@ -2988,7 +2993,7 @@
 	)
 	(wire
 		(pts
-			(xy 232.41 123.19) (xy 227.33 123.19)
+			(xy 234.95 140.97) (xy 229.87 140.97)
 		)
 		(stroke
 			(width 0)
@@ -3028,7 +3033,7 @@
 	)
 	(wire
 		(pts
-			(xy 186.69 118.11) (xy 196.85 118.11)
+			(xy 189.23 135.89) (xy 199.39 135.89)
 		)
 		(stroke
 			(width 0)
@@ -3068,17 +3073,7 @@
 	)
 	(wire
 		(pts
-			(xy 215.9 95.25) (xy 218.44 95.25)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f382a40e-91d6-43ea-8040-a2b334995135")
-	)
-	(wire
-		(pts
-			(xy 190.5 105.41) (xy 186.69 105.41)
+			(xy 193.04 123.19) (xy 189.23 123.19)
 		)
 		(stroke
 			(width 0)
@@ -3088,7 +3083,7 @@
 	)
 	(wire
 		(pts
-			(xy 200.66 128.27) (xy 213.36 128.27)
+			(xy 203.2 146.05) (xy 215.9 146.05)
 		)
 		(stroke
 			(width 0)
@@ -3098,7 +3093,7 @@
 	)
 	(wire
 		(pts
-			(xy 215.9 123.19) (xy 215.9 130.81)
+			(xy 218.44 140.97) (xy 218.44 148.59)
 		)
 		(stroke
 			(width 0)
@@ -3168,7 +3163,7 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 135.89) (xy 196.85 135.89)
+			(xy 160.02 153.67) (xy 199.39 153.67)
 		)
 		(stroke
 			(width 0)
@@ -3178,7 +3173,7 @@
 	)
 	(global_label "AUDIO_OUT_R"
 		(shape input)
-		(at 142.24 93.98 180)
+		(at 50.8 111.76 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3186,9 +3181,9 @@
 			)
 			(justify right)
 		)
-		(uuid "1da83e46-7716-4fc6-8a01-f5b735a71b50")
+		(uuid "2b1dd444-4902-40eb-8417-a5765738c406")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 126.7966 93.98 0)
+			(at 35.3566 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3200,7 +3195,7 @@
 	)
 	(global_label "AUDIO_OUT_L"
 		(shape input)
-		(at 142.24 88.9 180)
+		(at 49.53 63.5 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3208,9 +3203,9 @@
 			)
 			(justify right)
 		)
-		(uuid "432ba376-0720-4b67-987a-0fe429437a8f")
+		(uuid "64cc71a2-535f-4f20-8ccf-671665f69c16")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 127.0385 88.9 0)
+			(at 34.3285 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3486,7 +3481,7 @@
 	)
 	(symbol
 		(lib_id "Diode:SM4004")
-		(at 186.69 114.3 270)
+		(at 189.23 132.08 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3494,7 +3489,7 @@
 		(dnp no)
 		(uuid "124425a0-3ba5-43b7-a008-ed96f52732bf")
 		(property "Reference" "D7"
-			(at 188.214 110.236 90)
+			(at 190.754 128.016 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3502,7 +3497,7 @@
 			)
 		)
 		(property "Value" "SM4004"
-			(at 190.754 112.014 90)
+			(at 193.294 129.794 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3510,7 +3505,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_SMA"
-			(at 182.245 114.3 0)
+			(at 184.785 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3519,7 +3514,7 @@
 			)
 		)
 		(property "Datasheet" "http://cdn-reichelt.de/documents/datenblatt/A400/SMD1N400%23DIO.pdf"
-			(at 186.69 114.3 0)
+			(at 189.23 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3528,7 +3523,7 @@
 			)
 		)
 		(property "Description" "400V 1A General Purpose Rectifier Diode, MELF"
-			(at 186.69 114.3 0)
+			(at 189.23 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3537,7 +3532,7 @@
 			)
 		)
 		(property "Sim.Device" "D"
-			(at 186.69 114.3 0)
+			(at 189.23 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3546,7 +3541,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 186.69 114.3 0)
+			(at 189.23 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3571,7 +3566,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Audio:NCJ6FA-H-0")
-		(at 224.79 113.03 0)
+		(at 227.33 130.81 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -3581,15 +3576,16 @@
 		(fields_autoplaced yes)
 		(uuid "17210063-2175-4112-9a6a-a8aab8628d1b")
 		(property "Reference" "J10"
-			(at 224.79 102.87 0)
+			(at 227.33 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Value" "NCJ6FA-H-0"
-			(at 224.79 105.41 0)
+			(at 227.33 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3597,7 +3593,7 @@
 			)
 		)
 		(property "Footprint" "Connector_Audio:Jack_XLR-6.35mm_Neutrik_NCJ6FA-H-0_Horizontal"
-			(at 224.79 113.03 0)
+			(at 227.33 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3606,7 +3602,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.neutrik.com/en/product/ncj6fa-h-0"
-			(at 224.79 113.03 0)
+			(at 227.33 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3615,7 +3611,7 @@
 			)
 		)
 		(property "Description" "Combo A series, 3 pole XLR female receptacle with 6.35mm (1/4in) stereo jack, horizontal PCB mount, retention spring"
-			(at 224.79 113.03 0)
+			(at 227.33 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3938,7 +3934,7 @@
 	)
 	(symbol
 		(lib_id "power:+12VA")
-		(at 157.48 102.87 0)
+		(at 160.02 120.65 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3946,7 +3942,7 @@
 		(dnp no)
 		(uuid "615de867-3ede-4dca-adcb-14ee0f41c0f4")
 		(property "Reference" "#PWR056"
-			(at 157.48 106.68 0)
+			(at 160.02 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3955,7 +3951,7 @@
 			)
 		)
 		(property "Value" "+12VA"
-			(at 156.972 98.552 0)
+			(at 159.512 116.332 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3963,7 +3959,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 157.48 102.87 0)
+			(at 160.02 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3972,7 +3968,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 157.48 102.87 0)
+			(at 160.02 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3981,7 +3977,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+12VA\""
-			(at 157.48 102.87 0)
+			(at 160.02 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4069,7 +4065,7 @@
 	(symbol
 		(lib_name "THAT1646_1")
 		(lib_id "daisy-studio:THAT1646")
-		(at 175.26 121.92 0)
+		(at 177.8 139.7 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4077,7 +4073,7 @@
 		(dnp no)
 		(uuid "76fb511f-624a-4b8d-8fb4-02e6d21fc9ec")
 		(property "Reference" "U8"
-			(at 175.26 109.22 0)
+			(at 177.8 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4085,7 +4081,7 @@
 			)
 		)
 		(property "Value" "THAT1646"
-			(at 175.26 111.76 0)
+			(at 177.8 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4093,7 +4089,7 @@
 			)
 		)
 		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
-			(at 175.26 134.62 0)
+			(at 177.8 152.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4102,7 +4098,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 175.26 121.92 0)
+			(at 177.8 139.7 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4110,7 +4106,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 175.26 121.92 0)
+			(at 177.8 139.7 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4118,7 +4114,7 @@
 			)
 		)
 		(property "Placement" "Near output connector. Analog ground reference."
-			(at 175.26 121.92 0)
+			(at 177.8 139.7 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4154,6 +4150,92 @@
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
 					(reference "U8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Amplifier_Operational:OPA1656ID")
+		(at 88.9 58.42 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7b022d85-8a82-401f-a51f-fbe8814ce467")
+		(property "Reference" "U10"
+			(at 88.9 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "OPA1656ID"
+			(at 88.9 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
+			(at 88.9 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/opa1656.pdf"
+			(at 88.9 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Dual Ultra-Low-Noise, Low-Distortion, FET-Input, Burr-Brown Audio Operational Amplifiers, SOIC-8"
+			(at 88.9 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "b3d88fd8-44e4-4e76-9694-8268e4a2a91b")
+		)
+		(pin "5"
+			(uuid "35aaa46d-dd30-4a1f-9e94-32497ff46133")
+		)
+		(pin "4"
+			(uuid "e4c2110e-ef34-4df5-9ecd-95628917b95a")
+		)
+		(pin "8"
+			(uuid "85c03780-1266-4eb1-be27-69d5091fc68f")
+		)
+		(pin "1"
+			(uuid "c74ff411-b240-466b-bc18-a8fc6f387ca1")
+		)
+		(pin "7"
+			(uuid "fdeea08c-8c7f-4a84-9ea0-06fcdeeb3616")
+		)
+		(pin "6"
+			(uuid "6d7f4702-4f2a-460e-b1ba-250d982f6344")
+		)
+		(pin "3"
+			(uuid "a2830814-6567-4158-a663-b20b2fd8217f")
+		)
+		(instances
+			(project ""
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
+					(reference "U10")
 					(unit 1)
 				)
 			)
@@ -4375,7 +4457,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "Earth"
+		(property "Value" "CHASSIS"
 			(at 221.996 78.74 0)
 			(effects
 				(font
@@ -4484,6 +4566,94 @@
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
 					(reference "C21")
 					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Amplifier_Operational:OPA1656ID")
+		(at 25.4 176.53 0)
+		(unit 3)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8ff2e2f4-bd40-4c88-915e-f9d8cda7679f")
+		(property "Reference" "U10"
+			(at 24.13 175.2599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "OPA1656ID"
+			(at 24.13 177.7999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
+			(at 25.4 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/opa1656.pdf"
+			(at 25.4 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Dual Ultra-Low-Noise, Low-Distortion, FET-Input, Burr-Brown Audio Operational Amplifiers, SOIC-8"
+			(at 25.4 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "b3d88fd8-44e4-4e76-9694-8268e4a2a91b")
+		)
+		(pin "5"
+			(uuid "35aaa46d-dd30-4a1f-9e94-32497ff46133")
+		)
+		(pin "4"
+			(uuid "e4c2110e-ef34-4df5-9ecd-95628917b95a")
+		)
+		(pin "8"
+			(uuid "85c03780-1266-4eb1-be27-69d5091fc68f")
+		)
+		(pin "1"
+			(uuid "c74ff411-b240-466b-bc18-a8fc6f387ca1")
+		)
+		(pin "7"
+			(uuid "fdeea08c-8c7f-4a84-9ea0-06fcdeeb3616")
+		)
+		(pin "6"
+			(uuid "6d7f4702-4f2a-460e-b1ba-250d982f6344")
+		)
+		(pin "3"
+			(uuid "a2830814-6567-4158-a663-b20b2fd8217f")
+		)
+		(instances
+			(project ""
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
+					(reference "U10")
+					(unit 3)
 				)
 			)
 		)
@@ -4793,7 +4963,7 @@
 	)
 	(symbol
 		(lib_id "Diode:SM4004")
-		(at 190.5 124.46 270)
+		(at 193.04 142.24 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4801,7 +4971,7 @@
 		(dnp no)
 		(uuid "9efd15d5-8109-4e18-a934-3ce95445a89c")
 		(property "Reference" "D9"
-			(at 188.468 127.508 90)
+			(at 191.008 145.288 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4809,7 +4979,7 @@
 			)
 		)
 		(property "Value" "SM4004"
-			(at 191.008 129.286 90)
+			(at 193.548 147.066 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4817,7 +4987,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_SMA"
-			(at 186.055 124.46 0)
+			(at 188.595 142.24 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4826,7 +4996,7 @@
 			)
 		)
 		(property "Datasheet" "http://cdn-reichelt.de/documents/datenblatt/A400/SMD1N400%23DIO.pdf"
-			(at 190.5 124.46 0)
+			(at 193.04 142.24 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4835,7 +5005,7 @@
 			)
 		)
 		(property "Description" "400V 1A General Purpose Rectifier Diode, MELF"
-			(at 190.5 124.46 0)
+			(at 193.04 142.24 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4844,7 +5014,7 @@
 			)
 		)
 		(property "Sim.Device" "D"
-			(at 190.5 124.46 0)
+			(at 193.04 142.24 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4853,7 +5023,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 190.5 124.46 0)
+			(at 193.04 142.24 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4971,7 +5141,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Audio:NCJ6FA-H-0")
-		(at 223.52 133.35 0)
+		(at 226.06 151.13 0)
 		(mirror y)
 		(unit 2)
 		(exclude_from_sim no)
@@ -4981,7 +5151,7 @@
 		(fields_autoplaced yes)
 		(uuid "b3bd174e-507d-4096-a84e-6995092804c5")
 		(property "Reference" "J10"
-			(at 231.14 132.7149 0)
+			(at 233.68 150.4949 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4990,7 +5160,7 @@
 			)
 		)
 		(property "Value" "NCJ6FA-H-0"
-			(at 231.14 135.2549 0)
+			(at 233.68 153.0349 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4999,7 +5169,7 @@
 			)
 		)
 		(property "Footprint" "Connector_Audio:Jack_XLR-6.35mm_Neutrik_NCJ6FA-H-0_Horizontal"
-			(at 223.52 133.35 0)
+			(at 226.06 151.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5008,7 +5178,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.neutrik.com/en/product/ncj6fa-h-0"
-			(at 223.52 133.35 0)
+			(at 226.06 151.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5017,7 +5187,7 @@
 			)
 		)
 		(property "Description" "Combo A series, 3 pole XLR female receptacle with 6.35mm (1/4in) stereo jack, horizontal PCB mount, retention spring"
-			(at 223.52 133.35 0)
+			(at 226.06 151.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5056,8 +5226,94 @@
 		)
 	)
 	(symbol
+		(lib_id "Amplifier_Operational:OPA1656ID")
+		(at 88.9 116.84 0)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b84a6ac7-41f7-4a91-b675-11c2e8468132")
+		(property "Reference" "U10"
+			(at 88.9 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "OPA1656ID"
+			(at 88.9 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
+			(at 88.9 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/opa1656.pdf"
+			(at 88.9 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Dual Ultra-Low-Noise, Low-Distortion, FET-Input, Burr-Brown Audio Operational Amplifiers, SOIC-8"
+			(at 88.9 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "b3d88fd8-44e4-4e76-9694-8268e4a2a91b")
+		)
+		(pin "5"
+			(uuid "35aaa46d-dd30-4a1f-9e94-32497ff46133")
+		)
+		(pin "4"
+			(uuid "e4c2110e-ef34-4df5-9ecd-95628917b95a")
+		)
+		(pin "8"
+			(uuid "85c03780-1266-4eb1-be27-69d5091fc68f")
+		)
+		(pin "1"
+			(uuid "c74ff411-b240-466b-bc18-a8fc6f387ca1")
+		)
+		(pin "7"
+			(uuid "fdeea08c-8c7f-4a84-9ea0-06fcdeeb3616")
+		)
+		(pin "6"
+			(uuid "6d7f4702-4f2a-460e-b1ba-250d982f6344")
+		)
+		(pin "3"
+			(uuid "a2830814-6567-4158-a663-b20b2fd8217f")
+		)
+		(instances
+			(project ""
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
+					(reference "U10")
+					(unit 2)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Diode:SM4004")
-		(at 196.85 121.92 270)
+		(at 199.39 139.7 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5065,7 +5321,7 @@
 		(dnp no)
 		(uuid "b953345d-569e-4564-965c-272f80063d2f")
 		(property "Reference" "D11"
-			(at 198.374 117.856 90)
+			(at 200.914 135.636 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5073,7 +5329,7 @@
 			)
 		)
 		(property "Value" "SM4004"
-			(at 200.914 119.634 90)
+			(at 203.454 137.414 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5081,7 +5337,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_SMA"
-			(at 192.405 121.92 0)
+			(at 194.945 139.7 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5090,7 +5346,7 @@
 			)
 		)
 		(property "Datasheet" "http://cdn-reichelt.de/documents/datenblatt/A400/SMD1N400%23DIO.pdf"
-			(at 196.85 121.92 0)
+			(at 199.39 139.7 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5099,7 +5355,7 @@
 			)
 		)
 		(property "Description" "400V 1A General Purpose Rectifier Diode, MELF"
-			(at 196.85 121.92 0)
+			(at 199.39 139.7 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5108,7 +5364,7 @@
 			)
 		)
 		(property "Sim.Device" "D"
-			(at 196.85 121.92 0)
+			(at 199.39 139.7 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5117,7 +5373,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 196.85 121.92 0)
+			(at 199.39 139.7 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5142,7 +5398,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 163.83 140.97 0)
+		(at 166.37 158.75 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5151,7 +5407,7 @@
 		(fields_autoplaced yes)
 		(uuid "bb057f8e-54d8-4af2-8842-d2e50a7e3b1b")
 		(property "Reference" "#PWR060"
-			(at 163.83 147.32 0)
+			(at 166.37 165.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5160,7 +5416,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 163.83 146.05 0)
+			(at 166.37 163.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5168,7 +5424,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 163.83 140.97 0)
+			(at 166.37 158.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5177,7 +5433,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 163.83 140.97 0)
+			(at 166.37 158.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5186,7 +5442,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 163.83 140.97 0)
+			(at 166.37 158.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5208,7 +5464,7 @@
 	)
 	(symbol
 		(lib_id "Diode:SM4004")
-		(at 200.66 132.08 270)
+		(at 203.2 149.86 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5216,7 +5472,7 @@
 		(dnp no)
 		(uuid "bbb54b8b-2d1f-4f39-9c0f-33bf935aaf6d")
 		(property "Reference" "D13"
-			(at 202.184 128.016 90)
+			(at 204.724 145.796 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5224,7 +5480,7 @@
 			)
 		)
 		(property "Value" "SM4004"
-			(at 204.724 129.794 90)
+			(at 207.264 147.574 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5232,7 +5488,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_SMA"
-			(at 196.215 132.08 0)
+			(at 198.755 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5241,7 +5497,7 @@
 			)
 		)
 		(property "Datasheet" "http://cdn-reichelt.de/documents/datenblatt/A400/SMD1N400%23DIO.pdf"
-			(at 200.66 132.08 0)
+			(at 203.2 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5250,7 +5506,7 @@
 			)
 		)
 		(property "Description" "400V 1A General Purpose Rectifier Diode, MELF"
-			(at 200.66 132.08 0)
+			(at 203.2 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5259,7 +5515,7 @@
 			)
 		)
 		(property "Sim.Device" "D"
-			(at 200.66 132.08 0)
+			(at 203.2 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5268,7 +5524,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 200.66 132.08 0)
+			(at 203.2 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5528,145 +5784,8 @@
 		)
 	)
 	(symbol
-		(lib_name "AudioJack3_1")
-		(lib_id "Connector_Audio:AudioJack3")
-		(at 223.52 92.71 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "cfb804e2-d799-403a-861f-4597a77d2423")
-		(property "Reference" "J_OUT_ST1"
-			(at 226.822 83.566 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "STX-3100-3CB"
-			(at 222.504 86.106 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Connector_Audio:Jack_3.5mm_Kycon_STX-3100-3CB"
-			(at 223.52 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 223.52 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Audio Jack, 3 Poles (Stereo / TRS)"
-			(at 223.52 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "5"
-			(uuid "b8b75d4b-1645-4093-bc0e-6266d7e6ecc6")
-		)
-		(pin "2"
-			(uuid "29f5e043-3fcc-4bae-be82-d76c138005cf")
-		)
-		(pin "1"
-			(uuid "ec25b1a9-06ba-4232-82b7-d1b37695df12")
-		)
-		(instances
-			(project "daisy-studio"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "J_OUT_ST1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 215.9 99.06 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d64a0c08-c6cf-486d-8a69-3adcec87208a")
-		(property "Reference" "#PWR065"
-			(at 215.9 105.41 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 215.9 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 215.9 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 215.9 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 215.9 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "470720ed-f36f-4601-a9e1-625a9c19523c")
-		)
-		(instances
-			(project "daisy-studio"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR065")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:-12VA")
-		(at 157.48 140.97 0)
+		(at 160.02 158.75 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5675,7 +5794,7 @@
 		(dnp no)
 		(uuid "df3ce15d-3f3d-4c12-903e-6aa41a0703f8")
 		(property "Reference" "#PWR057"
-			(at 157.48 137.16 0)
+			(at 160.02 154.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5684,7 +5803,7 @@
 			)
 		)
 		(property "Value" "-12VA"
-			(at 156.464 146.05 0)
+			(at 159.004 163.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5692,7 +5811,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 157.48 140.97 0)
+			(at 160.02 158.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5701,7 +5820,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 157.48 140.97 0)
+			(at 160.02 158.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5710,7 +5829,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"-12VA\""
-			(at 157.48 140.97 0)
+			(at 160.02 158.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5732,7 +5851,7 @@
 	)
 	(symbol
 		(lib_id "power:Earth")
-		(at 215.9 142.24 0)
+		(at 218.44 160.02 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5740,7 +5859,7 @@
 		(dnp no)
 		(uuid "e0ae0d3a-8b66-4339-be09-5d4254946c42")
 		(property "Reference" "#PWR066"
-			(at 215.9 148.59 0)
+			(at 218.44 166.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5748,8 +5867,8 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "Earth"
-			(at 216.154 146.812 0)
+		(property "Value" "CHASSIS"
+			(at 218.694 164.592 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5757,7 +5876,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 215.9 142.24 0)
+			(at 218.44 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5766,7 +5885,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 215.9 142.24 0)
+			(at 218.44 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5775,7 +5894,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"Earth\""
-			(at 215.9 142.24 0)
+			(at 218.44 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)

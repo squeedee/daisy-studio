@@ -2,22 +2,90 @@
 
 ## Contents
 
-* **Part 0 — Design-Wide Changes.** Schematic conventions, J2 GPIO
-  breakout, silkscreen, and the daughterboard architectural invariant.
-* **Part 1 — Op-Amp Gain-Staged Audio Input.** Balanced input →
-  THAT1246 → OPA1656 fixed-gain → downstream passive pot → BJT clamp →
-  Seed ADC. Biggest architectural rewrite from Rev 1.
-* **Part 2 — MIDI Section.** DIN-5 IN/OUT/THRU via H11L1 optocoupler.
-  Only Rev 2 change: footprint fix for U4.
-* **Part 3 — Output Section.** Seed → OPA1656 calibrated gain +
-  reconstruction LPF → passive output pot → THAT1646 → XLR + rail
-  protection.
-* **Part 4 — Power Section.** 12 V barrel jack → optional panel-switch →
-  reverse-polarity FET → TPS54302 buck (+5 V) + TMR 3-1222 isolated ±12 V
-  (replaces Rev 1 TMA-1212D).
-* **Appendix — Other Clamp Designs Considered.** BAV99 passive,
-  diode-substitution, and feedback-tap alternatives investigated en route
-  to the BJT clamp choice.
+- [Part 0: Design-Wide Changes](#part-0-design-wide-changes)
+  - [Schematic Conventions](#schematic-conventions)
+    - [`ideal-placement` component property](#ideal-placement-component-property)
+  - [J2 — Seed GPIO Breakout (Issue #3)](#j2--seed-gpio-breakout-issue-3)
+    - [Pin assignment deferred to PCB layout](#pin-assignment-deferred-to-pcb-layout)
+  - [Silkscreen Artwork (Issue #4)](#silkscreen-artwork-issue-4)
+  - [Daughterboard Architectural Invariant](#daughterboard-architectural-invariant)
+- [Part 1: Op-Amp Gain-Staged Audio Input](#part-1-op-amp-gain-staged-audio-input)
+  - [Design Objectives](#design-objectives)
+  - [Changes vs. Rev 1](#changes-vs-rev-1)
+  - [Codec Voltage Budget](#codec-voltage-budget)
+  - [Signal Path](#signal-path)
+  - [Op-Amp Selection: OPA1656](#op-amp-selection-opa1656)
+  - [Fixed Gain Selection (R_fb = 12kΩ)](#fixed-gain-selection-r_fb--12kω)
+  - [Output Series Resistor (3.3kΩ)](#output-series-resistor-33kω)
+  - [Symmetric Clamp](#symmetric-clamp)
+    - [Reference Divider Calculations](#reference-divider-calculations)
+    - [Fault Analysis](#fault-analysis)
+    - [Signal Interaction at Normal Levels](#signal-interaction-at-normal-levels)
+    - [Clip Indicator](#clip-indicator)
+    - [Tolerance Analysis](#tolerance-analysis)
+  - [Anti-Alias Filter at Seed Input](#anti-alias-filter-at-seed-input)
+  - [Daughterboard Interface (Input Stage)](#daughterboard-interface-input-stage)
+    - [Signal-integrity notes for the input-stage cable](#signal-integrity-notes-for-the-input-stage-cable)
+  - [Components](#components)
+  - [Power Budget (input-stage contribution)](#power-budget-input-stage-contribution)
+  - [Performance Summary](#performance-summary)
+    - [LPF corner across pot travel](#lpf-corner-across-pot-travel)
+  - [Stability Analysis](#stability-analysis)
+    - [Feedback Loop](#feedback-loop)
+    - [BJT Parasitic Capacitances](#bjt-parasitic-capacitances)
+    - [Clamp Transition Transients](#clamp-transition-transients)
+    - [Op-Amp Decoupling](#op-amp-decoupling)
+  - [Layout Guidelines](#layout-guidelines)
+    - [Component Placement](#component-placement)
+    - [Trace Routing](#trace-routing)
+  - [Ground Rules](#ground-rules)
+  - [Verification](#verification)
+- [Part 2: MIDI Section](#part-2-midi-section)
+  - [Design Objectives](#design-objectives-1)
+  - [Topology (unchanged from Rev 1)](#topology-unchanged-from-rev-1)
+  - [Changes vs. Rev 1](#changes-vs-rev-1-1)
+  - [Components (Rev 2, unchanged from Rev 1 except footprint fix)](#components-rev-2-unchanged-from-rev-1-except-footprint-fix)
+  - [Verification](#verification-1)
+- [Part 3: Output Section](#part-3-output-section)
+  - [Design Objectives](#design-objectives-2)
+  - [Changes vs. Rev 1](#changes-vs-rev-1-2)
+  - [Signal Path](#signal-path-1)
+  - [Op-Amp Gain Stage (OPA1656)](#op-amp-gain-stage-opa1656)
+    - [Calibration procedure](#calibration-procedure)
+    - [Reconstruction Low-Pass Filter (C_fb across R_fb)](#reconstruction-low-pass-filter-c_fb-across-r_fb)
+  - [Output Level Pot](#output-level-pot)
+    - [Impedance behaviour](#impedance-behaviour)
+  - [Daughterboard Control Header](#daughterboard-control-header)
+    - [Architectural invariant (recap from Part 0)](#architectural-invariant-recap-from-part-0)
+    - [Signal inventory](#signal-inventory)
+    - [Connector](#connector)
+    - [Pin assignment](#pin-assignment)
+    - [Signal-integrity notes](#signal-integrity-notes)
+  - [THAT1646 Balanced Driver](#that1646-balanced-driver)
+  - [Phantom-Power Protection Diodes](#phantom-power-protection-diodes)
+  - [Rail Protection (TVS per rail)](#rail-protection-tvs-per-rail)
+  - [Components](#components-1)
+- [Part 4: Power Section](#part-4-power-section)
+  - [Design Objectives](#design-objectives-3)
+  - [Topology](#topology)
+  - [Changes vs. Rev 1](#changes-vs-rev-1-3)
+  - [Power Budget (±12V Rails)](#power-budget-12v-rails)
+  - [+5V Rail (TPS54302 buck)](#5v-rail-tps54302-buck)
+  - [Panel Power Switch (J_SW)](#panel-power-switch-j_sw)
+  - [Grounding (unchanged from Rev 1)](#grounding-unchanged-from-rev-1)
+  - [Components](#components-2)
+  - [Layout Guidelines](#layout-guidelines-1)
+    - [Buck converter (TPS54302) — Issue #1 rework](#buck-converter-tps54302--issue-1-rework)
+    - [±12V DC/DC module (TMR 3-1222)](#12v-dcdc-module-tmr-3-1222)
+    - [General](#general)
+  - [Verification](#verification-2)
+- [Appendix: Other Clamp Designs Considered](#appendix-other-clamp-designs-considered)
+  - [BAV99 Passive Diode Clamp](#bav99-passive-diode-clamp)
+  - [Diode Substitution (1N4148, BAT54)](#diode-substitution-1n4148-bat54)
+  - [Post-Clamp Feedback Tap (Active Limiting)](#post-clamp-feedback-tap-active-limiting)
+    - [Normal-Level Performance (+4 dBu)](#normal-level-performance-4-dbu)
+    - [Failure Mode: Reference Pumping Under Overdrive](#failure-mode-reference-pumping-under-overdrive)
+    - [References](#references)
 
 ---
 
@@ -104,10 +172,11 @@ the daughterboard header. The header carries only:
 
 * Low-impedance audio signals (op-amp outputs and pot-wiper returns)
 * AGND returns (interleaved with signal pins)
-* Low-current voltage references (`n+` per channel, Thevenin ~1.3 kΩ)
-* Current-limited LED drive pairs (`LED_+` is 1 kΩ-limited from +12 V
-  on the main PCB, max ~12 mA; `LED_−` is the LM2903 open-collector
-  output)
+* Low-current voltage references (`+VCLAMP_L`/`+VCLAMP_R` per channel,
+  Thevenin ~1.3 kΩ)
+* Current-limited LED drive pairs (`CLIP_LED_A_*` is 1 kΩ-limited from
+  +12 V on the main PCB, max ~12 mA; `CLIP_LED_K_*` is the LM2903
+  open-collector output)
 
 See **Part 3 → "Daughterboard Control Header"** for the pin-by-pin spec
 and connector choice.
@@ -196,12 +265,12 @@ Balanced in → THAT 1246 (-6dB) → R_in (10kΩ) → OPA1656 (inverting, ±12V,
                                                    R_fb 12kΩ fixed                    │
                                                                                       │
         ┌──────── header ────────┐                                                    │
-        │  OPA_Out  ─────────────┼─────── OPA_Out (main)                              │
+        │  IN_OPA  ──────────────┼─────── IN_OPA (main, OPA_Out)                      │
         │                        │                                                    │
         │  10kΩ log pot          │                                                    │
         │  (3-term divider)      │                                                    │
         │                        │                                                    │
-        │  wiper ────────────────┼─────── Wiper_Return (main) → R_out (3.3kΩ)         │
+        │  wiper ────────────────┼─────── IN_WIPER (main) → R_out (3.3kΩ)             │
         │                        │                              → BJT clamp          │
         │  AGND ─────────────────┼─── AGND                      → C_aa (1nF)          │
         └────── daughterboard ───┘                              → Seed pin            │
@@ -319,14 +388,13 @@ R_out ──────────────── Emitter ──┬── S
 Clip indicator (per channel):
 
               Seed_In ─────────── Comparator inv- input
-              Trim pot (AGND to n+) ── Comparator non-inv+ input  (threshold, 0V to +1.565V)
+              Trim pot (AGND to +VCLAMP_*) ── Comparator non-inv+ input  (threshold, 0V to +1.565V)
               +12V → 1kΩ → LED anode; LED cathode → Comparator output (open collector)
 ```
 
-Q1 (PNP) conducts when the signal exceeds V(n+) + Vbe, sinking current from
-Seed_In through the transistor to -12V via the 1kΩ collector resistor. Q2 (NPN)
-conducts when the signal falls below V(n-) − Vbe, sourcing current from ground
-into Seed_In. The transistors'
+Q1 (PNP) conducts when the signal exceeds V(+VCLAMP_*) + Vbe, sinking current
+from Seed_In through the transistor to AGND. Q2 (NPN) conducts when the signal
+falls below V(-VCLAMP_*) − Vbe, sourcing current from AGND into Seed_In. The transistors'
 current gain (β≈200) means only Ic/β flows through the reference divider base
 connection, largely eliminating reference pumping under overdrive. The base-emitter
 forward ideality factor (NF≈1.24) provides a sharper clamp knee than diode
@@ -386,8 +454,9 @@ change at Q1.C is only millivolts above the -12V rail, indistinguishable from su
 ripple.
 
 The comparator's inverting input connects to Seed_In. A trim pot between AGND
-and n+ (0V to +1.565V) sets the threshold on the non-inverting input. When the
-positive signal peak exceeds the threshold, V(inv) > V(non-inv) and the
+and `+VCLAMP_L` / `+VCLAMP_R` (0V to +1.565V) sets the threshold on the
+non-inverting input. When the positive signal peak exceeds the threshold,
+V(inv) > V(non-inv) and the
 open-collector output pulls low, lighting the LED. At audio frequencies the LED
 flickers faster than the eye can see — dim glow at light clipping, bright at
 heavy clipping.
@@ -495,17 +564,22 @@ impedance that applies to both stages.
 Input-stage signals on the header (see **Part 3 "Daughterboard Control
 Header"** for the canonical L+R pinout):
 
-* `InOPA_Out` — op-amp output (main PCB, low-Z) to the pot CW terminal.
-* `InWiper` — pot wiper back to main PCB (moderate-Z: 0 to ~2.5 kΩ
-  depending on pot position) into R_out.
+* `IN_OPA_L` / `IN_OPA_R` — op-amp output (main PCB, low-Z) to the pot CW
+  terminal.
+* `IN_WIPER_L` / `IN_WIPER_R` — pot wiper back to main PCB (moderate-Z: 0
+  to ~2.5 kΩ depending on pot position) into R_out.
 * `AGND` — pot CCW terminal (proper mute leg) + signal-pair return.
-* `n+` — clamp-reference rail, to the clip-threshold trim pot top.
-* `Threshold` — trim-pot wiper, back to the comparator inverting input.
-* `LED_+` — current-limited LED anode drive (1 kΩ to +12 V on main PCB;
-  max ~12 mA, safe to short to any other daughterboard net).
-* `LED_−` — LED cathode, driven by the LM2903 open-collector output.
+* `+VCLAMP_L` / `+VCLAMP_R` — clamp-reference rail, to the clip-threshold
+  trim pot top.
+* `IN_THRESH_L` / `IN_THRESH_R` — trim-pot wiper, back to the comparator
+  non-inverting input.
+* `CLIP_LED_A_L` / `CLIP_LED_A_R` — current-limited LED anode drive (1 kΩ
+  to +12 V on main PCB; max ~12 mA, safe to short to any other
+  daughterboard net).
+* `CLIP_LED_K_L` / `CLIP_LED_K_R` — LED cathode, driven by the LM2903
+  open-collector output.
 
-Both audio legs (`InOPA_Out` and `InWiper`) are low-impedance — op-amp
+Both audio legs (`IN_OPA_*` and `IN_WIPER_*`) are low-impedance — op-amp
 drives one end directly, pot wiper source impedance peaks at 2.5 kΩ at
 mid-rotation on the other. No summing-junction / high-Z feedback node
 leaves the main PCB.
@@ -515,10 +589,10 @@ leaves the main PCB.
 * Pair each signal with an adjacent AGND return pin on the header
   (enforced by the Part 3 pinout). Loop area stays small across the
   ribbon.
-* The `InWiper` line is moderate-Z (up to 2.5 kΩ at pot mid). Keep it
-  physically separate from `LED_−` (the comparator open-collector output,
-  which carries fast digital edges during clipping). The Part 3 pinout
-  places these pairs at opposite ends of the header.
+* The `IN_WIPER_*` line is moderate-Z (up to 2.5 kΩ at pot mid). Keep it
+  physically separate from `CLIP_LED_K_*` (the comparator open-collector
+  output, which carries fast digital edges during clipping). The Part 3
+  pinout places these pairs at opposite ends of the header.
 * Interaction with C_aa: C_aa sees R_out + wiper Z as its series R. The
   LPF corner varies from 48 kHz (pot ends) to 27 kHz (pot mid) — all
   safely above the audio band. See "Anti-Alias Filter at Seed Input"
@@ -540,14 +614,15 @@ leaves the main PCB.
 * 2× 1.5kΩ resistors, 1% (R2, reference dividers)
 * 2× 47µF MLCC, 1206 or 1210, X5R/X7R (reference rail filtering)
 * 1× 1nF C0G MLCC, 0402 or 0603 (C_aa, anti-alias at Seed input)
-* 1× 1kΩ resistor, 0805 1% (LED current limit, +12V → `LED_+` header pin;
-  the daughterboard sees only the current-limited node)
+* 1× 1kΩ resistor, 0805 1% (LED current limit, +12V → `CLIP_LED_A_*`
+  header pin; the daughterboard sees only the current-limited node)
 
 **Per channel (daughterboard — user-swappable controls):**
 
 * 1× 10kΩ log-taper pot — user input level control (three-terminal voltage divider)
 * 1× LED (clip indicator)
-* 1× 10kΩ trim pot (clip threshold, AGND to n+; wiper to comparator inv input)
+* 1× 10kΩ trim pot (clip threshold, AGND to `+VCLAMP_*`; wiper to
+  comparator non-inverting input)
 
 **Shared:**
 
@@ -671,13 +746,14 @@ supply pins, with short returns to the analog ground pour.
 * **Decoupling caps (100nF + 1nF per rail):** Within 5mm of OPA1656 pins 4 and 8,
   with vias directly to the ground pour. Place the 1nF closer to the pin than the
   100nF.
-* **Daughterboard header pins for input pot:** The `InOPA_Out` pin should sit
-  close to the op-amp output (pin 1); the `InWiper` pin should sit
-  close to R_out. Adjacent AGND pins on both pairs keep return loop area small.
-* **R_out (3.3kΩ):** Place close to the `InWiper` header pin (not at
-  the op-amp output, as in Rev 1 and the older Rev 2 drafts). The pot wiper
-  returns via cable and feeds directly into R_out; the clamp and C_aa are on
-  the Seed side of R_out.
+* **Daughterboard header pins for input pot:** The `IN_OPA_*` pin should
+  sit close to the op-amp output (pin 1); the `IN_WIPER_*` pin should sit
+  close to R_out. Adjacent AGND pins on both pairs keep return loop area
+  small.
+* **R_out (3.3kΩ):** Place close to the `IN_WIPER_*` header pin (not at
+  the op-amp output, as in Rev 1 and the older Rev 2 drafts). The pot
+  wiper returns via cable and feeds directly into R_out; the clamp and
+  C_aa are on the Seed side of R_out.
 * **BJT clamp (Q1, Q2):** Place close to the Seed input pin, not close to the op-amp.
   The clamp protects the Seed pin, so short traces to the protected node matter more
   than proximity to the op-amp.
@@ -1033,17 +1109,23 @@ any two daughterboard signals together will not damage the main PCB.
 
 **Input stage (per channel, from Part 1):**
 
-* `InOPA_Out` — op-amp output, low-Z, to input pot CW terminal
-* `InWiper` — input pot wiper, moderate-Z (0–2.5 kΩ), back to `R_out`
-* `n+` — clamp reference (+1.565 V), low-current, to trim pot top
-* `Threshold` — trim pot wiper, back to comparator inverting input
-* `LED_+` — current-limited LED anode (1 kΩ to +12 V on main PCB)
-* `LED_−` — LED cathode, LM2903 open-collector output
+* `IN_OPA_L` / `IN_OPA_R` — op-amp output, low-Z, to input pot CW terminal
+* `IN_WIPER_L` / `IN_WIPER_R` — input pot wiper, moderate-Z (0–2.5 kΩ),
+  back to `R_out`
+* `+VCLAMP_L` / `+VCLAMP_R` — clamp reference (+1.565 V), low-current, to
+  trim pot top
+* `IN_THRESH_L` / `IN_THRESH_R` — trim pot wiper, back to comparator
+  non-inverting input
+* `CLIP_LED_A_L` / `CLIP_LED_A_R` — current-limited LED anode (1 kΩ to
+  +12 V on main PCB)
+* `CLIP_LED_K_L` / `CLIP_LED_K_R` — LED cathode, LM2903 open-collector
+  output
 
 **Output stage (per channel, from Part 3):**
 
-* `OutOPA_Out` — op-amp output, low-Z, to output pot CW terminal
-* `OutWiper` — output pot wiper, feeds THAT1646 input
+* `OUT_OPA_L` / `OUT_OPA_R` — op-amp output, low-Z, to output pot CW
+  terminal
+* `OUT_WIPER_L` / `OUT_WIPER_R` — output pot wiper, feeds THAT1646 input
 * (Pot CCW grounds to AGND — shared with input-stage AGND returns)
 
 ### Connector
@@ -1061,23 +1143,23 @@ any two daughterboard signals together will not damage the main PCB.
 Pinout is designed to group audio together, isolate moderate-Z audio from
 fast-edge digital, and interleave AGND returns on every audio pair.
 
-| Pin | Signal          | Pin | Signal          | Notes                                 |
-|----:|-----------------|----:|-----------------|---------------------------------------|
-|   1 | AGND            |   2 | AGND            | Top-of-header AGND guard              |
-|   3 | `InOPA_Out_L`   |   4 | `InOPA_Out_R`   | Input-stage audio out (low-Z)         |
-|   5 | `InWiper_L`     |   6 | `InWiper_R`     | Input-stage audio back (moderate-Z)   |
-|   7 | AGND            |   8 | AGND            |                                       |
-|   9 | `OutOPA_Out_L`  |  10 | `OutOPA_Out_R`  | Output-stage audio out (low-Z)        |
-|  11 | `OutWiper_L`    |  12 | `OutWiper_R`    | Output-stage audio back               |
-|  13 | AGND            |  14 | AGND            | Separates audio from control block    |
-|  15 | `n+_L`          |  16 | `n+_R`          | Static clamp refs (per channel)       |
-|  17 | `Threshold_L`   |  18 | `Threshold_R`   | Static trim-pot wipers                |
-|  19 | AGND            |  20 | AGND            | Separates control from fast-edge      |
-|  21 | `LED_+_L`       |  22 | `LED_+_R`       | Current-limited LED anodes            |
-|  23 | `LED_−_L`       |  24 | `LED_−_R`       | LM2903 OC outputs (fast digital edges) |
+| Pin | Signal          |  Pin | Signal          | Notes                                  |
+|----:|-----------------|-----:|-----------------|----------------------------------------|
+|   1 | AGND            |    2 | AGND            | Top-of-header AGND guard               |
+|   3 | `IN_OPA_L`      |    4 | `IN_OPA_R`      | Input-stage audio out (low-Z)          |
+|   5 | `IN_WIPER_L`    |    6 | `IN_WIPER_R`    | Input-stage audio back (moderate-Z)    |
+|   7 | AGND            |    8 | AGND            |                                        |
+|   9 | `OUT_OPA_L`     |   10 | `OUT_OPA_R`     | Output-stage audio out (low-Z)         |
+|  11 | `OUT_WIPER_L`   |   12 | `OUT_WIPER_R`   | Output-stage audio back                |
+|  13 | AGND            |   14 | AGND            | Separates audio from control block     |
+|  15 | `+VCLAMP_L`     |   16 | `+VCLAMP_R`     | Static clamp refs (per channel)        |
+|  17 | `IN_THRESH_L`   |   18 | `IN_THRESH_R`   | Static trim-pot wipers                 |
+|  19 | AGND            |   20 | AGND            | Separates control from fast-edge       |
+|  21 | `CLIP_LED_A_L`  |   22 | `CLIP_LED_A_R`  | Current-limited LED anodes             |
+|  23 | `CLIP_LED_K_L`  |   24 | `CLIP_LED_K_R`  | LM2903 OC outputs (fast digital edges) |
 
-Physical separation between the moderate-Z `InWiper` pair (pins 5/6) and
-the fast-edge `LED_−` pair (pins 23/24) is 18 pins across the header —
+Physical separation between the moderate-Z `IN_WIPER_*` pair (pins 5/6) and
+the fast-edge `CLIP_LED_K_*` pair (pins 23/24) is 18 pins across the header —
 well clear of capacitive crosstalk concerns with a standard ribbon.
 
 ### Signal-integrity notes
@@ -1085,12 +1167,13 @@ well clear of capacitive crosstalk concerns with a standard ribbon.
 * **AGND interleave.** Every audio signal pair is bracketed by AGND pins
   above and below; the ribbon cable's return path is short. Do not reroute
   to pack more signals — the AGND guards are load-bearing.
-* **Moderate-Z `InWiper` vs. fast-edge `LED_−`.** The pinout places these
-  at opposite ends of the header. On cable-side, route `InWiper` on the
-  lowest-noise ribbon pair; route `LED_−` on the opposite end or through a
-  separate cable if the daughterboard is more than ~150 mm away.
-* **`OutWiper` is high-Z at the THAT1646 input** (~50 kΩ); route through a
-  low-noise ribbon pair with its adjacent AGND.
+* **Moderate-Z `IN_WIPER_*` vs. fast-edge `CLIP_LED_K_*`.** The pinout
+  places these at opposite ends of the header. On cable-side, route
+  `IN_WIPER_*` on the lowest-noise ribbon pair; route `CLIP_LED_K_*` on the
+  opposite end or through a separate cable if the daughterboard is more
+  than ~150 mm away.
+* **`OUT_WIPER_*` is high-Z at the THAT1646 input** (~50 kΩ); route through
+  a low-noise ribbon pair with its adjacent AGND.
 * **Cable length.** ≤ 150 mm comfortable, ≤ 50 mm conservative. Beyond 150
   mm, consider a shielded cable (foil/braid tied to AGND at the main-PCB
   end only).
@@ -1364,11 +1447,12 @@ during a miswired wall-wart event regardless of switch state.
 
 ## Grounding (unchanged from Rev 1)
 
-* JP1 (Earth-GND solder jumper) next to the Daisy Seed AGND/DGND pins,
+* JP1 (`CHASSIS`-GND solder jumper) next to the Daisy Seed AGND/DGND pins,
   default bridged; cut if chassis-ground loops become a problem in a given
   enclosure.
-* J7, J8 mounting holes on `Earth`, bonded to chassis via M3 hardware.
-* Star topology: AGND, DGND, Earth meet only at JP1 / mounting-hole bond.
+* J7, J8 mounting holes on `CHASSIS`, bonded to enclosure via M3 hardware.
+* Star topology: AGND, DGND, `CHASSIS` meet only at JP1 / mounting-hole
+  bond.
 
 ## Components
 

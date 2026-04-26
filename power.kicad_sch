@@ -6051,7 +6051,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Earth"
+		(property "Value" "CHASSIS"
 			(at 241.3 133.3499 0)
 			(effects
 				(font
@@ -6353,7 +6353,7 @@
 				)
 			)
 		)
-		(property "Value" "Earth-Gnd Disconnect"
+		(property "Value" "CHASSIS-Gnd Disconnect"
 			(at 218.186 137.16 0)
 			(effects
 				(font
@@ -7109,7 +7109,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "Earth"
+		(property "Value" "CHASSIS"
 			(at 231.394 144.272 0)
 			(effects
 				(font
@@ -8577,7 +8577,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Earth"
+		(property "Value" "CHASSIS"
 			(at 241.3 138.4299 0)
 			(effects
 				(font
