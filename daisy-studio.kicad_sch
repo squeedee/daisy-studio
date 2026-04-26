@@ -256,356 +256,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Device:LED"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 1.016)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "D"
-				(at 0 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "LED"
-				(at 0 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Light emitting diode"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Sim.Pins" "1=K 2=A"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "LED diode"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "LED_0_1"
-				(polyline
-					(pts
-						(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.778 -0.762) (xy -3.302 -2.286) (xy -2.54 -2.286) (xy -3.302 -2.286) (xy -3.302 -1.524)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.27 0) (xy 1.27 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.27 -1.27) (xy -1.27 1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 -1.27) (xy 1.27 1.27) (xy -1.27 0) (xy 1.27 -1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "LED_1_1"
-				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "K"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 3.81 0 180)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Device:R_Potentiometer"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 1.016)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "RV"
-				(at -4.445 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "R_Potentiometer"
-				(at -2.54 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Potentiometer"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "resistor variable"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "Potentiometer*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "R_Potentiometer_0_1"
-				(rectangle
-					(start 1.016 2.54)
-					(end -1.016 -2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.143 0) (xy 2.286 0.508) (xy 2.286 -0.508) (xy 1.143 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.54 0) (xy 1.524 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "R_Potentiometer_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 1.27)
-					(name "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 3.81 0 180)
-					(length 1.27)
-					(name "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "Mechanical:MountingHole"
 			(pin_names
 				(offset 1.016)
@@ -700,188 +350,6 @@
 		)
 		(uuid "3621ff5a-bb70-4c6f-9f90-ca4b7fd86df8")
 	)
-	(text "DaughterBoard\n"
-		(exclude_from_sim no)
-		(at 56.896 126.238 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "c323b159-9417-4c92-ad71-3a7d9b8e1f31")
-	)
-	(junction
-		(at 68.58 139.7)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "799bb78e-4fcb-46ed-8588-190762bf351c")
-	)
-	(junction
-		(at 45.72 139.7)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f84f76ff-c469-47f6-a66c-4d2843365a15")
-	)
-	(wire
-		(pts
-			(xy 73.66 154.94) (xy 67.31 154.94)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "068506ee-9bbe-47aa-b1b8-4a9d3b468b68")
-	)
-	(wire
-		(pts
-			(xy 73.66 134.62) (xy 73.66 139.7)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "09ab9e24-c864-4656-b1db-63f463f4a8f1")
-	)
-	(wire
-		(pts
-			(xy 73.66 139.7) (xy 68.58 139.7)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "17a24993-80ff-4ef3-953f-97a02f3826a4")
-	)
-	(wire
-		(pts
-			(xy 67.31 153.67) (xy 67.31 154.94)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1f2860ba-dc6a-4cb4-9a72-d666a4169694")
-	)
-	(wire
-		(pts
-			(xy 40.64 134.62) (xy 40.64 139.7)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "35ac3b17-b534-4941-8768-2d6174ed305c")
-	)
-	(wire
-		(pts
-			(xy 40.894 154.94) (xy 47.244 154.94)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "386ed533-cbd2-4172-b74d-ff36c2f95b84")
-	)
-	(wire
-		(pts
-			(xy 45.72 139.7) (xy 45.72 138.43)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "50009431-b325-4e47-becb-2e3402f5a6ea")
-	)
-	(wire
-		(pts
-			(xy 45.72 139.7) (xy 50.8 139.7)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "551f11e1-ef4e-4d6e-9597-623b6d15a5e5")
-	)
-	(wire
-		(pts
-			(xy 63.5 144.78) (xy 67.31 144.78)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "592e96e4-1e8d-4ad5-add4-d00d2d3ba170")
-	)
-	(wire
-		(pts
-			(xy 67.31 146.05) (xy 67.31 144.78)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5a3dab0f-ccf5-4b9b-9640-14a240c40ec5")
-	)
-	(wire
-		(pts
-			(xy 63.5 142.24) (xy 73.66 142.24)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5acd20aa-50a6-4cbf-aa9a-e52be502b7d5")
-	)
-	(wire
-		(pts
-			(xy 63.5 134.62) (xy 64.77 134.62)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "60aa8b1d-fe4a-40f5-91c6-2203499fac70")
-	)
-	(wire
-		(pts
-			(xy 50.8 134.62) (xy 50.8 137.16)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "60fee1dd-cc27-402c-b6b1-5a15751deb83")
-	)
-	(wire
-		(pts
-			(xy 40.64 139.7) (xy 45.72 139.7)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "674f1035-2773-4b27-aea1-877e33603f06")
-	)
-	(wire
-		(pts
-			(xy 47.244 153.67) (xy 47.244 154.94)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "78052938-42bd-4421-be2a-0f78ffc27bfa")
-	)
-	(wire
-		(pts
-			(xy 63.5 134.62) (xy 63.5 137.16)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7d18e9c8-f32a-42a4-b60f-6513164a298b")
-	)
 	(wire
 		(pts
 			(xy 189.23 113.03) (xy 189.23 118.11)
@@ -904,76 +372,6 @@
 	)
 	(wire
 		(pts
-			(xy 50.8 134.62) (xy 49.53 134.62)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "850e455e-bd59-4bc1-96f1-2beb43a10239")
-	)
-	(wire
-		(pts
-			(xy 40.894 142.24) (xy 51.054 142.24)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "88344274-d6d9-4680-906e-6e5e64a7b550")
-	)
-	(wire
-		(pts
-			(xy 47.244 144.78) (xy 51.054 144.78)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8c2a7047-49a5-498b-b594-57a2d51f4763")
-	)
-	(wire
-		(pts
-			(xy 68.58 138.43) (xy 68.58 139.7)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "930bafb2-1824-44e6-b1b4-da964d253566")
-	)
-	(wire
-		(pts
-			(xy 47.244 146.05) (xy 47.244 144.78)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "94777bfb-6f63-4419-a871-709631983b21")
-	)
-	(wire
-		(pts
-			(xy 63.5 139.7) (xy 68.58 139.7)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9ee41f4a-27c3-4e73-bcd1-2549440d7cb4")
-	)
-	(wire
-		(pts
-			(xy 73.66 153.67) (xy 73.66 154.94)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b2c1e67f-f8f0-41d9-a0de-d2d39fa948d2")
-	)
-	(wire
-		(pts
 			(xy 186.69 113.03) (xy 186.69 118.11)
 		)
 		(stroke
@@ -992,57 +390,7 @@
 		)
 		(uuid "bd2a6533-cea5-4fa2-90dc-596c18bb260d")
 	)
-	(wire
-		(pts
-			(xy 72.39 134.62) (xy 73.66 134.62)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c2aea404-a3d1-4339-bf51-db8d454deb97")
-	)
-	(wire
-		(pts
-			(xy 40.894 142.24) (xy 40.894 146.05)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c48d6556-80e9-48be-9c26-d183a8a6de90")
-	)
-	(wire
-		(pts
-			(xy 73.66 142.24) (xy 73.66 146.05)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ebd9b301-f2c9-4bfd-af13-6c6467ffdf11")
-	)
-	(wire
-		(pts
-			(xy 40.894 153.67) (xy 40.894 154.94)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ee985ed7-7693-4d78-863f-8c615861549d")
-	)
-	(wire
-		(pts
-			(xy 41.91 134.62) (xy 40.64 134.62)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fba53232-9a77-48a2-b4ba-71efc5b14255")
-	)
-	(global_label "Audio_Out_L"
+	(global_label "AUDIO_OUT_L"
 		(shape output)
 		(at 191.77 118.11 270)
 		(fields_autoplaced yes)
@@ -1054,7 +402,7 @@
 		)
 		(uuid "63a4f23c-ef13-4451-ad31-8a0b7015e8a2")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 191.77 132.4041 90)
+			(at 191.77 133.3115 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1064,7 +412,7 @@
 			)
 		)
 	)
-	(global_label "Audio_Out_R"
+	(global_label "AUDIO_OUT_R"
 		(shape output)
 		(at 194.31 118.11 270)
 		(fields_autoplaced yes)
@@ -1076,7 +424,7 @@
 		)
 		(uuid "78d05bdd-c11e-4a28-a10f-47be647ba9f2")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 194.31 132.646 90)
+			(at 194.31 133.5534 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1086,7 +434,7 @@
 			)
 		)
 	)
-	(global_label "Audio_In_R"
+	(global_label "AUDIO_IN_R"
 		(shape input)
 		(at 189.23 118.11 270)
 		(fields_autoplaced yes)
@@ -1098,7 +446,7 @@
 		)
 		(uuid "d5b8388c-08c7-4dcf-8ff7-2a0821196866")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 189.23 131.1946 90)
+			(at 189.23 131.8601 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1108,7 +456,7 @@
 			)
 		)
 	)
-	(global_label "Audio_In_L"
+	(global_label "AUDIO_IN_L"
 		(shape input)
 		(at 186.69 118.11 270)
 		(fields_autoplaced yes)
@@ -1120,7 +468,7 @@
 		)
 		(uuid "e052c272-6fad-43b5-9f64-11e9693d28f1")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 186.69 130.9527 90)
+			(at 186.69 131.6182 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1259,86 +607,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:LED")
-		(at 40.894 149.86 90)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "09ea1daf-8321-4a83-899f-9cefe6f0cbaa")
-		(property "Reference" "D4"
-			(at 48.514 148.2725 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "LED"
-			(at 45.974 148.2725 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" ""
-			(at 40.894 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 40.894 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Light emitting diode"
-			(at 40.894 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 40.894 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "d6645882-763f-47f3-8ef3-f46ec3583df2")
-		)
-		(pin "2"
-			(uuid "2fc1a8b1-f826-4dbb-9999-175b01bdf559")
-		)
-		(instances
-			(project "daisy-studio"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
-					(reference "D4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Mechanical:MountingHole")
 		(at 21.59 115.57 0)
 		(unit 1)
@@ -1397,156 +665,6 @@
 			(project "triptech"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
 					(reference "H5")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:LED")
-		(at 73.66 149.86 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "16f9b147-bda6-4916-8473-4c33f31f8ff1")
-		(property "Reference" "D2"
-			(at 66.04 148.2725 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "LED"
-			(at 68.58 148.2725 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" ""
-			(at 73.66 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 73.66 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Light emitting diode"
-			(at 73.66 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 73.66 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "55469637-dd58-49df-a1f2-c41ac931c36e")
-		)
-		(pin "2"
-			(uuid "3ff5c93e-cb08-4673-b807-66a956125ca8")
-		)
-		(instances
-			(project "daisy-studio"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
-					(reference "D2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R_Potentiometer")
-		(at 68.58 134.62 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "5870f56a-b72e-4190-9f0a-265250ce9e67")
-		(property "Reference" "RV3"
-			(at 68.58 128.27 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "10k"
-			(at 68.58 130.81 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 68.58 134.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 68.58 134.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Potentiometer - Audio Taper"
-			(at 68.58 134.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "75e3b3a9-4168-4dba-88cd-3f9de1c6f55d")
-		)
-		(pin "3"
-			(uuid "51a910d7-d664-4baf-af0b-1ae5d5e9016b")
-		)
-		(pin "2"
-			(uuid "882d6802-6359-4ddf-9338-0ad23f7c1eec")
-		)
-		(instances
-			(project "daisy-studio"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
-					(reference "RV3")
 					(unit 1)
 				)
 			)
@@ -1681,149 +799,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R_Potentiometer")
-		(at 123.19 133.35 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "7cb5f251-5e18-4340-9955-f93e5c9542e7")
-		(property "Reference" "RV5"
-			(at 123.19 127 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "10k"
-			(at 123.19 129.54 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 123.19 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 123.19 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Potentiometer - Audio Taper"
-			(at 123.19 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "42994950-4fcb-48a7-918f-1da497dbd71b")
-		)
-		(pin "3"
-			(uuid "d2a3e263-303d-4dc7-89e4-1498ebcf4016")
-		)
-		(pin "2"
-			(uuid "0f5ffa69-8382-4d86-adeb-ff1db7f9d933")
-		)
-		(instances
-			(project "daisy-studio"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
-					(reference "RV5")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R_Potentiometer")
-		(at 45.72 134.62 90)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "aae49c30-02cd-4103-816e-4805ee960ef8")
-		(property "Reference" "RV4"
-			(at 45.72 128.27 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "10k"
-			(at 45.72 130.81 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 45.72 134.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 45.72 134.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Potentiometer - Audio Taper"
-			(at 45.72 134.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "d94902b5-672f-4cde-9ebc-b2b8dba94388")
-		)
-		(pin "3"
-			(uuid "8bd3c0ad-7633-4997-8817-07140a627cd9")
-		)
-		(pin "2"
-			(uuid "d8f7498a-6636-4295-8160-78266660e8af")
-		)
-		(instances
-			(project "daisy-studio"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
-					(reference "RV4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Connector:Conn_01x04_Pin")
 		(at 189.23 107.95 90)
 		(mirror x)
@@ -1833,7 +808,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ef94a024-d6cc-49a8-8338-bccf8907a379")
-		(property "Reference" "J6"
+		(property "Reference" "J8"
 			(at 190.5 102.87 90)
 			(effects
 				(font
@@ -1891,79 +866,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
-					(reference "J6")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R_Potentiometer")
-		(at 106.68 133.35 90)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "f69d5b31-0946-4ce5-8ae6-1621896ec6c4")
-		(property "Reference" "RV6"
-			(at 106.68 127 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "10k"
-			(at 106.68 129.54 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 106.68 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 106.68 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Potentiometer - Audio Taper"
-			(at 106.68 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "9f8971e6-e107-4e01-8fb1-d8fd88950b0e")
-		)
-		(pin "3"
-			(uuid "17f53f2f-f4d7-4597-975c-6efd5142f6e8")
-		)
-		(pin "2"
-			(uuid "b58299c3-e9a7-49f7-9344-bcf4cdfa0fd5")
-		)
-		(instances
-			(project "daisy-studio"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
-					(reference "RV6")
+					(reference "J8")
 					(unit 1)
 				)
 			)
@@ -2049,6 +952,48 @@
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
 					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 80.264 93.472)
+		(size 39.116 24.384)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "9196cbbe-7bd4-4d56-b9dd-cbcb720624e2")
+		(property "Sheetname" "Daughter Board"
+			(at 80.264 92.7604 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "daughter.kicad_sch"
+			(at 80.264 118.4406 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "daisy-studio"
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
+					(page "6")
 				)
 			)
 		)
