@@ -194,10 +194,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "R_Potentiometer_1"
-			(pin_numbers
-				(hide yes)
-			)
+		(symbol "Device:R_Potentiometer"
 			(pin_names
 				(offset 1.016)
 				(hide yes)
@@ -266,7 +263,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "R_Potentiometer_1_0_1"
+			(symbol "R_Potentiometer_0_1"
 				(rectangle
 					(start 1.016 2.54)
 					(end -1.016 -2.54)
@@ -303,7 +300,7 @@
 					)
 				)
 			)
-			(symbol "R_Potentiometer_1_1_1"
+			(symbol "R_Potentiometer_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 1.27)
@@ -880,7 +877,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "139bbfa9-92c9-4e40-8326-443e8384f52a")
-		(property "Reference" "#PWR092"
+		(property "Reference" "#PWR92"
 			(at 63.5 128.27 0)
 			(effects
 				(font
@@ -930,7 +927,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/9196cbbe-7bd4-4d56-b9dd-cbcb720624e2"
-					(reference "#PWR092")
+					(reference "#PWR92")
 					(unit 1)
 				)
 			)
@@ -1015,7 +1012,6 @@
 		)
 	)
 	(symbol
-		(lib_name "R_Potentiometer_1")
 		(lib_id "Device:R_Potentiometer")
 		(at 63.5 114.3 0)
 		(mirror x)
@@ -1035,7 +1031,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "R_Potentiometer"
 			(at 60.96 115.5699 0)
 			(effects
 				(font
@@ -1062,7 +1058,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Potentiometer - Audio Taper"
+		(property "Description" "Potentiometer"
 			(at 63.5 114.3 0)
 			(effects
 				(font
@@ -1099,7 +1095,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "9e33cd43-a274-4975-9246-7827b2492e27")
-		(property "Reference" "#PWR046"
+		(property "Reference" "#PWR46"
 			(at 63.5 99.06 0)
 			(effects
 				(font
@@ -1149,14 +1145,13 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/9196cbbe-7bd4-4d56-b9dd-cbcb720624e2"
-					(reference "#PWR046")
+					(reference "#PWR46")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(symbol
-		(lib_name "R_Potentiometer_1")
 		(lib_id "Device:R_Potentiometer")
 		(at 63.5 85.09 0)
 		(mirror x)
@@ -1176,7 +1171,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "R_Potentiometer"
 			(at 60.96 86.3599 0)
 			(effects
 				(font
@@ -1203,7 +1198,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Potentiometer - Audio Taper"
+		(property "Description" "Potentiometer"
 			(at 63.5 85.09 0)
 			(effects
 				(font
