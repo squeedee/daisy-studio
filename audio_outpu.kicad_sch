@@ -1168,6 +1168,9 @@
 			(embedded_fonts no)
 		)
 		(symbol "Device:R_Potentiometer_Trim"
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 1.016)
 				(hide yes)
@@ -1481,6 +1484,933 @@
 					(at 3.81 0 180)
 					(length 2.54)
 					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "NCJ6FA-H-0_1"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at 0 10.16 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "NCJ6FA-H-0"
+				(at 0 7.62 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Connector_Audio:Jack_XLR-6.35mm_Neutrik_NCJ6FA-H-0_Horizontal"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.neutrik.com/en/product/ncj6fa-h-0"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Combo A series, 3 pole XLR female receptacle with 6.35mm (1/4in) stereo jack, horizontal PCB mount, retention spring"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "xlr connector neutrik"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Jack*XLR*6.35mm*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "NCJ6FA-H-0_1_1_1"
+				(polyline
+					(pts
+						(xy -5.08 0) (xy -4.572 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -3.556 0)
+					(radius 1.016)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 -5.08) (xy -2.54 -4.445)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 0 0)
+					(radius 5.08)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(circle
+					(center 0 -3.556)
+					(radius 1.016)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -5.08) (xy 0 -4.572)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 3.556 0)
+					(radius 1.016)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 0) (xy 4.572 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(text "1"
+					(at -3.556 1.778 0)
+					(effects
+						(font
+							(size 1.016 1.016)
+							(bold yes)
+						)
+					)
+				)
+				(text "3"
+					(at 0 -1.778 0)
+					(effects
+						(font
+							(size 1.016 1.016)
+							(bold yes)
+						)
+					)
+				)
+				(text "2"
+					(at 3.556 1.778 0)
+					(effects
+						(font
+							(size 1.016 1.016)
+							(bold yes)
+						)
+					)
+				)
+				(pin passive line
+					(at -7.62 0 0)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -2.54 -7.62 90)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "G"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -7.62 90)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 7.62 0 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "NCJ6FA-H-0_1_2_1"
+				(rectangle
+					(start -5.08 -2.54)
+					(end -6.35 -5.08)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.905 -2.54) (xy -1.27 -3.175) (xy -0.635 -2.54) (xy -0.635 0) (xy 2.54 0)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -2.54) (xy 0.635 -3.175) (xy 1.27 -2.54) (xy 2.54 -2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start 2.54 3.81)
+					(end -5.08 -5.08)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 2.54) (xy -2.54 2.54) (xy -2.54 -2.54) (xy -3.175 -3.175) (xy -3.81 -2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at 5.08 2.54 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "S"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "R"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 -2.54 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "T"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "NCJ6FA-H-0_2"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at 0 10.16 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "NCJ6FA-H-0"
+				(at 0 7.62 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Connector_Audio:Jack_XLR-6.35mm_Neutrik_NCJ6FA-H-0_Horizontal"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.neutrik.com/en/product/ncj6fa-h-0"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Combo A series, 3 pole XLR female receptacle with 6.35mm (1/4in) stereo jack, horizontal PCB mount, retention spring"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "xlr connector neutrik"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Jack*XLR*6.35mm*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "NCJ6FA-H-0_2_1_1"
+				(polyline
+					(pts
+						(xy -5.08 0) (xy -4.572 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -3.556 0)
+					(radius 1.016)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 -5.08) (xy -2.54 -4.445)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 0 0)
+					(radius 5.08)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(circle
+					(center 0 -3.556)
+					(radius 1.016)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -5.08) (xy 0 -4.572)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 3.556 0)
+					(radius 1.016)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 0) (xy 4.572 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(text "1"
+					(at -3.556 1.778 0)
+					(effects
+						(font
+							(size 1.016 1.016)
+							(bold yes)
+						)
+					)
+				)
+				(text "3"
+					(at 0 -1.778 0)
+					(effects
+						(font
+							(size 1.016 1.016)
+							(bold yes)
+						)
+					)
+				)
+				(text "2"
+					(at 3.556 1.778 0)
+					(effects
+						(font
+							(size 1.016 1.016)
+							(bold yes)
+						)
+					)
+				)
+				(pin passive line
+					(at -7.62 0 0)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -2.54 -7.62 90)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "G"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -7.62 90)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 7.62 0 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "NCJ6FA-H-0_2_2_1"
+				(rectangle
+					(start -5.08 -2.54)
+					(end -6.35 -5.08)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.905 -2.54) (xy -1.27 -3.175) (xy -0.635 -2.54) (xy -0.635 0) (xy 2.54 0)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -2.54) (xy 0.635 -3.175) (xy 1.27 -2.54) (xy 2.54 -2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start 2.54 3.81)
+					(end -5.08 -5.08)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 2.54) (xy -2.54 2.54) (xy -2.54 -2.54) (xy -3.175 -3.175) (xy -3.81 -2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at 5.08 2.54 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "S"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "R"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 -2.54 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "T"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "R_Potentiometer_Trim_1"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "RV"
+				(at -4.445 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "R_Potentiometer_Trim"
+				(at -2.54 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Trim-potentiometer"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "resistor variable trimpot trimmer"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Potentiometer*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_Potentiometer_Trim_1_0_1"
+				(rectangle
+					(start 1.016 2.54)
+					(end -1.016 -2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.524 0.762) (xy 1.524 -0.762)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 0) (xy 1.524 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_Potentiometer_Trim_1_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 0 180)
+					(length 1.27)
+					(name "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -4777,7 +5707,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "05ba4d9d-6460-4926-beeb-0264c7688cf8")
-		(property "Reference" "#PWR030"
+		(property "Reference" "#PWR036"
 			(at 99.06 170.18 0)
 			(effects
 				(font
@@ -4827,7 +5757,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR030")
+					(reference "#PWR036")
 					(unit 1)
 				)
 			)
@@ -4843,7 +5773,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "063fdda5-c309-4dc0-9dde-bc108bdd1b4e")
-		(property "Reference" "C45"
+		(property "Reference" "C13"
 			(at 34.29 180.594 0)
 			(effects
 				(font
@@ -4893,7 +5823,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C45")
+					(reference "C13")
 					(unit 1)
 				)
 			)
@@ -4909,7 +5839,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "111e466d-4313-469b-b5a2-539477b85ef8")
-		(property "Reference" "C16"
+		(property "Reference" "C24"
 			(at 125.984 182.88 90)
 			(effects
 				(font
@@ -4959,7 +5889,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C16")
+					(reference "C24")
 					(unit 1)
 				)
 			)
@@ -4974,7 +5904,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "12e6d4d2-d947-44aa-a04e-1bc50825939f")
-		(property "Reference" "D4"
+		(property "Reference" "D5"
 			(at 168.91 99.568 90)
 			(effects
 				(font
@@ -5044,7 +5974,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "D4")
+					(reference "D5")
 					(unit 1)
 				)
 			)
@@ -5060,7 +5990,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "1544302e-7092-41c7-8f4f-9b9f62ae1913")
-		(property "Reference" "C48"
+		(property "Reference" "C18"
 			(at 89.154 167.64 90)
 			(effects
 				(font
@@ -5110,7 +6040,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C48")
+					(reference "C18")
 					(unit 1)
 				)
 			)
@@ -5126,7 +6056,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "19098552-e891-4c37-a41d-0c646962dec1")
-		(property "Reference" "R38"
+		(property "Reference" "R22"
 			(at 90.17 95.25 90)
 			(effects
 				(font
@@ -5142,7 +6072,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 90.17 99.822 90)
 			(effects
 				(font
@@ -5178,7 +6108,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "R38")
+					(reference "R22")
 					(unit 1)
 				)
 			)
@@ -5193,7 +6123,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "1ebeb940-8ad3-4ca8-b165-31f467f5cc28")
-		(property "Reference" "D7"
+		(property "Reference" "D4"
 			(at 165.1 72.136 90)
 			(effects
 				(font
@@ -5263,7 +6193,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "D7")
+					(reference "D4")
 					(unit 1)
 				)
 			)
@@ -5279,7 +6209,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "2060d8b5-d94d-4e5c-af09-c954ffaa07fd")
-		(property "Reference" "#PWR031"
+		(property "Reference" "#PWR037"
 			(at 99.06 187.96 0)
 			(effects
 				(font
@@ -5329,7 +6259,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR031")
+					(reference "#PWR037")
 					(unit 1)
 				)
 			)
@@ -5345,7 +6275,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "21d48642-48ce-4143-aab3-b160641a19c6")
-		(property "Reference" "C46"
+		(property "Reference" "C14"
 			(at 43.688 180.848 0)
 			(effects
 				(font
@@ -5395,7 +6325,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C46")
+					(reference "C14")
 					(unit 1)
 				)
 			)
@@ -5411,7 +6341,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "2284e40c-2e77-4508-80b5-92b7ed5faa99")
-		(property "Reference" "C12"
+		(property "Reference" "C20"
 			(at 89.408 182.88 90)
 			(effects
 				(font
@@ -5461,7 +6391,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C12")
+					(reference "C20")
 					(unit 1)
 				)
 			)
@@ -5477,7 +6407,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "233e3c13-e531-4cab-a7b6-c6d48d3a5f4a")
-		(property "Reference" "#PWR093"
+		(property "Reference" "#PWR029"
 			(at 24.13 170.18 0)
 			(effects
 				(font
@@ -5527,7 +6457,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR093")
+					(reference "#PWR029")
 					(unit 1)
 				)
 			)
@@ -5543,7 +6473,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "26f260d2-fc7f-4534-a662-926218209601")
-		(property "Reference" "#PWR043"
+		(property "Reference" "#PWR040"
 			(at 135.89 187.96 0)
 			(effects
 				(font
@@ -5593,13 +6523,14 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR043")
+					(reference "#PWR040")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(symbol
+		(lib_name "NCJ6FA-H-0_1")
 		(lib_id "Connector_Audio:NCJ6FA-H-0")
 		(at 207.01 114.3 0)
 		(mirror y)
@@ -5610,7 +6541,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "283bceb1-a9e7-4087-8e6f-5168c13d065d")
-		(property "Reference" "J2"
+		(property "Reference" "J9"
 			(at 207.01 104.14 0)
 			(effects
 				(font
@@ -5677,7 +6608,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "J2")
+					(reference "J9")
 					(unit 1)
 				)
 			)
@@ -5694,7 +6625,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "35a96385-bff8-4341-bca2-d6bd4c867565")
-		(property "Reference" "#PWR041"
+		(property "Reference" "#PWR044"
 			(at 171.45 138.43 0)
 			(effects
 				(font
@@ -5744,7 +6675,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR041")
+					(reference "#PWR044")
 					(unit 1)
 				)
 			)
@@ -5759,7 +6690,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "42bb3c3a-ebe8-4cfe-a34b-5f76accf0d6a")
-		(property "Reference" "D9"
+		(property "Reference" "D7"
 			(at 177.8 32.766 90)
 			(effects
 				(font
@@ -5829,7 +6760,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "D9")
+					(reference "D7")
 					(unit 1)
 				)
 			)
@@ -5845,7 +6776,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4832530f-0b6a-4c06-8fed-55610684de53")
-		(property "Reference" "#PWR029"
+		(property "Reference" "#PWR035"
 			(at 81.28 198.12 0)
 			(effects
 				(font
@@ -5895,7 +6826,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR029")
+					(reference "#PWR035")
 					(unit 1)
 				)
 			)
@@ -5911,7 +6842,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "498ca4f5-8530-4cd2-94d4-041f0d73e47f")
-		(property "Reference" "#PWR096"
+		(property "Reference" "#PWR032"
 			(at 54.61 170.18 0)
 			(effects
 				(font
@@ -5961,7 +6892,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR096")
+					(reference "#PWR032")
 					(unit 1)
 				)
 			)
@@ -5977,7 +6908,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4e493cbd-89b3-4c5c-ba3d-cdd493706ad6")
-		(property "Reference" "R36"
+		(property "Reference" "R21"
 			(at 90.17 29.21 90)
 			(effects
 				(font
@@ -5993,7 +6924,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 90.17 33.782 90)
 			(effects
 				(font
@@ -6029,7 +6960,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "R36")
+					(reference "R21")
 					(unit 1)
 				)
 			)
@@ -6045,7 +6976,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "65b2d869-57d8-461f-b650-468d509eba4e")
-		(property "Reference" "C15"
+		(property "Reference" "C23"
 			(at 125.73 172.72 90)
 			(effects
 				(font
@@ -6095,7 +7026,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C15")
+					(reference "C23")
 					(unit 1)
 				)
 			)
@@ -6110,7 +7041,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "660f625b-5d6a-40a7-ba40-041f89ce60f7")
-		(property "Reference" "#PWR040"
+		(property "Reference" "#PWR043"
 			(at 171.45 101.6 0)
 			(effects
 				(font
@@ -6160,7 +7091,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR040")
+					(reference "#PWR043")
 					(unit 1)
 				)
 			)
@@ -6176,7 +7107,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6cd55dae-986f-4c38-8b7c-fa20c9420d7f")
-		(property "Reference" "C44"
+		(property "Reference" "C12"
 			(at 21.844 180.34 0)
 			(effects
 				(font
@@ -6226,7 +7157,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C44")
+					(reference "C12")
 					(unit 1)
 				)
 			)
@@ -6241,7 +7172,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6d45f629-904b-436f-90dc-b37f74960cdd")
-		(property "Reference" "#PWR38"
+		(property "Reference" "#PWR041"
 			(at 171.45 35.56 0)
 			(effects
 				(font
@@ -6291,7 +7222,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR38")
+					(reference "#PWR041")
 					(unit 1)
 				)
 			)
@@ -6306,7 +7237,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6f2e2e20-49c7-44ae-b3db-1755dd2079dd")
-		(property "Reference" "#PWR094"
+		(property "Reference" "#PWR030"
 			(at 27.94 193.04 0)
 			(effects
 				(font
@@ -6356,7 +7287,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR094")
+					(reference "#PWR030")
 					(unit 1)
 				)
 			)
@@ -6458,7 +7389,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7c811412-b1d4-426d-809b-845811d016f1")
-		(property "Reference" "C43"
+		(property "Reference" "C17"
 			(at 93.98 105.41 90)
 			(effects
 				(font
@@ -6474,7 +7405,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
 			(at 97.79 112.0648 0)
 			(effects
 				(font
@@ -6510,7 +7441,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C43")
+					(reference "C17")
 					(unit 1)
 				)
 			)
@@ -6526,7 +7457,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8579010b-051a-4a3e-aec1-e8bcaffebdaf")
-		(property "Reference" "C13"
+		(property "Reference" "C21"
 			(at 89.408 187.96 90)
 			(effects
 				(font
@@ -6576,7 +7507,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C13")
+					(reference "C21")
 					(unit 1)
 				)
 			)
@@ -6591,7 +7522,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "89808d80-1c5a-429b-b485-ecbd67fd9d2d")
-		(property "Reference" "#PWR97"
+		(property "Reference" "#PWR033"
 			(at 81.28 80.01 0)
 			(effects
 				(font
@@ -6641,7 +7572,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR97")
+					(reference "#PWR033")
 					(unit 1)
 				)
 			)
@@ -6656,7 +7587,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8a4e8ae5-6710-4926-869c-67ad9618dc2f")
-		(property "Reference" "#PWR095"
+		(property "Reference" "#PWR031"
 			(at 50.8 193.04 0)
 			(effects
 				(font
@@ -6706,7 +7637,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR095")
+					(reference "#PWR031")
 					(unit 1)
 				)
 			)
@@ -6721,7 +7652,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8ac4b45c-8382-41dd-8fd7-16444db046bd")
-		(property "Reference" "D8"
+		(property "Reference" "D9"
 			(at 177.8 98.806 90)
 			(effects
 				(font
@@ -6791,7 +7722,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "D8")
+					(reference "D9")
 					(unit 1)
 				)
 			)
@@ -6806,7 +7737,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8b58df16-eed2-48b8-850b-8cc57d4262a0")
-		(property "Reference" "#PWR44"
+		(property "Reference" "#PWR045"
 			(at 198.12 82.55 0)
 			(effects
 				(font
@@ -6856,7 +7787,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR44")
+					(reference "#PWR045")
 					(unit 1)
 				)
 			)
@@ -6873,7 +7804,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "93d3c3c0-a5a2-41fa-85a4-77625eb44539")
-		(property "Reference" "J6"
+		(property "Reference" "J8"
 			(at 214.63 71.7549 0)
 			(effects
 				(font
@@ -6942,7 +7873,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "J6")
+					(reference "J8")
 					(unit 2)
 				)
 			)
@@ -7226,6 +8157,7 @@
 		)
 	)
 	(symbol
+		(lib_name "R_Potentiometer_Trim_1")
 		(lib_id "Device:R_Potentiometer_Trim")
 		(at 107.95 35.56 270)
 		(unit 1)
@@ -7235,7 +8167,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a3ecae17-34ca-47f6-8f45-e9c65a25717b")
-		(property "Reference" "RV2"
+		(property "Reference" "RV1"
 			(at 107.95 29.21 90)
 			(effects
 				(font
@@ -7290,7 +8222,7 @@
 		(instances
 			(project ""
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "RV2")
+					(reference "RV1")
 					(unit 1)
 				)
 			)
@@ -7306,7 +8238,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a5775cea-03b8-4e7e-9d0c-479490c4d4cb")
-		(property "Reference" "C47"
+		(property "Reference" "C15"
 			(at 57.15 180.34 0)
 			(effects
 				(font
@@ -7356,7 +8288,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C47")
+					(reference "C15")
 					(unit 1)
 				)
 			)
@@ -7372,7 +8304,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a8c6ffb1-7092-4322-8f6d-91dcfda126ce")
-		(property "Reference" "C42"
+		(property "Reference" "C16"
 			(at 93.98 39.37 90)
 			(effects
 				(font
@@ -7388,7 +8320,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
 			(at 97.79 46.0248 0)
 			(effects
 				(font
@@ -7424,7 +8356,7 @@
 		(instances
 			(project ""
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C42")
+					(reference "C16")
 					(unit 1)
 				)
 			)
@@ -7440,7 +8372,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "aaf29f0f-ae34-4ed1-b7d9-5505610c6d0e")
-		(property "Reference" "C49"
+		(property "Reference" "C19"
 			(at 88.9 172.974 90)
 			(effects
 				(font
@@ -7490,7 +8422,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C49")
+					(reference "C19")
 					(unit 1)
 				)
 			)
@@ -7506,7 +8438,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "adcfb169-6d8d-4e4d-979b-1a5dd38d0362")
-		(property "Reference" "#PWR035"
+		(property "Reference" "#PWR039"
 			(at 135.89 170.18 0)
 			(effects
 				(font
@@ -7556,7 +8488,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR035")
+					(reference "#PWR039")
 					(unit 1)
 				)
 			)
@@ -7572,7 +8504,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ae7ef343-ee57-426e-9fea-14610fec6eb5")
-		(property "Reference" "#PWR98"
+		(property "Reference" "#PWR034"
 			(at 81.28 146.05 0)
 			(effects
 				(font
@@ -7622,7 +8554,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR98")
+					(reference "#PWR034")
 					(unit 1)
 				)
 			)
@@ -8084,7 +9016,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b8ca0597-242e-47ae-9692-0be42247caf3")
-		(property "Reference" "#PWR042"
+		(property "Reference" "#PWR046"
 			(at 198.12 148.59 0)
 			(effects
 				(font
@@ -8134,7 +9066,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR042")
+					(reference "#PWR046")
 					(unit 1)
 				)
 			)
@@ -8150,7 +9082,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c836b3f0-5b8c-4231-b867-94d9686fd19b")
-		(property "Reference" "RV3"
+		(property "Reference" "RV2"
 			(at 107.95 95.25 90)
 			(effects
 				(font
@@ -8205,7 +9137,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "RV3")
+					(reference "RV2")
 					(unit 1)
 				)
 			)
@@ -8221,7 +9153,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ca81b184-d442-48bc-b8ea-417b1f7a518c")
-		(property "Reference" "C14"
+		(property "Reference" "C22"
 			(at 125.73 167.64 90)
 			(effects
 				(font
@@ -8271,7 +9203,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C14")
+					(reference "C22")
 					(unit 1)
 				)
 			)
@@ -8287,7 +9219,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cfd9baad-b5a7-4ced-903d-1dc412d203ef")
-		(property "Reference" "R35"
+		(property "Reference" "R19"
 			(at 68.58 46.99 90)
 			(effects
 				(font
@@ -8303,7 +9235,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 68.58 51.562 90)
 			(effects
 				(font
@@ -8339,7 +9271,7 @@
 		(instances
 			(project ""
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "R35")
+					(reference "R19")
 					(unit 1)
 				)
 			)
@@ -8355,7 +9287,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d38d6d1c-20b6-49d2-82d4-a5d386cf6282")
-		(property "Reference" "#PWR034"
+		(property "Reference" "#PWR038"
 			(at 118.11 198.12 0)
 			(effects
 				(font
@@ -8405,7 +9337,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR034")
+					(reference "#PWR038")
 					(unit 1)
 				)
 			)
@@ -8421,7 +9353,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e0515e77-9399-41a2-a340-5e22224bdf0f")
-		(property "Reference" "C17"
+		(property "Reference" "C25"
 			(at 125.984 187.96 90)
 			(effects
 				(font
@@ -8471,7 +9403,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "C17")
+					(reference "C25")
 					(unit 1)
 				)
 			)
@@ -8486,7 +9418,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e2ff650b-d87f-4fee-af63-4b677e66a28f")
-		(property "Reference" "D5"
+		(property "Reference" "D8"
 			(at 177.8 74.676 90)
 			(effects
 				(font
@@ -8556,7 +9488,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "D5")
+					(reference "D8")
 					(unit 1)
 				)
 			)
@@ -8657,7 +9589,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e65cfb21-1927-4b14-a2ef-af6ac4f6b51b")
-		(property "Reference" "R37"
+		(property "Reference" "R20"
 			(at 68.58 113.03 90)
 			(effects
 				(font
@@ -8673,7 +9605,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 68.58 117.602 90)
 			(effects
 				(font
@@ -8709,13 +9641,14 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "R37")
+					(reference "R20")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(symbol
+		(lib_name "NCJ6FA-H-0_2")
 		(lib_id "Connector_Audio:NCJ6FA-H-0")
 		(at 207.01 48.26 0)
 		(mirror y)
@@ -8726,7 +9659,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e80d9ef6-c665-4b99-950f-4f728e1c511f")
-		(property "Reference" "J6"
+		(property "Reference" "J8"
 			(at 207.01 38.1 0)
 			(effects
 				(font
@@ -8793,7 +9726,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "J6")
+					(reference "J8")
 					(unit 1)
 				)
 			)
@@ -8810,7 +9743,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "eb216785-bd2e-4d69-b36a-719dfa99807c")
-		(property "Reference" "#PWR39"
+		(property "Reference" "#PWR042"
 			(at 171.45 72.39 0)
 			(effects
 				(font
@@ -8860,7 +9793,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "#PWR39")
+					(reference "#PWR042")
 					(unit 1)
 				)
 			)
@@ -8877,7 +9810,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "fb130fa2-0e1b-42a5-9b4a-1f498f738a7d")
-		(property "Reference" "J2"
+		(property "Reference" "J9"
 			(at 214.63 137.7949 0)
 			(effects
 				(font
@@ -8946,7 +9879,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7"
-					(reference "J2")
+					(reference "J9")
 					(unit 2)
 				)
 			)
