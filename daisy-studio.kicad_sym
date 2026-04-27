@@ -5693,6 +5693,236 @@
 		)
 		(embedded_fonts no)
 	)
+	(symbol "RS3-1212D"
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "PS1"
+			(at 17.78 7.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "RS3-1212D"
+			(at 17.78 5.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "daisy-studio:TMR1210"
+			(at 31.75 -94.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://tracopower.com/tmr3e-datasheet/"
+			(at 31.75 -194.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Description" "3 Watt DC/DC converter, industrial, 2:1 input, regulated, 1600 VDC I/O-isolation, encapsulated, SIP-8"
+			(at 37.592 4.318 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" "919-RS3-1212D"
+			(at 31.75 -494.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" "https://www.mouser.com/datasheet/3/887/1/RS3.pdf"
+			(at 31.75 -594.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "RECOM"
+			(at 31.75 -694.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RS3-1212D"
+			(at 31.75 -794.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(symbol "RS3-1212D_1_1"
+			(rectangle
+				(start 5.08 2.54)
+				(end 30.48 -10.16)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(pin passive line
+				(at 0 0 0)
+				(length 5.08)
+				(name "+VIN_(VCC)"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -2.54 0)
+				(length 5.08)
+				(name "-VIN_(GND)"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -5.08 0)
+				(length 5.08)
+				(name "NC."
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -7.62 0)
+				(length 5.08)
+				(name "CTRL"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 35.56 0 180)
+				(length 5.08)
+				(name "+VOUT"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "6"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_out line
+				(at 35.56 -2.54 180)
+				(length 5.08)
+				(name "COMMON"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "7"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 35.56 -5.08 180)
+				(length 5.08)
+				(name "-VOUT"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "8"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
 	(symbol "SDS-50J"
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7144,6 +7374,238 @@
 		)
 		(embedded_fonts no)
 	)
+	(symbol "TMR_3-1222E"
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "PS"
+			(at 31.75 7.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(property "Value" "TMR_3-1222E"
+			(at 31.75 5.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(property "Footprint" "daisy-studio:TMR1210"
+			(at 31.75 -94.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://tracopower.com/tmr3e-datasheet/"
+			(at 31.75 -194.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Description" "3 Watt DC/DC converter, industrial, 2:1 input, regulated, 1600 VDC I/O-isolation, encapsulated, SIP-8"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" "495-TMR3-1222E"
+			(at 31.75 -494.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/TRACO-Power/TMR-3-1222E?qs=ckJk83FOD0XV8pmww5rYnw%3D%3D"
+			(at 31.75 -594.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Traco Power"
+			(at 31.75 -694.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "TMR 3-1222E"
+			(at 31.75 -794.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(symbol "TMR_3-1222E_1_1"
+			(rectangle
+				(start 5.08 2.54)
+				(end 30.48 -17.78)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(pin passive line
+				(at 0 0 0)
+				(length 5.08)
+				(name "-VIN_(GND)"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -2.54 0)
+				(length 5.08)
+				(name "+VIN_(VCC)"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -5.08 0)
+				(length 5.08)
+				(name "REMOTE_ON/OFF"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -7.62 0)
+				(length 5.08)
+				(name "NTC."
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -10.16 0)
+				(length 5.08)
+				(name "+VOUT"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "6"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -12.7 0)
+				(length 5.08)
+				(name "COMMON"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "7"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -15.24 0)
+				(length 5.08)
+				(name "-VOUT"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "8"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
 	(symbol "_1"
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7200,68 +7662,5 @@
 			)
 		)
 		(embedded_fonts no)
-	)
-	(symbol "TMR_3-1222E" (in_bom yes) (on_board yes)
-		(property "Reference" "PS" (at 31.75 7.62 0)
-			(effects (font (size 1.27 1.27)) (justify left top))
-		)
-		(property "Value" "TMR_3-1222E" (at 31.75 5.08 0)
-			(effects (font (size 1.27 1.27)) (justify left top))
-		)
-		(property "Footprint" "daisy-studio:TMR1210" (at 31.75 -94.92 0)
-			(effects (font (size 1.27 1.27)) (justify left top) hide)
-		)
-		(property "Datasheet" "https://tracopower.com/tmr3e-datasheet/" (at 31.75 -194.92 0)
-			(effects (font (size 1.27 1.27)) (justify left top) hide)
-		)
-		(property "ki_description" "3 Watt DC/DC converter, industrial, 2:1 input, regulated, 1600 VDC I/O-isolation, encapsulated, SIP-8" (at 31.75 -294.92 0)
-			(effects (font (size 1.27 1.27)) (justify left top) hide)
-		)
-		(property "Mouser Part Number" "495-TMR3-1222E" (at 31.75 -494.92 0)
-			(effects (font (size 1.27 1.27)) (justify left top) hide)
-		)
-		(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/TRACO-Power/TMR-3-1222E?qs=ckJk83FOD0XV8pmww5rYnw%3D%3D" (at 31.75 -594.92 0)
-			(effects (font (size 1.27 1.27)) (justify left top) hide)
-		)
-		(property "Manufacturer_Name" "Traco Power" (at 31.75 -694.92 0)
-			(effects (font (size 1.27 1.27)) (justify left top) hide)
-		)
-		(property "Manufacturer_Part_Number" "TMR 3-1222E" (at 31.75 -794.92 0)
-			(effects (font (size 1.27 1.27)) (justify left top) hide)
-		)
-		(rectangle
-			(start 5.08 2.54)
-			(end 30.48 -17.78)
-			(stroke (width 0.254) (type default))
-			(fill (type background))
-		)
-		(pin passive line (at 0 0 0) (length 5.08)
-			(name "-VIN_(GND)" (effects (font (size 1.27 1.27))))
-			(number "1" (effects (font (size 1.27 1.27))))
-		)
-		(pin passive line (at 0 -2.54 0) (length 5.08)
-			(name "+VIN_(VCC)" (effects (font (size 1.27 1.27))))
-			(number "2" (effects (font (size 1.27 1.27))))
-		)
-		(pin passive line (at 0 -5.08 0) (length 5.08)
-			(name "REMOTE_ON/OFF" (effects (font (size 1.27 1.27))))
-			(number "3" (effects (font (size 1.27 1.27))))
-		)
-		(pin passive line (at 0 -7.62 0) (length 5.08)
-			(name "NTC." (effects (font (size 1.27 1.27))))
-			(number "5" (effects (font (size 1.27 1.27))))
-		)
-		(pin passive line (at 0 -10.16 0) (length 5.08)
-			(name "+VOUT" (effects (font (size 1.27 1.27))))
-			(number "6" (effects (font (size 1.27 1.27))))
-		)
-		(pin passive line (at 0 -12.7 0) (length 5.08)
-			(name "COMMON" (effects (font (size 1.27 1.27))))
-			(number "7" (effects (font (size 1.27 1.27))))
-		)
-		(pin passive line (at 0 -15.24 0) (length 5.08)
-			(name "-VOUT" (effects (font (size 1.27 1.27))))
-			(number "8" (effects (font (size 1.27 1.27))))
-		)
 	)
 )

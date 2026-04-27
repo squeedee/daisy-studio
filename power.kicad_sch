@@ -2268,6 +2268,236 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "daisy-studio:RS3-1212D"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "PS1"
+				(at 17.78 7.62 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "RS3-1212D"
+				(at 17.78 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "daisy-studio:TMR1210"
+				(at 31.75 -94.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://tracopower.com/tmr3e-datasheet/"
+				(at 31.75 -194.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Description" "3 Watt DC/DC converter, industrial, 2:1 input, regulated, 1600 VDC I/O-isolation, encapsulated, SIP-8"
+				(at 37.592 4.318 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Mouser Part Number" "919-RS3-1212D"
+				(at 31.75 -494.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Mouser Price/Stock" "https://www.mouser.com/datasheet/3/887/1/RS3.pdf"
+				(at 31.75 -594.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Manufacturer_Name" "RECOM"
+				(at 31.75 -694.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Manufacturer_Part_Number" "RS3-1212D"
+				(at 31.75 -794.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(symbol "RS3-1212D_1_1"
+				(rectangle
+					(start 5.08 2.54)
+					(end 30.48 -10.16)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(pin passive line
+					(at 0 0 0)
+					(length 5.08)
+					(name "+VIN_(VCC)"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -2.54 0)
+					(length 5.08)
+					(name "-VIN_(GND)"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -5.08 0)
+					(length 5.08)
+					(name "NC."
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -7.62 0)
+					(length 5.08)
+					(name "CTRL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 35.56 0 180)
+					(length 5.08)
+					(name "+VOUT"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_out line
+					(at 35.56 -2.54 180)
+					(length 5.08)
+					(name "COMMON"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 35.56 -5.08 180)
+					(length 5.08)
+					(name "-VOUT"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "daisy-studio:SI2301CDS-T1-GE3"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -2428,238 +2658,6 @@
 						)
 					)
 					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "daisy-studio:TMR_3-1222E"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "PS1"
-				(at 12.192 6.858 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "TMR_3-1222E"
-				(at 12.192 4.318 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" "daisy-studio:TMR1210"
-				(at 31.75 -94.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "https://tracopower.com/tmr3e-datasheet/"
-				(at 31.75 -194.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Description" "3 Watt DC/DC converter, industrial, 2:1 input, regulated, 1600 VDC I/O-isolation, encapsulated, SIP-8"
-				(at 37.592 4.318 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Mouser Part Number" "495-TMR3-1222E"
-				(at 31.75 -494.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/TRACO-Power/TMR-3-1222E?qs=ckJk83FOD0XV8pmww5rYnw%3D%3D"
-				(at 31.75 -594.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Manufacturer_Name" "Traco Power"
-				(at 31.75 -694.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Manufacturer_Part_Number" "TMR 3-1222E"
-				(at 31.75 -794.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(symbol "TMR_3-1222E_1_1"
-				(rectangle
-					(start 5.08 2.54)
-					(end 30.48 -10.16)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(pin passive line
-					(at 0 0 0)
-					(length 5.08)
-					(name "+VIN_(VCC)"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -2.54 0)
-					(length 5.08)
-					(name "-VIN_(GND)"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -5.08 0)
-					(length 5.08)
-					(name "NC."
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -7.62 0)
-					(length 5.08)
-					(name "REMOTE_ON/OFF"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 35.56 0 180)
-					(length 5.08)
-					(name "+VOUT"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_out line
-					(at 35.56 -2.54 180)
-					(length 5.08)
-					(name "COMMON"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "7"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 35.56 -5.08 180)
-					(length 5.08)
-					(name "-VOUT"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "8"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -3803,12 +3801,6 @@
 		(uuid "03e9b0f8-ff1f-4e29-80b3-d2108ef2d949")
 	)
 	(junction
-		(at 26.67 135.89)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "055804dc-b7fb-4e92-9cc6-6451fb3cb8a0")
-	)
-	(junction
 		(at 231.14 134.62)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4011,6 +4003,10 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ff11ae33-2826-4929-8351-e2cc3834756b")
+	)
+	(no_connect
+		(at 29.21 135.89)
+		(uuid "3454a7a6-d86d-4115-9f77-d430b28ff04a")
 	)
 	(no_connect
 		(at 25.4 57.15)
@@ -4342,7 +4338,7 @@
 	)
 	(wire
 		(pts
-			(xy 26.67 139.7) (xy 26.67 135.89)
+			(xy 26.67 130.81) (xy 26.67 139.7)
 		)
 		(stroke
 			(width 0)
@@ -4462,16 +4458,6 @@
 	)
 	(wire
 		(pts
-			(xy 29.21 130.81) (xy 26.67 130.81)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6c3143d7-9ed3-47b8-a286-686abc6de29c")
-	)
-	(wire
-		(pts
 			(xy 64.77 133.35) (xy 72.39 133.35)
 		)
 		(stroke
@@ -4559,16 +4545,6 @@
 			(type default)
 		)
 		(uuid "7a4288bf-c832-4152-a25e-7af6c8dc84e9")
-	)
-	(wire
-		(pts
-			(xy 26.67 130.81) (xy 26.67 135.89)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7af953d6-cfb6-4744-9674-ca5930af8dd3")
 	)
 	(wire
 		(pts
@@ -4852,16 +4828,6 @@
 	)
 	(wire
 		(pts
-			(xy 26.67 135.89) (xy 29.21 135.89)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b26aefa3-30c6-4750-abc0-df78e1c8c803")
-	)
-	(wire
-		(pts
 			(xy 80.01 49.53) (xy 78.74 49.53)
 		)
 		(stroke
@@ -4969,6 +4935,16 @@
 			(type default)
 		)
 		(uuid "c9ca3fd4-df5c-405f-9e41-a0a9c83bfef2")
+	)
+	(wire
+		(pts
+			(xy 29.21 130.81) (xy 26.67 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ce4b88ef-1c8c-43ad-927f-c7d715e3d031")
 	)
 	(wire
 		(pts
@@ -5348,7 +5324,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "052100b7-7f9e-48c9-bd10-de7cd5a12be1")
-		(property "Reference" "#PWR014"
+		(property "Reference" "#PWR09"
 			(at 177.8 130.81 0)
 			(effects
 				(font
@@ -5398,7 +5374,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR014")
+					(reference "#PWR09")
 					(unit 1)
 				)
 			)
@@ -5480,7 +5456,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "05ac398a-b0ff-4c33-8446-4c1eff084136")
-		(property "Reference" "#PWR091"
+		(property "Reference" "#PWR03"
 			(at 72.39 158.75 0)
 			(effects
 				(font
@@ -5530,7 +5506,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR091")
+					(reference "#PWR03")
 					(unit 1)
 				)
 			)
@@ -5546,7 +5522,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "0c94e837-e856-4742-8b5e-63bdd3387c5f")
-		(property "Reference" "#PWR09"
+		(property "Reference" "#PWR05"
 			(at 123.19 148.59 0)
 			(effects
 				(font
@@ -5596,7 +5572,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR09")
+					(reference "#PWR05")
 					(unit 1)
 				)
 			)
@@ -5611,7 +5587,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "0f7427e4-a790-4621-ab03-6d09ff4ddde9")
-		(property "Reference" "#PWR013"
+		(property "Reference" "#PWR010"
 			(at 177.8 158.75 0)
 			(effects
 				(font
@@ -5662,7 +5638,7 @@
 		(instances
 			(project "triptech"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR013")
+					(reference "#PWR010")
 					(unit 1)
 				)
 			)
@@ -5751,7 +5727,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "18829142-7d35-4dec-bbad-70805b212b97")
-		(property "Reference" "#FLG03"
+		(property "Reference" "#FLG02"
 			(at 127 125.095 0)
 			(effects
 				(font
@@ -5801,7 +5777,132 @@
 		(instances
 			(project ""
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#FLG03")
+					(reference "#FLG02")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "daisy-studio:RS3-1212D")
+		(at 29.21 128.27 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2501dc9e-2557-401b-96fa-db8750692aa0")
+		(property "Reference" "PS1"
+			(at 46.99 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "RS3-1212D"
+			(at 46.99 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "daisy-studio:TMR1210"
+			(at 60.96 223.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://tracopower.com/tmr3e-datasheet/"
+			(at 60.96 323.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Description" "3 Watt DC/DC converter, industrial, 2:1 input, regulated, 1600 VDC I/O-isolation, encapsulated, SIP-8"
+			(at 66.802 123.952 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" "919-RS3-1212D"
+			(at 60.96 623.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" "https://www.mouser.com/datasheet/3/887/1/RS3.pdf"
+			(at 60.96 723.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "RECOM"
+			(at 60.96 823.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RS3-1212D"
+			(at 60.96 923.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "be809a2c-8404-446e-89f8-34fa943e8b17")
+		)
+		(pin "1"
+			(uuid "a1a4889c-a610-4ee0-864f-b9af1a9cad63")
+		)
+		(pin "5"
+			(uuid "21af07ea-76fd-4f7d-8fd5-54c923d3dc59")
+		)
+		(pin "3"
+			(uuid "1a0e2e55-c8d2-40e1-a72f-24d7dbfcdb52")
+		)
+		(pin "6"
+			(uuid "16eb86de-7502-4eae-92b7-521ec7333e20")
+		)
+		(pin "7"
+			(uuid "7a7bdbd0-d5c5-4624-983c-8d0f8e9da57b")
+		)
+		(pin "8"
+			(uuid "d2573666-519c-480b-92db-eb3f1be9213a")
+		)
+		(instances
+			(project ""
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
+					(reference "PS1")
 					(unit 1)
 				)
 			)
@@ -5817,7 +5918,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "25460df3-8842-4755-9496-d1b92d345430")
-		(property "Reference" "#PWR015"
+		(property "Reference" "#PWR014"
 			(at 205.74 148.59 0)
 			(effects
 				(font
@@ -5867,7 +5968,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR015")
+					(reference "#PWR014")
 					(unit 1)
 				)
 			)
@@ -5950,7 +6051,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4c83c1ea-7866-483c-b86f-2f0a4bb42ada")
-		(property "Reference" "#PWR090"
+		(property "Reference" "#PWR02"
 			(at 26.67 146.05 0)
 			(effects
 				(font
@@ -6000,7 +6101,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR090")
+					(reference "#PWR02")
 					(unit 1)
 				)
 			)
@@ -6088,7 +6189,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "512cffd6-133f-4daa-a3f2-658c953cf3b9")
-		(property "Reference" "#PWR05"
+		(property "Reference" "#PWR07"
 			(at 130.81 130.81 0)
 			(effects
 				(font
@@ -6139,7 +6240,7 @@
 		(instances
 			(project "triptech"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR05")
+					(reference "#PWR07")
 					(unit 1)
 				)
 			)
@@ -6525,7 +6626,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "71d5c277-7f9c-45e3-9252-9dd83e51f6cd")
-		(property "Reference" "#PWR010"
+		(property "Reference" "#PWR011"
 			(at 191.77 129.54 0)
 			(effects
 				(font
@@ -6575,7 +6676,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR010")
+					(reference "#PWR011")
 					(unit 1)
 				)
 			)
@@ -6649,133 +6750,6 @@
 			(project "power"
 				(path "/a1b2c3d4-1111-4000-8000-000000000001"
 					(reference "C7")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "daisy-studio:TMR_3-1222E")
-		(at 29.21 128.27 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "7b5a8c53-6e5d-44e2-970b-66eb2321cf56")
-		(property "Reference" "PS1"
-			(at 41.402 121.412 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TMR_3-1222E"
-			(at 41.402 123.952 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "daisy-studio:TMR1210"
-			(at 60.96 223.19 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://tracopower.com/tmr3e-datasheet/"
-			(at 60.96 323.19 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Description" "3 Watt DC/DC converter, industrial, 2:1 input, regulated, 1600 VDC I/O-isolation, encapsulated, SIP-8"
-			(at 66.802 123.952 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Mouser Part Number" "495-TMR3-1222E"
-			(at 60.96 623.19 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/TRACO-Power/TMR-3-1222E?qs=ckJk83FOD0XV8pmww5rYnw%3D%3D"
-			(at 60.96 723.19 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer_Name" "Traco Power"
-			(at 60.96 823.19 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer_Part_Number" "TMR 3-1222E"
-			(at 60.96 923.19 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "30e09112-0372-496c-bfc3-3c08564ac485")
-		)
-		(pin "2"
-			(uuid "445e756c-9ab4-4703-a5f4-cc3c49fdf148")
-		)
-		(pin "3"
-			(uuid "2a82f78c-c591-45bb-aa28-1349bdd909bd")
-		)
-		(pin "5"
-			(uuid "00558099-8709-4118-be8c-3bc9a983d81d")
-		)
-		(pin "6"
-			(uuid "02fd84a3-e722-4042-a06d-9066335cf52f")
-		)
-		(pin "7"
-			(uuid "18bff80e-adf9-4ee9-b789-d1cf46a60240")
-		)
-		(pin "8"
-			(uuid "9b08a8e1-1a01-4316-864c-5929235aec1d")
-		)
-		(instances
-			(project ""
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "PS1")
 					(unit 1)
 				)
 			)
@@ -6858,7 +6832,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "82cb9aaf-5cad-45c1-97d5-921ca660fdb0")
-		(property "Reference" "#PWR07"
+		(property "Reference" "#PWR06"
 			(at 134.62 49.53 0)
 			(effects
 				(font
@@ -6909,7 +6883,7 @@
 		(instances
 			(project "triptech"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR07")
+					(reference "#PWR06")
 					(unit 1)
 				)
 			)
@@ -6924,7 +6898,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8ba3b155-f8f5-4e48-9642-6e5279907f10")
-		(property "Reference" "D2"
+		(property "Reference" "D3"
 			(at 108.204 148.59 90)
 			(effects
 				(font
@@ -6976,7 +6950,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "D2")
+					(reference "D3")
 					(unit 1)
 				)
 			)
@@ -7187,7 +7161,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "93ec1340-096c-48e3-a8c9-616a47e4b04c")
-		(property "Reference" "#FLG02"
+		(property "Reference" "#FLG03"
 			(at 127 154.305 0)
 			(effects
 				(font
@@ -7237,7 +7211,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#FLG02")
+					(reference "#FLG03")
 					(unit 1)
 				)
 			)
@@ -7252,7 +7226,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "9b296c0c-01b8-426b-ab03-d5aea6da75d0")
-		(property "Reference" "#PWR017"
+		(property "Reference" "#PWR016"
 			(at 231.14 149.86 0)
 			(effects
 				(font
@@ -7302,7 +7276,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR017")
+					(reference "#PWR016")
 					(unit 1)
 				)
 			)
@@ -8270,7 +8244,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a61a56df-739e-4144-9120-dc612eea437c")
-		(property "Reference" "U2"
+		(property "Reference" "U1"
 			(at 161.29 41.91 0)
 			(effects
 				(font
@@ -8344,7 +8318,7 @@
 		(instances
 			(project "triptech"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "U2")
+					(reference "U1")
 					(unit 1)
 				)
 			)
@@ -8365,7 +8339,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b5f702f1-9006-405d-aca2-2f5af63d110e")
-		(property "Reference" "D3"
+		(property "Reference" "D2"
 			(at 96.266 147.828 90)
 			(effects
 				(font
@@ -8417,7 +8391,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "D3")
+					(reference "D2")
 					(unit 1)
 				)
 			)
@@ -8432,7 +8406,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d2cc9a0c-4d4b-4953-9452-37667638163d")
-		(property "Reference" "#PWR02"
+		(property "Reference" "#PWR01"
 			(at 26.67 128.27 0)
 			(effects
 				(font
@@ -8482,7 +8456,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR02")
+					(reference "#PWR01")
 					(unit 1)
 				)
 			)
@@ -8565,7 +8539,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d60e0186-a5cb-4629-afef-c939829c9107")
-		(property "Reference" "D15"
+		(property "Reference" "D4"
 			(at 240.03 62.2299 90)
 			(effects
 				(font
@@ -8619,7 +8593,7 @@
 		(instances
 			(project ""
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "D15")
+					(reference "D4")
 					(unit 1)
 				)
 			)
@@ -8635,7 +8609,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d88d855c-1690-4b57-8ee0-6a2aa30b1649")
-		(property "Reference" "#PWR016"
+		(property "Reference" "#PWR015"
 			(at 210.82 96.52 0)
 			(effects
 				(font
@@ -8685,7 +8659,7 @@
 		(instances
 			(project "triptech"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR016")
+					(reference "#PWR015")
 					(unit 1)
 				)
 			)
@@ -8706,7 +8680,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d8c144a8-d945-4d4f-9b34-461555fcb080")
-		(property "Reference" "#PWR011"
+		(property "Reference" "#PWR012"
 			(at 196.85 139.7 0)
 			(effects
 				(font
@@ -8756,7 +8730,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR011")
+					(reference "#PWR012")
 					(unit 1)
 				)
 			)
@@ -8904,7 +8878,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e9ba338a-50a4-46f0-b734-48d9ed97a98a")
-		(property "Reference" "#PWR06"
+		(property "Reference" "#PWR08"
 			(at 130.81 148.59 0)
 			(effects
 				(font
@@ -8955,7 +8929,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR06")
+					(reference "#PWR08")
 					(unit 1)
 				)
 			)
@@ -8971,7 +8945,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ede12011-41f4-4a4b-8cb4-d3c1af0e8eb6")
-		(property "Reference" "#PWR018"
+		(property "Reference" "#PWR017"
 			(at 233.68 52.07 0)
 			(effects
 				(font
@@ -9022,7 +8996,7 @@
 		(instances
 			(project ""
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR018")
+					(reference "#PWR017")
 					(unit 1)
 				)
 			)
@@ -9038,7 +9012,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f7f01fb5-8ec0-4b7f-916c-a86dca4af00d")
-		(property "Reference" "#PWR012"
+		(property "Reference" "#PWR013"
 			(at 199.39 129.54 0)
 			(effects
 				(font
@@ -9089,7 +9063,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR012")
+					(reference "#PWR013")
 					(unit 1)
 				)
 			)
