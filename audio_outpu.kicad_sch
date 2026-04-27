@@ -7054,7 +7054,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "a1007003-0002-4000-8000-000000000001")
+		(uuid "a1007003-0002-4000-8000-000000000002")
 		(property "Reference" "U6"
 			(at 159.766 65.024 0)
 			(effects
@@ -7108,28 +7108,28 @@
 			)
 		)
 		(pin "1"
-			(uuid "75c51ace-2454-4609-af61-8c2a0fb96e0e")
+			(uuid "75c51ace-2454-4609-af61-8c2a0fb96e0f")
 		)
 		(pin "2"
-			(uuid "987ad437-3561-4c36-ae18-72f19d76c81f")
+			(uuid "987ad437-3561-4c36-ae18-72f19d76c820")
 		)
 		(pin "3"
-			(uuid "70572cf6-3298-4937-82ca-343fae96293f")
+			(uuid "70572cf6-3298-4937-82ca-343fae962940")
 		)
 		(pin "4"
-			(uuid "1bffbde5-2f0b-4e17-82f6-46bb7648356d")
+			(uuid "1bffbde5-2f0b-4e17-82f6-46bb7648356e")
 		)
 		(pin "5"
-			(uuid "47f20f7e-ae01-4245-b28c-256ee631bfd0")
+			(uuid "47f20f7e-ae01-4245-b28c-256ee631bfd1")
 		)
 		(pin "6"
-			(uuid "8bb1f1d2-b24f-454e-8a9d-bad6e2b127ab")
+			(uuid "8bb1f1d2-b24f-454e-8a9d-bad6e2b127ac")
 		)
 		(pin "7"
-			(uuid "9238f008-5ece-4611-84f7-7f661c72bec1")
+			(uuid "9238f008-5ece-4611-84f7-7f661c72bec2")
 		)
 		(pin "8"
-			(uuid "b1c0f1b3-e2ca-4678-893d-03f2cf93a181")
+			(uuid "b1c0f1b3-e2ca-4678-893d-03f2cf93a182")
 		)
 		(instances
 			(project "daisy-studio"
@@ -7699,16 +7699,16 @@
 			(uuid "dba201b1-8700-4372-90d0-1b8f6047d9a7")
 		)
 		(pin "3"
-			(uuid "70572cf6-3298-4937-82ca-343fae96293f")
+			(uuid "70572cf6-3298-4937-82ca-343fae962941")
 		)
 		(pin "4"
 			(uuid "1b536dc2-3a59-40dd-84eb-a08986221aeb")
 		)
 		(pin "5"
-			(uuid "47f20f7e-ae01-4245-b28c-256ee631bfd0")
+			(uuid "47f20f7e-ae01-4245-b28c-256ee631bfd2")
 		)
 		(pin "6"
-			(uuid "8bb1f1d2-b24f-454e-8a9d-bad6e2b127ab")
+			(uuid "8bb1f1d2-b24f-454e-8a9d-bad6e2b127ad")
 		)
 		(pin "7"
 			(uuid "cbf9cd1c-e4e4-42a9-b9ee-c36fc579dcea")
@@ -7733,7 +7733,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "b06a5d4f-3d04-431b-8c26-c67628730f0c")
+		(uuid "b06a5d4f-3d04-431b-8c26-c67628730f0d")
 		(property "Reference" "U7"
 			(at 159.766 131.064 0)
 			(effects
@@ -7787,28 +7787,28 @@
 			)
 		)
 		(pin "1"
-			(uuid "7e8d8bb9-fa61-4aa6-9f91-c20f1610375d")
+			(uuid "7e8d8bb9-fa61-4aa6-9f91-c20f1610375e")
 		)
 		(pin "2"
-			(uuid "dba201b1-8700-4372-90d0-1b8f6047d9a7")
+			(uuid "dba201b1-8700-4372-90d0-1b8f6047d9a8")
 		)
 		(pin "3"
-			(uuid "70572cf6-3298-4937-82ca-343fae96293f")
+			(uuid "70572cf6-3298-4937-82ca-343fae962942")
 		)
 		(pin "4"
-			(uuid "1b536dc2-3a59-40dd-84eb-a08986221aeb")
+			(uuid "1b536dc2-3a59-40dd-84eb-a08986221aec")
 		)
 		(pin "5"
-			(uuid "47f20f7e-ae01-4245-b28c-256ee631bfd0")
+			(uuid "47f20f7e-ae01-4245-b28c-256ee631bfd3")
 		)
 		(pin "6"
-			(uuid "8bb1f1d2-b24f-454e-8a9d-bad6e2b127ab")
+			(uuid "8bb1f1d2-b24f-454e-8a9d-bad6e2b127ae")
 		)
 		(pin "7"
-			(uuid "cbf9cd1c-e4e4-42a9-b9ee-c36fc579dcea")
+			(uuid "cbf9cd1c-e4e4-42a9-b9ee-c36fc579dceb")
 		)
 		(pin "8"
-			(uuid "329d1075-723a-4e96-bf6f-dead6bf29915")
+			(uuid "329d1075-723a-4e96-bf6f-dead6bf29916")
 		)
 		(instances
 			(project "daisy-studio"
@@ -8779,13 +8779,13 @@
 			(uuid "72cbe91c-8f3e-4f66-9ba6-bdc6af65c8dc")
 		)
 		(pin "R"
-			(uuid "65f87305-fe29-4bb1-816e-39fcf81d925f")
+			(uuid "65f87305-fe29-4bb1-816e-39fcf81d9260")
 		)
 		(pin "T"
-			(uuid "3cc548de-9806-44a1-81b7-0d8af44e5759")
+			(uuid "3cc548de-9806-44a1-81b7-0d8af44e575a")
 		)
 		(pin "S"
-			(uuid "a5f7c7fb-6a2e-4f3b-91f3-e60587f2c9b0")
+			(uuid "a5f7c7fb-6a2e-4f3b-91f3-e60587f2c9b1")
 		)
 		(pin "2"
 			(uuid "94c923be-1d7d-4455-af32-ac5df627432f")
@@ -8923,13 +8923,13 @@
 			)
 		)
 		(pin "1"
-			(uuid "1206cb77-0d22-474e-8291-87486bf51b55")
+			(uuid "1206cb77-0d22-474e-8291-87486bf51b56")
 		)
 		(pin "G"
-			(uuid "771832dc-7eac-4572-b9b7-0192f3a4cc9a")
+			(uuid "771832dc-7eac-4572-b9b7-0192f3a4cc9b")
 		)
 		(pin "3"
-			(uuid "59774ed3-9799-42b8-84c5-577c26533ff8")
+			(uuid "59774ed3-9799-42b8-84c5-577c26533ff9")
 		)
 		(pin "R"
 			(uuid "d9a1354a-4226-4f7d-a41a-fe1cf49cdddc")
@@ -8941,7 +8941,7 @@
 			(uuid "5df39649-5309-42e6-9742-60d264e1fba9")
 		)
 		(pin "2"
-			(uuid "8a18ca8a-8d50-43d3-bd9e-8eb7aeebb6bc")
+			(uuid "8a18ca8a-8d50-43d3-bd9e-8eb7aeebb6bd")
 		)
 		(instances
 			(project "daisy-studio"

@@ -306,9 +306,10 @@ to 4.8V damage ceiling.
 
 ```
                                                   ┌──────────── main PCB ────────────┐
-Balanced in → THAT 1246 (-6dB) → R_in (10kΩ) → OPA1656 (inverting, ±12V, fixed gain)  │
-                                                       ↑                              │
-                                                   R_fb 12kΩ fixed                    │
+Balanced in → THAT 1246 (Vout) ── R_in (10kΩ) ──┬── OPA1656 inv-input (−)             │
+                  │ (Sense, pin 5) ─────────────┘    ↑                                 │
+                  │                                 R_fb 12kΩ fixed                    │
+                  └── Sense closes feedback past R_in (remote / Kelvin)                │
                                                                                       │
         ┌──────── header ────────┐                                                    │
         │  IN_OPA  ──────────────┼─────── IN_OPA (main, OPA_Out)                      │
@@ -329,6 +330,18 @@ Balanced in → THAT 1246 (-6dB) → R_in (10kΩ) → OPA1656 (inverting, ±12V,
 The THAT 1246 converts the balanced input to single-ended with -6dB of gain, preserving
 common-mode rejection and keeping +24 dBu signals (±8.7V peak at the output) within the
 ±10V output swing of the ±12V rails.
+
+**Sense routing — remote / Kelvin to the OPA inverting node.** Pin 5 (Sense)
+is **not** tied at the IC pad; it runs as a separate trace to the OPA1656
+inverting input — i.e. to the far side of `R_in`, the same node as `R_fb`'s
+input-side terminal. This closes the THAT1246's internal output-buffer
+feedback loop *past* `R_in`, so any voltage drop across `R_in` (trace
+resistance and the 1% resistor tolerance itself) is compensated by the
+THAT1246 rather than appearing as a gain error at the OPA. Sense is high-Z
+into the THAT1246's internal feedback amp, so no loading concern; layout
+keeps the Sense trace tight against AGND for shielding and physically
+separate from the Vout trace (no piggyback). Pin 6 (Vout) routes only to
+`R_in`'s near terminal.
 
 The OPA1656 is configured as an inverting amplifier at a **fixed gain of 1.2×**
 (R_fb = 12kΩ / R_in = 10kΩ), chosen to keep +24 dBu peak inputs within the
@@ -816,6 +829,13 @@ supply pins, with short returns to the analog ground pour.
 * **R_fb trace:** Route R_fb directly between op-amp pin 1 and pin 2 with no
   parallel segments to the input signal path. Because R_fb is fixed and both
   nodes are on the main PCB, this is a short, tightly-controlled trace.
+* **THAT1246 Sense trace (pin 5):** Route as a *separate* trace from
+  THAT1246 pin 5 to the OPA inverting node (the R_in / R_fb junction at op-
+  amp pin 2). Do **not** piggyback on the Vout trace; they share endpoints
+  electrically through R_in but must be physically distinct copper, with the
+  Sense trace tight against AGND for shielding. High-Z node, so vulnerable
+  to coupling — keep it short and away from the op-amp output trace and the
+  ±12V supplies.
 * **Analog ground pour:** Continuous copper pour under the OPA1656 and the entire
   signal path from R_in to Seed_In. No splits or slots under the op-amp. Digital
   ground (Seed, USB, MIDI) should not share this pour.
