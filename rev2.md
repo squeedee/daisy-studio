@@ -971,10 +971,11 @@ No signal-path changes for Rev 2.
   at ~80 kHz, attenuates PCM3060 delta-sigma noise above the audio band per
   Seed Rev 7 community guidance. Sim-verified −0.27 dB at 20 kHz, −22 dB at
   1 MHz.
-* **Added ±12 V rail protection** (SMAJ15A TVS per rail, placed near the
-  THAT1646 outputs). Absorbs phantom-power back-feed when the gear is
-  powered off and an XLR output is plugged into a phantom-enabled mic
-  preamp.
+* **Added ±12 V rail protection** (one TVS per rail, e.g. SMAJ15A or
+  SMAJ15CA). Absorbs phantom-power back-feed when the gear is powered
+  off and an XLR output is plugged into a phantom-enabled mic preamp.
+  Placement near the THAT1646s or near the DC-DC output both work — see
+  Rail Protection → Placement.
 * **Removed 3.5 mm in/out jacks** ([Issue #11](https://github.com/squeedee/daisy-studio/issues/11)).
   XLR is the only audio I/O now.
 * **Unchanged from Rev 1:** THAT1646 balanced driver and phantom-protection
@@ -1318,9 +1319,28 @@ phantom supply voltage, destroying the OPA1656 (±22V abs max) and THAT1646
 Under a sustained 28 mA fault the TVS dissipates ~0.4 W — well within the
 1 W rating of a SMAJ part. Also handles hot-plug surge transients.
 
-Place the TVS physically close to where the clamp-diode return currents
-enter the rail — i.e. near the THAT1646s, not near the TMR 3-1222 output —
-so fault current has the shortest possible path.
+### Placement
+
+Two layouts both work for this design's fault profile:
+
+* **Near the THAT1646 outputs (best for fast-edge surge protection).**
+  Trace inductance between the SM4004 and the TVS is minimised, so during
+  hot-plug surge transients the rail can't briefly spike above the TVS
+  clamp before the far-end TVS responds. Recommended if board area near
+  the audio output stage allows.
+* **Near the TMR 3-1222 output (acceptable here, simpler power-zone
+  layout).** The dominant fault — sustained DC powered-off phantom (28 mA
+  continuous) — is governed by trace *resistance*, not inductance, and
+  even a few cm of rail produces sub-mV drop at this current. The
+  hot-plug surge case is brief (tens of ns) and small in current
+  (SM4004s absorb the bulk at the XLR pin), so an extra cm or two of
+  rail inductance still leaves multi-volt margin to the OPA1656 / THAT1646
+  abs-max ratings. This option groups the TVS with other power-management
+  parts (input D1, bulk caps) for a cleaner audio-section layout.
+
+Either placement is supported. Near-the-load is the textbook-best
+choice; near-the-DC-DC is a reasonable simplification given the
+dominant DC fault profile.
 
 ## Components
 

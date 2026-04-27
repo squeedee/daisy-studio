@@ -3350,6 +3350,12 @@
 		(uuid "41ac3345-3bd9-4e78-9680-89ec4f228cd2")
 	)
 	(junction
+		(at 87.63 147.32)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "491d34e7-6408-4459-9b0d-37a45a23420b")
+	)
+	(junction
 		(at 80.01 133.35)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3390,6 +3396,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "94900cd3-460a-448f-a854-e66779ee2ae9")
+	)
+	(junction
+		(at 82.55 128.27)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "985c703e-d5a9-4c6e-bf53-790faa800fc3")
 	)
 	(junction
 		(at 91.44 49.53)
@@ -3458,6 +3470,12 @@
 		(uuid "de2959c4-f6b9-4fc4-a73f-246073363a57")
 	)
 	(junction
+		(at 93.98 128.27)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e1119640-f622-4be7-a30d-a262802db9f0")
+	)
+	(junction
 		(at 161.29 88.9)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3518,6 +3536,16 @@
 			(type default)
 		)
 		(uuid "0568f38c-2a61-4f45-ac8f-a2fd68798c59")
+	)
+	(wire
+		(pts
+			(xy 80.01 147.32) (xy 80.01 165.1)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "06526500-4efa-4b05-a4cd-dd2f8387ee8f")
 	)
 	(wire
 		(pts
@@ -3701,7 +3729,7 @@
 	)
 	(wire
 		(pts
-			(xy 71.12 128.27) (xy 88.9 128.27)
+			(xy 71.12 128.27) (xy 82.55 128.27)
 		)
 		(stroke
 			(width 0)
@@ -3851,6 +3879,16 @@
 	)
 	(wire
 		(pts
+			(xy 87.63 152.4) (xy 87.63 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3ca00d36-1ef5-4b96-a1c2-f8f94d2661ca")
+	)
+	(wire
+		(pts
 			(xy 80.01 133.35) (xy 95.25 133.35)
 		)
 		(stroke
@@ -3878,6 +3916,16 @@
 			(type default)
 		)
 		(uuid "469a77e2-ffc2-4947-bdf5-95c4d343cb3d")
+	)
+	(wire
+		(pts
+			(xy 93.98 152.4) (xy 87.63 152.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "47d8ee9a-652a-442b-8efc-72c8a9eb5faa")
 	)
 	(wire
 		(pts
@@ -4001,16 +4049,6 @@
 	)
 	(wire
 		(pts
-			(xy 80.01 144.78) (xy 80.01 147.32)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "678b3b6a-57d9-4d75-9687-8798a26698b6")
-	)
-	(wire
-		(pts
 			(xy 50.8 133.35) (xy 49.53 133.35)
 		)
 		(stroke
@@ -4061,7 +4099,7 @@
 	)
 	(wire
 		(pts
-			(xy 88.9 147.32) (xy 80.01 147.32)
+			(xy 88.9 147.32) (xy 87.63 147.32)
 		)
 		(stroke
 			(width 0)
@@ -4151,6 +4189,16 @@
 	)
 	(wire
 		(pts
+			(xy 82.55 128.27) (xy 88.9 128.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "88231c5a-9483-4ef4-a02d-662fa6e0d8d7")
+	)
+	(wire
+		(pts
 			(xy 71.12 133.35) (xy 80.01 133.35)
 		)
 		(stroke
@@ -4201,6 +4249,16 @@
 	)
 	(wire
 		(pts
+			(xy 82.55 128.27) (xy 82.55 157.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9083afaa-9112-4358-b868-7c185b5426e9")
+	)
+	(wire
+		(pts
 			(xy 140.97 66.04) (xy 140.97 62.23)
 		)
 		(stroke
@@ -4248,6 +4306,16 @@
 			(type default)
 		)
 		(uuid "962813cd-2c47-4714-89ef-2fef4c29a64c")
+	)
+	(wire
+		(pts
+			(xy 82.55 165.1) (xy 80.01 165.1)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "99a0c613-08ef-4514-9dc7-3ccc98680f47")
 	)
 	(wire
 		(pts
@@ -4328,6 +4396,16 @@
 			(type default)
 		)
 		(uuid "adab3b8d-5ab1-4900-8e6a-a00ff528c4cc")
+	)
+	(wire
+		(pts
+			(xy 93.98 128.27) (xy 100.33 128.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b0b675b3-dd2f-42d2-b369-09e535190115")
 	)
 	(wire
 		(pts
@@ -4421,7 +4499,7 @@
 	)
 	(wire
 		(pts
-			(xy 88.9 128.27) (xy 100.33 128.27)
+			(xy 88.9 128.27) (xy 93.98 128.27)
 		)
 		(stroke
 			(width 0)
@@ -4551,6 +4629,26 @@
 	)
 	(wire
 		(pts
+			(xy 93.98 144.78) (xy 93.98 128.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "de0ff453-ca73-490f-b96b-68e6aa576bb1")
+	)
+	(wire
+		(pts
+			(xy 87.63 147.32) (xy 80.01 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dfd08f6a-640b-4bbd-a0c4-bae1d4b80fb8")
+	)
+	(wire
+		(pts
 			(xy 184.15 129.54) (xy 184.15 133.35)
 		)
 		(stroke
@@ -4658,6 +4756,16 @@
 			(type default)
 		)
 		(uuid "fc862c6d-a18c-4496-9f94-a0dd5639446e")
+	)
+	(wire
+		(pts
+			(xy 80.01 144.78) (xy 80.01 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ff419f05-891b-45b0-b27a-d740726bc6fd")
 	)
 	(label "+12V_IN"
 		(at 39.37 46.99 0)
@@ -6069,6 +6177,73 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:D_TVS")
+		(at 82.55 161.29 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8ba3b155-f8f5-4e48-9642-6e5279907f10")
+		(property "Reference" "D14"
+			(at 84.836 155.956 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SMBJ15CA"
+			(at 87.63 157.734 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SMB"
+			(at 82.55 161.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 82.55 161.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Bidirectional transient-voltage-suppression diode"
+			(at 82.55 161.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3ad51861-a071-4bd0-a805-c1cdd4b40358")
+		)
+		(pin "2"
+			(uuid "34092e7d-760e-467b-9ac8-8b4617e8f0e6")
+		)
+		(instances
+			(project "daisy-studio"
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
+					(reference "D14")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:L")
 		(at 99.06 133.35 90)
 		(unit 1)
@@ -6557,7 +6732,7 @@
 				)
 			)
 		)
-		(property "Value" "D_TVS"
+		(property "Value" "SMBJ15CA"
 			(at 85.09 53.594 90)
 			(effects
 				(font
@@ -6580,6 +6755,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Description" "Bidirectional transient-voltage-suppression diode"
@@ -6588,6 +6764,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -7578,6 +7755,73 @@
 			(project ""
 				(path "/a1b2c3d4-1111-4000-8000-000000000001"
 					(reference "U1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:D_TVS")
+		(at 93.98 148.59 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b5f702f1-9006-405d-aca2-2f5af63d110e")
+		(property "Reference" "D13"
+			(at 96.266 143.256 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SMBJ15CA"
+			(at 99.06 145.034 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SMB"
+			(at 93.98 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 93.98 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Bidirectional transient-voltage-suppression diode"
+			(at 93.98 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2bc63f1d-86f6-4c50-a3d5-05b2a836f177")
+		)
+		(pin "2"
+			(uuid "2abb2f11-fdc1-41f8-9e40-1d786f56b862")
+		)
+		(instances
+			(project "daisy-studio"
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
+					(reference "D13")
 					(unit 1)
 				)
 			)
