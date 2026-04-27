@@ -8032,7 +8032,7 @@
 				)
 			)
 		)
-		(property "Value" "13.3R 1%"
+		(property "Value" "13.3K 1%"
 			(at 230.378 86.36 0)
 			(effects
 				(font
