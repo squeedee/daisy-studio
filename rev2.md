@@ -159,27 +159,48 @@ board outline is stable and free silk real estate is known.
 
 ## Daughterboard Architectural Invariant
 
-Daughterboard PCBs (user front panel) are **fully passive**. They populate
-only:
+### Design intent: Daisy Studio as a carrier
+
+Daisy Studio is a **flexible carrier**. The main PCB (audio I/O, power,
+MIDI, Daisy Seed interface, gain stages, clamps, comparator) is identical
+across every form factor. The user-facing controls live on a separate
+**daughterboard** connected to the main PCB through a single 20-way
+header. Target form factors include:
+
+* **Keybed integration** — controls in a side or top strip of the keybed
+  enclosure.
+* **Desktop module** — top-panel controls some distance above the main
+  PCB.
+* **Rack module** — 3U/1U front-panel controls, offset front-to-back from
+  the main PCB.
+
+The daughterboard's layout, pot/LED selection, and faceplate ergonomics
+are user-defined per form factor. The main PCB commits only to the header
+pinout (see **Part 3 → "Daughterboard Control Header"**) and to the
+fully-passive constraint below.
+
+### What crosses the header
+
+Daughterboard PCBs are **fully passive**. They populate only:
 
 * Input level pots (10 kΩ log, 1 per channel)
 * Output level pots (10 kΩ log, 1 per channel)
-* Clip-threshold trim pots (10 kΩ, 1 per channel)
 * Clip LEDs (1 per channel)
 
+The clip-threshold trim pots are **not** on the daughterboard. They are
+calibration trims (set once at bring-up, locked with paint), not
+user-facing controls — they live on the main PCB next to the comparator,
+in the same category as the `R_fb_trim` output gain trim. This keeps a
+high-Z comparator input off the header and saves four pins.
+
 No ICs, no raw power rails, and no high-impedance feedback nodes cross
-the daughterboard header. The header carries only:
+the header. The header carries only:
 
 * Low-impedance audio signals (op-amp outputs and pot-wiper returns)
 * AGND returns (interleaved with signal pins)
-* Low-current voltage references (`+VCLAMP_L`/`+VCLAMP_R` per channel,
-  Thevenin ~1.3 kΩ)
 * Current-limited LED drive pairs (`CLIP_LED_A_*` is 1 kΩ-limited from
   +12 V on the main PCB, max ~12 mA; `CLIP_LED_K_*` is the LM2903
   open-collector output)
-
-See **Part 3 → "Daughterboard Control Header"** for the pin-by-pin spec
-and connector choice.
 
 This invariant simplifies user daughterboard design: shorting any two
 daughterboard signals together will not damage the main PCB. The tradeoff
@@ -187,6 +208,31 @@ is that users can't draw power off the header for their own active
 circuits — out of scope for Rev 2's "attenuators + clip indicators" panel
 goal. User extensions that need active circuitry use J2 (Seed GPIO
 breakout) instead, where +5V, +3V3D, DGND and GPIO are available.
+
+### Connector — one footprint, two build modes
+
+The main PCB commits to a **2×10, 2.54 mm pitch, through-hole footprint**
+for the daughterboard header (20 pins). The signal inventory needs 18;
+the bottom two pins (19/20) are tied to AGND for a small extra return
+guard. 2×10 is chosen over 2×9 for sourcing — 20-pin IDC headers and
+matching ribbon cable are stocked everywhere; 18-pin parts are less
+common. That single footprint supports two build modes without redesign:
+
+* **Cable-mount (default for keybed / desktop / rack):** populate the
+  main-PCB side with a shrouded IDC header (e.g. Samtec TSS-110-01-G-D)
+  and connect via 20-way IDC ribbon to a matching socket on the
+  daughterboard. Cable length tuned to the form factor (≤ 150 mm
+  comfortable; see Part 3 SI notes).
+* **Stack-mount (for prototypes / freestanding builds):** populate with a
+  Samtec flex-stacking post system
+  ([samtec.com/flex-stacking](https://www.samtec.com/flex-stacking/)) and
+  socket the daughterboard directly above the main PCB at a chosen height.
+  No cable.
+
+The pinout is the same in both modes. AGND interleave on every audio pair
+(see Part 3) is preserved by both ribbon and stacking — that's the
+load-bearing constraint that rules out FFC/FPC and other low-density
+flex-cable formats.
 
 # Part 1: Op-Amp Gain-Staged Audio Input
 
@@ -1094,9 +1140,11 @@ is negligible, and no bandwidth limitation arises at audio frequencies.
 
 ## Daughterboard Control Header
 
-A single 2×12 header (J_DB) carries every user-control signal for both
-channels of both stages — input attenuator, output attenuator, clip
-threshold trim, and clip LED. This is the canonical pinout spec; Part 1
+A single 2×10 header (J_DB) carries every user-control signal for both
+channels of both stages — input attenuator, output attenuator, and clip
+LED. The clip-threshold trim is a main-PCB calibration trim and does
+not cross the header (see Part 0 invariant). 18 pins carry signals; the
+bottom pair (19/20) is AGND. This is the canonical pinout spec; Part 1
 and Part 0 both reference it.
 
 ### Architectural invariant (recap from Part 0)
@@ -1112,10 +1160,6 @@ any two daughterboard signals together will not damage the main PCB.
 * `IN_OPA_L` / `IN_OPA_R` — op-amp output, low-Z, to input pot CW terminal
 * `IN_WIPER_L` / `IN_WIPER_R` — input pot wiper, moderate-Z (0–2.5 kΩ),
   back to `R_out`
-* `+VCLAMP_L` / `+VCLAMP_R` — clamp reference (+1.565 V), low-current, to
-  trim pot top
-* `IN_THRESH_L` / `IN_THRESH_R` — trim pot wiper, back to comparator
-  non-inverting input
 * `CLIP_LED_A_L` / `CLIP_LED_A_R` — current-limited LED anode (1 kΩ to
   +12 V on main PCB)
 * `CLIP_LED_K_L` / `CLIP_LED_K_R` — LED cathode, LM2903 open-collector
@@ -1130,13 +1174,19 @@ any two daughterboard signals together will not damage the main PCB.
 
 ### Connector
 
-* **2×12 shrouded IDC header, 2.54 mm pitch, polarised (keyed)** — e.g.
-  Samtec TSS-112-01-G-D, CNC Tech 3020-24-0300-00, or equivalent.
-* Mating: standard 24-way IDC ribbon socket on a matching key-oriented
-  connector.
-* Through-hole on the main PCB; daughterboard side is user's choice
-  (shrouded socket recommended for robustness, or pin receptacle if the
-  daughterboard mounts closely).
+The main-PCB footprint is **2×10 (20 pins), 2.54 mm pitch, through-hole,
+polarised (keyed)**. See **Part 0 → "Connector — one footprint, two
+build modes"** for the rationale. Two supported build modes from the
+same footprint:
+
+* **Cable-mount (default):** populate with a shrouded IDC header — e.g.
+  Samtec TSS-110-01-G-D or equivalent. Mate with a 20-way IDC ribbon
+  socket on the daughterboard side.
+* **Stack-mount:** populate with a Samtec flex-stacking post (see Part 0)
+  and socket the daughterboard directly above. No cable.
+
+Daughterboard side is user's choice — shrouded socket for cable-mount, or
+matching stack-mount socket for direct stacking.
 
 ### Pin assignment
 
@@ -1148,38 +1198,42 @@ fast-edge digital, and interleave AGND returns on every audio pair.
 |   1 | AGND            |    2 | AGND            | Top-of-header AGND guard               |
 |   3 | `IN_OPA_L`      |    4 | `IN_OPA_R`      | Input-stage audio out (low-Z)          |
 |   5 | `IN_WIPER_L`    |    6 | `IN_WIPER_R`    | Input-stage audio back (moderate-Z)    |
-|   7 | AGND            |    8 | AGND            |                                        |
+|   7 | AGND            |    8 | AGND            | Audio-pair guard                       |
 |   9 | `OUT_OPA_L`     |   10 | `OUT_OPA_R`     | Output-stage audio out (low-Z)         |
 |  11 | `OUT_WIPER_L`   |   12 | `OUT_WIPER_R`   | Output-stage audio back                |
-|  13 | AGND            |   14 | AGND            | Separates audio from control block     |
-|  15 | `+VCLAMP_L`     |   16 | `+VCLAMP_R`     | Static clamp refs (per channel)        |
-|  17 | `IN_THRESH_L`   |   18 | `IN_THRESH_R`   | Static trim-pot wipers                 |
-|  19 | AGND            |   20 | AGND            | Separates control from fast-edge       |
-|  21 | `CLIP_LED_A_L`  |   22 | `CLIP_LED_A_R`  | Current-limited LED anodes             |
-|  23 | `CLIP_LED_K_L`  |   24 | `CLIP_LED_K_R`  | LM2903 OC outputs (fast digital edges) |
+|  13 | AGND            |   14 | AGND            | Separates audio from fast-edge digital |
+|  15 | `CLIP_LED_A_L`  |   16 | `CLIP_LED_A_R`  | Current-limited LED anodes             |
+|  17 | `CLIP_LED_K_L`  |   18 | `CLIP_LED_K_R`  | LM2903 OC outputs (fast digital edges) |
+|  19 | AGND            |   20 | AGND            | Bottom-of-header AGND guard            |
 
 Physical separation between the moderate-Z `IN_WIPER_*` pair (pins 5/6) and
-the fast-edge `CLIP_LED_K_*` pair (pins 23/24) is 18 pins across the header —
-well clear of capacitive crosstalk concerns with a standard ribbon.
+the fast-edge `CLIP_LED_K_*` pair (pins 17/18) is 12 pins across the header —
+well clear of capacitive crosstalk concerns with a standard ribbon. AGND
+guards at pins 1/2, 7/8, 13/14, and 19/20 bracket every audio pair and the
+clip-LED block.
 
 ### Signal-integrity notes
 
-* **AGND interleave.** Every audio signal pair is bracketed by AGND pins
-  above and below; the ribbon cable's return path is short. Do not reroute
-  to pack more signals — the AGND guards are load-bearing.
-* **Moderate-Z `IN_WIPER_*` vs. fast-edge `CLIP_LED_K_*`.** The pinout
-  places these at opposite ends of the header. On cable-side, route
-  `IN_WIPER_*` on the lowest-noise ribbon pair; route `CLIP_LED_K_*` on the
-  opposite end or through a separate cable if the daughterboard is more
-  than ~150 mm away.
-* **`OUT_WIPER_*` is high-Z at the THAT1646 input** (~50 kΩ); route through
-  a low-noise ribbon pair with its adjacent AGND.
-* **Cable length.** ≤ 150 mm comfortable, ≤ 50 mm conservative. Beyond 150
-  mm, consider a shielded cable (foil/braid tied to AGND at the main-PCB
-  end only).
-* **No power rails on the header.** If the daughterboard needs an active
-  LED driver or user IC, route through J2 (Seed GPIO breakout, +3V3D
-  available) — not this header.
+Applies to both build modes unless otherwise noted.
+
+* **AGND interleave (both modes).** Every audio signal pair is bracketed
+  by AGND pins above and below. Do not reroute to pack more signals — the
+  AGND guards are load-bearing for both ribbon and stack mounts.
+* **No power rails on the header (both modes).** If the daughterboard
+  needs an active LED driver or user IC, route through J2 (Seed GPIO
+  breakout, +3V3D available) — not this header.
+* **Moderate-Z `IN_WIPER_*` vs. fast-edge `CLIP_LED_K_*` (cable-mount).**
+  The pinout places these at opposite ends of the header. On cable side,
+  route `IN_WIPER_*` on the lowest-noise ribbon pair; route `CLIP_LED_K_*`
+  on the opposite end or through a separate cable if the daughterboard is
+  more than ~150 mm away. Stack-mount sidesteps this — no cable
+  capacitive coupling.
+* **`OUT_WIPER_*` is high-Z at the THAT1646 input (cable-mount).** Route
+  through a low-noise ribbon pair with its adjacent AGND. Negligible on
+  stack-mount.
+* **Cable length (cable-mount only).** ≤ 150 mm comfortable, ≤ 50 mm
+  conservative. Beyond 150 mm, consider a shielded cable (foil/braid tied
+  to AGND at the main-PCB end only). N/A for stack-mount.
 
 ## THAT1646 Balanced Driver
 

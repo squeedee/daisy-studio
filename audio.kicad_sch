@@ -2813,12 +2813,6 @@
 		(uuid "0602419a-7cab-4879-917c-5f7cd4a8f308")
 	)
 	(junction
-		(at 72.39 53.34)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "09c4ad92-6f1c-4a35-9d0e-a38b3aaa9c4d")
-	)
-	(junction
 		(at 198.12 49.53)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2937,12 +2931,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "79112da7-ff01-4796-9200-d67310fef3ca")
-	)
-	(junction
-		(at 72.39 115.57)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "7a39b3ef-8232-493e-8a78-c765f3381069")
 	)
 	(junction
 		(at 21.59 105.41)
@@ -3065,6 +3053,12 @@
 		(uuid "ed983359-1501-464d-9a7a-85649cb6b8d2")
 	)
 	(junction
+		(at 72.39 52.07)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f4ef2f45-967d-4482-8d94-f319c9cfdada")
+	)
+	(junction
 		(at 238.76 39.37)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3081,6 +3075,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f9c596c0-8f73-4f9d-983d-05ebcaeda3ba")
+	)
+	(junction
+		(at 72.39 114.3)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f9d261a7-df2b-418c-af29-248e70cd21b4")
 	)
 	(junction
 		(at 229.87 151.13)
@@ -3110,7 +3110,7 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 107.95) (xy 72.39 107.95)
+			(xy 69.85 106.68) (xy 72.39 106.68)
 		)
 		(stroke
 			(width 0)
@@ -3168,6 +3168,16 @@
 			(type default)
 		)
 		(uuid "09052783-7673-47e1-954d-82bbf34b81d4")
+	)
+	(wire
+		(pts
+			(xy 72.39 52.07) (xy 72.39 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "09d8d236-c292-49ed-8795-36c62bea8f84")
 	)
 	(wire
 		(pts
@@ -3271,7 +3281,7 @@
 	)
 	(wire
 		(pts
-			(xy 44.45 113.03) (xy 44.45 130.81)
+			(xy 44.45 111.76) (xy 44.45 130.81)
 		)
 		(stroke
 			(width 0)
@@ -3461,7 +3471,7 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 107.95) (xy 72.39 115.57)
+			(xy 72.39 106.68) (xy 72.39 114.3)
 		)
 		(stroke
 			(width 0)
@@ -3521,7 +3531,7 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 53.34) (xy 72.39 53.34)
+			(xy 69.85 52.07) (xy 72.39 52.07)
 		)
 		(stroke
 			(width 0)
@@ -3581,7 +3591,7 @@
 	)
 	(wire
 		(pts
-			(xy 49.53 113.03) (xy 44.45 113.03)
+			(xy 49.53 111.76) (xy 44.45 111.76)
 		)
 		(stroke
 			(width 0)
@@ -3902,7 +3912,7 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 115.57) (xy 49.53 115.57)
+			(xy 48.26 114.3) (xy 49.53 114.3)
 		)
 		(stroke
 			(width 0)
@@ -3993,7 +4003,7 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 50.8) (xy 43.18 68.58)
+			(xy 43.18 49.53) (xy 43.18 68.58)
 		)
 		(stroke
 			(width 0)
@@ -4185,7 +4195,7 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 45.72) (xy 72.39 45.72)
+			(xy 69.85 44.45) (xy 72.39 44.45)
 		)
 		(stroke
 			(width 0)
@@ -4305,7 +4315,7 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 130.81) (xy 48.26 115.57)
+			(xy 48.26 130.81) (xy 48.26 114.3)
 		)
 		(stroke
 			(width 0)
@@ -4315,7 +4325,7 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 53.34) (xy 49.53 53.34)
+			(xy 48.26 52.07) (xy 49.53 52.07)
 		)
 		(stroke
 			(width 0)
@@ -4575,7 +4585,7 @@
 	)
 	(wire
 		(pts
-			(xy 49.53 50.8) (xy 43.18 50.8)
+			(xy 49.53 49.53) (xy 43.18 49.53)
 		)
 		(stroke
 			(width 0)
@@ -4585,7 +4595,7 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 45.72) (xy 72.39 53.34)
+			(xy 72.39 44.45) (xy 72.39 52.07)
 		)
 		(stroke
 			(width 0)
@@ -4662,6 +4672,16 @@
 			(type default)
 		)
 		(uuid "c886c16e-a688-4c53-bd4a-aafd17a55c20")
+	)
+	(wire
+		(pts
+			(xy 72.39 114.3) (xy 72.39 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ca8a6a15-4490-41d0-866f-caa6f058de21")
 	)
 	(wire
 		(pts
@@ -4896,7 +4916,7 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 115.57) (xy 72.39 115.57)
+			(xy 69.85 114.3) (xy 72.39 114.3)
 		)
 		(stroke
 			(width 0)
@@ -5026,7 +5046,7 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 68.58) (xy 48.26 53.34)
+			(xy 48.26 68.58) (xy 48.26 52.07)
 		)
 		(stroke
 			(width 0)
@@ -8566,7 +8586,7 @@
 	)
 	(symbol
 		(lib_id "daisy-studio:THAT1246")
-		(at 59.69 110.49 0)
+		(at 59.69 109.22 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8574,7 +8594,7 @@
 		(dnp no)
 		(uuid "71fedee3-4eb1-40e0-b633-09374bc4408f")
 		(property "Reference" "U9"
-			(at 59.69 97.79 0)
+			(at 59.69 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8582,7 +8602,7 @@
 			)
 		)
 		(property "Value" "THAT1246"
-			(at 59.69 100.33 0)
+			(at 59.69 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8590,7 +8610,7 @@
 			)
 		)
 		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
-			(at 59.69 123.19 0)
+			(at 59.69 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8599,23 +8619,25 @@
 			)
 		)
 		(property "Datasheet" "https://www.mouser.com/datasheet/3/4/1/THAT_1240_Series_Datasheet.pdf"
-			(at 59.69 110.49 0)
+			(at 59.69 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Description" "THAT1246 balanced line receiver, unity gain, SOIC-8"
-			(at 59.69 110.49 0)
+			(at 59.69 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Placement" "Near input connector. Pins 1,4 to analog ground, keep ground path short and clean."
-			(at 59.69 110.49 0)
+			(at 59.69 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9468,7 +9490,7 @@
 	)
 	(symbol
 		(lib_id "daisy-studio:THAT1246")
-		(at 59.69 48.26 0)
+		(at 59.69 46.99 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9476,7 +9498,7 @@
 		(dnp no)
 		(uuid "a1007001-0002-4000-8000-000000000001")
 		(property "Reference" "U8"
-			(at 59.69 35.56 0)
+			(at 59.69 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9484,7 +9506,7 @@
 			)
 		)
 		(property "Value" "THAT1246"
-			(at 59.69 38.1 0)
+			(at 59.69 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9492,7 +9514,7 @@
 			)
 		)
 		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
-			(at 59.69 60.96 0)
+			(at 59.69 59.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9501,23 +9523,25 @@
 			)
 		)
 		(property "Datasheet" "https://www.mouser.com/datasheet/3/4/1/THAT_1240_Series_Datasheet.pdf"
-			(at 59.69 48.26 0)
+			(at 59.69 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Description" "THAT1246 balanced line receiver, unity gain, SOIC-8"
-			(at 59.69 48.26 0)
+			(at 59.69 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Placement" "Near input connector. Pins 1,4 to analog ground, keep ground path short and clean."
-			(at 59.69 48.26 0)
+			(at 59.69 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
