@@ -6734,7 +6734,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "1256844d-4cde-4d57-92ee-1d55de129f0e")
-		(property "Reference" "Q4"
+		(property "Reference" "Q5"
 			(at 166.116 102.108 0)
 			(effects
 				(font
@@ -6812,7 +6812,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "Q4")
+					(reference "Q5")
 					(unit 1)
 				)
 			)
@@ -7332,7 +7332,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "21f1a36c-ffcd-461d-b403-f5e6c8200948")
-		(property "Reference" "Q1"
+		(property "Reference" "Q2"
 			(at 161.29 50.7999 0)
 			(effects
 				(font
@@ -7410,7 +7410,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "Q1")
+					(reference "Q2")
 					(unit 1)
 				)
 			)
@@ -8796,7 +8796,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "54f2f55a-1ebf-478d-8a10-e59cf4657809")
-		(property "Reference" "Q3"
+		(property "Reference" "Q4"
 			(at 166.116 39.878 0)
 			(effects
 				(font
@@ -8874,7 +8874,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "Q3")
+					(reference "Q4")
 					(unit 1)
 				)
 			)
@@ -10858,7 +10858,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "920df318-99a4-4eed-81a4-51900e7f0adb")
-		(property "Reference" "Q2"
+		(property "Reference" "Q3"
 			(at 161.29 113.0299 0)
 			(effects
 				(font
@@ -10936,7 +10936,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "Q2")
+					(reference "Q3")
 					(unit 1)
 				)
 			)

@@ -6240,7 +6240,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
 			(at 211.7852 62.23 0)
 			(effects
 				(font
@@ -6566,7 +6566,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "928ad2e4-cb48-4414-89f4-62eaf67797f9")
-		(property "Reference" "Q?"
+		(property "Reference" "Q1"
 			(at 64.77 40.64 0)
 			(effects
 				(font
@@ -6673,7 +6673,7 @@
 		(instances
 			(project "triptech"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "Q?")
+					(reference "Q1")
 					(unit 1)
 				)
 			)
@@ -7646,7 +7646,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
 			(at 202.8952 62.23 0)
 			(effects
 				(font
