@@ -902,7 +902,7 @@ Bench validation (post-board, TODO):
 ```
 DIN-5 IN ── 220R × 2 ── 1N4148W ── H11L1SM (opto, Schmitt-out) ── MIDI_RX → Seed UART RX
                                          │
-                                         └── 270R pull-up to +5V
+                                         └── 270R pull-up to +3V3D
                                          │
                                          └── 33R × 2 ── DIN-5 THRU
 
@@ -912,7 +912,8 @@ Seed UART TX ── MIDI_TX ── 10R ── 33R ── DIN-5 OUT
 Textbook MIDI 1.0: 5 mA current loop driven at 31.25 kbaud, 220 Ω series
 resistors at the DIN-5 IN pins, reverse-polarity protection via a 1N4148W,
 H11L1SM Schmitt-trigger optocoupler for edge-clean UART. Output side is
-pulled up to +5V through 270 Ω; MIDI_THRU buffers the opto output through
+pulled up to +3V3D through 270 Ω (matches the Seed UART RX logic level);
+MIDI_THRU buffers the opto output through
 a second pair of 33 Ω series resistors to a parallel DIN-5 jack. MIDI OUT
 driven directly from the Seed UART TX through a series 33 Ω, with a 10 Ω
 to the jack's sink pin.
@@ -934,7 +935,7 @@ No signal-path changes for Rev 2.
 * 1× H11L1SM optocoupler (U4) — **footprint corrected**
 * 1× 1N4148W diode, SOD-123 (D3)
 * 2× 220 Ω 0805 (R14, R15) — MIDI IN current limit
-* 1× 270 Ω 0805 (R16) — H11L1 output pull-up to +5V
+* 1× 270 Ω 0805 (R16) — H11L1 output pull-up to +3V3D
 * 2× 33 Ω 0805 (R17, R18) — MIDI THRU series
 * 1× 33 Ω 0805 (R12) — MIDI OUT series
 * 1× 10 Ω 0805 (R13) — MIDI OUT sink series

@@ -5112,7 +5112,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "052100b7-7f9e-48c9-bd10-de7cd5a12be1")
-		(property "Reference" "#PWR013"
+		(property "Reference" "#PWR014"
 			(at 190.5 132.08 0)
 			(effects
 				(font
@@ -5162,7 +5162,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR013")
+					(reference "#PWR014")
 					(unit 1)
 				)
 			)
@@ -5309,7 +5309,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "0f7427e4-a790-4621-ab03-6d09ff4ddde9")
-		(property "Reference" "#PWR012"
+		(property "Reference" "#PWR013"
 			(at 168.91 148.59 0)
 			(effects
 				(font
@@ -5360,7 +5360,7 @@
 		(instances
 			(project "triptech"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR012")
+					(reference "#PWR013")
 					(unit 1)
 				)
 			)
@@ -5582,7 +5582,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "25460df3-8842-4755-9496-d1b92d345430")
-		(property "Reference" "#PWR014"
+		(property "Reference" "#PWR015"
 			(at 205.74 148.59 0)
 			(effects
 				(font
@@ -5632,7 +5632,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR014")
+					(reference "#PWR015")
 					(unit 1)
 				)
 			)
@@ -5859,7 +5859,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "540edfbd-29ea-4812-9309-a24b2cf8e940")
-		(property "Reference" "J14"
+		(property "Reference" "J3"
 			(at 160.274 132.588 90)
 			(effects
 				(font
@@ -5919,7 +5919,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "J14")
+					(reference "J3")
 					(unit 1)
 				)
 			)
@@ -6753,7 +6753,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "9b296c0c-01b8-426b-ab03-d5aea6da75d0")
-		(property "Reference" "#PWR016"
+		(property "Reference" "#PWR017"
 			(at 231.14 149.86 0)
 			(effects
 				(font
@@ -6803,7 +6803,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR016")
+					(reference "#PWR017")
 					(unit 1)
 				)
 			)
@@ -8274,7 +8274,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d88d855c-1690-4b57-8ee0-6a2aa30b1649")
-		(property "Reference" "#PWR015"
+		(property "Reference" "#PWR016"
 			(at 210.82 96.52 0)
 			(effects
 				(font
@@ -8324,7 +8324,7 @@
 		(instances
 			(project "triptech"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR015")
+					(reference "#PWR016")
 					(unit 1)
 				)
 			)
@@ -8346,7 +8346,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d8c144a8-d945-4d4f-9b34-461555fcb080")
-		(property "Reference" "#PWR089"
+		(property "Reference" "#PWR011"
 			(at 154.94 157.48 0)
 			(effects
 				(font
@@ -8396,7 +8396,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR089")
+					(reference "#PWR011")
 					(unit 1)
 				)
 			)
@@ -8545,7 +8545,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ede12011-41f4-4a4b-8cb4-d3c1af0e8eb6")
-		(property "Reference" "#PWR017"
+		(property "Reference" "#PWR018"
 			(at 233.68 52.07 0)
 			(effects
 				(font
@@ -8596,7 +8596,7 @@
 		(instances
 			(project ""
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR017")
+					(reference "#PWR018")
 					(unit 1)
 				)
 			)
@@ -8612,7 +8612,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f7f01fb5-8ec0-4b7f-916c-a86dca4af00d")
-		(property "Reference" "#PWR011"
+		(property "Reference" "#PWR012"
 			(at 157.48 146.05 0)
 			(effects
 				(font
@@ -8663,7 +8663,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "#PWR011")
+					(reference "#PWR012")
 					(unit 1)
 				)
 			)
