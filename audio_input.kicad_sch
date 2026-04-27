@@ -6960,7 +6960,7 @@
 			(uuid "7091a8eb-ff0c-434b-bc34-004a8c02455f")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "J13")
 					(unit 2)
@@ -7247,7 +7247,7 @@
 			(uuid "7790d2e5-3696-470c-b1a5-6f64e51fd4ca")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "#FLG05")
 					(unit 1)
@@ -7408,7 +7408,7 @@
 			(uuid "55381148-ddb8-4a16-ae5e-a1b29f55fd38")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "Q1")
 					(unit 1)
@@ -7946,7 +7946,7 @@
 			(uuid "e6f06951-161c-4553-a8de-7eb4d9a0a269")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "#PWR081")
 					(unit 1)
@@ -8029,7 +8029,7 @@
 			(uuid "a8af5050-3bd3-4d0a-b55b-46579e30eba9")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "J12")
 					(unit 1)
@@ -8427,7 +8427,7 @@
 			(uuid "0aaa9b7b-2f02-4eee-822b-3ac29ca54ff5")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "#PWR084")
 					(unit 1)
@@ -10017,7 +10017,7 @@
 			(uuid "d5287a92-1cc7-4290-be01-49e1145e4005")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "#PWR055")
 					(unit 1)
@@ -10288,7 +10288,7 @@
 			(uuid "a19dc2f7-5c43-42c0-a04e-67b3b1acdff4")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "#PWR056")
 					(unit 1)
@@ -10436,7 +10436,7 @@
 			(uuid "1aafe936-86af-43aa-baac-3aa08030650d")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "J12")
 					(unit 2)
@@ -10568,7 +10568,7 @@
 			(uuid "47c020fd-df17-4632-bff1-86d451d1991e")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "TP1")
 					(unit 1)
@@ -10771,7 +10771,7 @@
 			(uuid "17e653cc-a340-4fa4-b3ea-8d54f8b5b778")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "C42")
 					(unit 1)
@@ -11095,7 +11095,7 @@
 			(uuid "4f1ffb87-5a77-481c-a780-668840d5a2e9")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "U10")
 					(unit 2)
@@ -11189,7 +11189,7 @@
 			(uuid "4f1ffb87-5a77-481c-a780-668840d5a2ea")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "U10")
 					(unit 1)
@@ -11265,7 +11265,7 @@
 			(uuid "503091c5-50a6-4b50-9720-0da519617940")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "R23")
 					(unit 1)
@@ -11622,7 +11622,7 @@
 			(uuid "bbea3a8e-a85e-4e47-908f-bb211a6024a7")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "U8")
 					(unit 1)
@@ -11976,7 +11976,7 @@
 			(uuid "6ee0c791-e20b-49cf-8068-9b4c8fee445c")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "J13")
 					(unit 1)
@@ -12748,7 +12748,7 @@
 			(uuid "137e18ad-e417-424c-95ee-ff08640e633e")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "R27")
 					(unit 1)
@@ -13159,7 +13159,7 @@
 			(uuid "bbea3a8e-a85e-4e47-908f-bb211a6024a8")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "U8")
 					(unit 2)
@@ -14105,7 +14105,7 @@
 			(uuid "5013dcaa-7b44-4ec0-8ba0-757ffbafc2f6")
 		)
 		(instances
-			(project ""
+			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "R36")
 					(unit 1)

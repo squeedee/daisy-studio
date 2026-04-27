@@ -36,7 +36,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "audio_outpu.kicad_sch"
+		(property "Sheetfile" "audio_output.kicad_sch"
 			(at 172.212 53.9246 0)
 			(effects
 				(font
@@ -202,7 +202,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "audio.kicad_sch"
+		(property "Sheetfile" "audio_input.kicad_sch"
 			(at 124.714 52.1566 0)
 			(effects
 				(font
