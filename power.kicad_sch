@@ -2214,6 +2214,142 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Switch:SW_SPST"
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "SW"
+				(at 0 3.175 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SW_SPST"
+				(at 0 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Single Pole Single Throw (SPST) switch"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "switch lever"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "SW_SPST_0_0"
+				(circle
+					(center -2.032 0)
+					(radius 0.508)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.524 0.254) (xy 1.524 1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.032 0)
+					(radius 0.508)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "SW_SPST_1_1"
+				(pin passive line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 2.54)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "daisy-studio:SI2301CDS-T1-GE3"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -3565,6 +3701,12 @@
 		(uuid "2ef8e489-44cb-4d5b-9f63-adb053dbaa88")
 	)
 	(junction
+		(at 54.61 62.23)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "32449260-67ce-4114-aeba-5cae8ba7bac6")
+	)
+	(junction
 		(at 224.79 66.04)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3649,12 +3791,6 @@
 		(uuid "a2d68b1a-ff80-4721-9034-c6ac96a7d29e")
 	)
 	(junction
-		(at 46.99 62.23)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "a71b07fb-d398-4580-b95d-062e268317d6")
-	)
-	(junction
 		(at 140.97 62.23)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3701,16 +3837,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f94cde17-a149-4ae0-8dcd-5aa3518fc5d9")
-	)
-	(wire
-		(pts
-			(xy 46.99 62.23) (xy 46.99 60.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "00ecebe4-46f0-48ed-9c91-88dc8bc8fce9")
 	)
 	(wire
 		(pts
@@ -4024,7 +4150,7 @@
 	)
 	(wire
 		(pts
-			(xy 46.99 64.77) (xy 46.99 62.23)
+			(xy 54.61 66.04) (xy 54.61 62.23)
 		)
 		(stroke
 			(width 0)
@@ -4054,6 +4180,16 @@
 	)
 	(wire
 		(pts
+			(xy 33.02 46.99) (xy 43.18 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "379e9a76-5687-48fd-b232-4a8a7a9d0a2f")
+	)
+	(wire
+		(pts
 			(xy 107.95 128.27) (xy 113.03 128.27)
 		)
 		(stroke
@@ -4061,6 +4197,16 @@
 			(type default)
 		)
 		(uuid "39d1400a-6287-4efe-8e7e-4de32509f647")
+	)
+	(wire
+		(pts
+			(xy 54.61 62.23) (xy 80.01 62.23)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3bd0e32b-86a5-4f7b-a444-6a3da9d937c5")
 	)
 	(wire
 		(pts
@@ -4074,7 +4220,7 @@
 	)
 	(wire
 		(pts
-			(xy 46.99 49.53) (xy 46.99 53.34)
+			(xy 54.61 49.53) (xy 54.61 54.61)
 		)
 		(stroke
 			(width 0)
@@ -4131,16 +4277,6 @@
 			(type default)
 		)
 		(uuid "467ed5ff-2483-4444-a2ec-53044bdcf5d7")
-	)
-	(wire
-		(pts
-			(xy 33.02 46.99) (xy 54.61 46.99)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "469a77e2-ffc2-4947-bdf5-95c4d343cb3d")
 	)
 	(wire
 		(pts
@@ -4374,7 +4510,7 @@
 	)
 	(wire
 		(pts
-			(xy 33.02 62.23) (xy 46.99 62.23)
+			(xy 33.02 62.23) (xy 54.61 62.23)
 		)
 		(stroke
 			(width 0)
@@ -4574,7 +4710,7 @@
 	)
 	(wire
 		(pts
-			(xy 80.01 49.53) (xy 74.93 49.53)
+			(xy 80.01 49.53) (xy 78.74 49.53)
 		)
 		(stroke
 			(width 0)
@@ -4714,6 +4850,16 @@
 	)
 	(wire
 		(pts
+			(xy 53.34 46.99) (xy 58.42 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cf49faaa-7f96-401e-a60b-28556f651434")
+	)
+	(wire
+		(pts
 			(xy 148.59 62.23) (xy 140.97 62.23)
 		)
 		(stroke
@@ -4764,7 +4910,7 @@
 	)
 	(wire
 		(pts
-			(xy 46.99 49.53) (xy 54.61 49.53)
+			(xy 54.61 49.53) (xy 58.42 49.53)
 		)
 		(stroke
 			(width 0)
@@ -4821,16 +4967,6 @@
 			(type default)
 		)
 		(uuid "e8408454-961a-4851-8f8e-794849f80b42")
-	)
-	(wire
-		(pts
-			(xy 46.99 62.23) (xy 80.01 62.23)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e992a9a4-7516-40f3-944c-714c7c07ea59")
 	)
 	(wire
 		(pts
@@ -4943,7 +5079,7 @@
 		(uuid "ff727937-2540-40f9-923c-c23adc6884e5")
 	)
 	(label "+12V_IN"
-		(at 39.37 46.99 0)
+		(at 33.02 46.99 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5033,7 +5169,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 46.99 64.77 0)
+		(at 54.61 66.04 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5042,7 +5178,7 @@
 		(fields_autoplaced yes)
 		(uuid "03a3c47e-c3b9-4edb-8cd7-1002920dd0e9")
 		(property "Reference" "#PWR01"
-			(at 46.99 71.12 0)
+			(at 54.61 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5051,7 +5187,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 46.99 69.85 0)
+			(at 54.61 71.12 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5059,7 +5195,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 46.99 64.77 0)
+			(at 54.61 66.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5068,7 +5204,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 46.99 64.77 0)
+			(at 54.61 66.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5077,7 +5213,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 46.99 64.77 0)
+			(at 54.61 66.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6150,6 +6286,73 @@
 		)
 	)
 	(symbol
+		(lib_id "Switch:SW_SPST")
+		(at 48.26 46.99 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "69f08d76-c3c5-4303-b464-71e952ef3054")
+		(property "Reference" "SW1"
+			(at 48.26 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Power"
+			(at 46.99 43.688 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Connector_JST:JST_VH_B2P-VH_1x02_P3.96mm_Vertical"
+			(at 48.26 46.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 48.26 46.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Single Pole Single Throw (SPST) switch"
+			(at 48.26 46.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f98b3e84-9825-4440-b1aa-fe2c702bd3ce")
+		)
+		(pin "2"
+			(uuid "993d9e55-09a2-46fb-a83a-77e0535936ea")
+		)
+		(instances
+			(project ""
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
+					(reference "SW1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+3V3D")
 		(at 149.86 148.59 180)
 		(unit 1)
@@ -6558,7 +6761,7 @@
 	)
 	(symbol
 		(lib_id "daisy-studio:SI2301CDS-T1-GE3")
-		(at 54.61 49.53 0)
+		(at 58.42 49.53 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6567,7 +6770,7 @@
 		(dnp no)
 		(uuid "928ad2e4-cb48-4414-89f4-62eaf67797f9")
 		(property "Reference" "Q1"
-			(at 64.77 40.64 0)
+			(at 68.58 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6575,7 +6778,7 @@
 			)
 		)
 		(property "Value" "SI2301CDS-T1-GE3"
-			(at 64.262 42.926 0)
+			(at 68.072 42.926 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6583,7 +6786,7 @@
 			)
 		)
 		(property "Footprint" "daisy-studio:SOT95P237X112-3N"
-			(at 71.12 -45.39 0)
+			(at 74.93 -45.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6593,7 +6796,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.vishay.com/docs/68741/si2301cd.pdf"
-			(at 71.12 -145.39 0)
+			(at 74.93 -145.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6603,7 +6806,7 @@
 			)
 		)
 		(property "Description" "SI2301CDS-T1-GE3, P-channel MOSFET Transistor 2.3 A 20 V, 3-Pin SOT-23, TO-236"
-			(at 54.61 49.53 0)
+			(at 58.42 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6612,7 +6815,7 @@
 			)
 		)
 		(property "Height" "1.12"
-			(at 71.12 -345.39 0)
+			(at 74.93 -345.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6622,7 +6825,7 @@
 			)
 		)
 		(property "Mouser Part Number" "781-SI2301CDS-T1-GE3"
-			(at 71.12 -445.39 0)
+			(at 74.93 -445.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6632,7 +6835,7 @@
 			)
 		)
 		(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/Vishay-Semiconductors/SI2301CDS-T1-GE3?qs=IRuQNBqMOcnWEzfGi6KYYw%3D%3D"
-			(at 71.12 -545.39 0)
+			(at 74.93 -545.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6642,7 +6845,7 @@
 			)
 		)
 		(property "Manufacturer_Name" "Vishay"
-			(at 71.12 -645.39 0)
+			(at 74.93 -645.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6652,7 +6855,7 @@
 			)
 		)
 		(property "Manufacturer_Part_Number" "SI2301CDS-T1-GE3"
-			(at 71.12 -745.39 0)
+			(at 74.93 -745.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6893,7 +7096,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 46.99 57.15 0)
+		(at 54.61 58.42 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6901,7 +7104,7 @@
 		(dnp no)
 		(uuid "a100a001-0003-4000-8000-000000000001")
 		(property "Reference" "R1"
-			(at 50.038 56.388 0)
+			(at 57.658 57.658 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6909,7 +7112,7 @@
 			)
 		)
 		(property "Value" "10k"
-			(at 50.292 58.166 0)
+			(at 57.912 59.436 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6917,7 +7120,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
-			(at 45.212 57.15 90)
+			(at 52.832 58.42 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6926,7 +7129,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 46.99 57.15 0)
+			(at 54.61 58.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6935,7 +7138,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 46.99 57.15 0)
+			(at 54.61 58.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
