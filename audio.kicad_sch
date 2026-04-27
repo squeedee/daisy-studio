@@ -4037,16 +4037,6 @@
 	)
 	(wire
 		(pts
-			(xy 238.76 64.77) (xy 238.76 66.04)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "154919d5-70a5-426f-8dba-13b2df0de195")
-	)
-	(wire
-		(pts
 			(xy 163.83 116.84) (xy 163.83 104.14)
 		)
 		(stroke
@@ -4914,6 +4904,16 @@
 			(type default)
 		)
 		(uuid "8761cc17-2a2e-4732-92be-fb644a21bac5")
+	)
+	(wire
+		(pts
+			(xy 238.76 64.77) (xy 238.76 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "88bb6b25-bbb5-47c5-b881-4d55ce13d0b3")
 	)
 	(wire
 		(pts
@@ -6464,7 +6464,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "092589ce-c4d8-4d4f-b765-5e81ddb8d57f")
-		(property "Reference" "TP12"
+		(property "Reference" "TP5"
 			(at 60.452 114.554 0)
 			(effects
 				(font
@@ -6515,7 +6515,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP12")
+					(reference "TP5")
 					(unit 1)
 				)
 			)
@@ -6666,7 +6666,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "12536f3d-5a0a-478a-bca7-6baa0f4d6971")
-		(property "Reference" "TP18"
+		(property "Reference" "TP14"
 			(at 190.5 123.444 0)
 			(effects
 				(font
@@ -6717,7 +6717,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP18")
+					(reference "TP14")
 					(unit 1)
 				)
 			)
@@ -7700,7 +7700,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "31008dee-e957-4a98-aab6-1c42435b899a")
-		(property "Reference" "TP8"
+		(property "Reference" "TP2"
 			(at 40.132 53.594 0)
 			(effects
 				(font
@@ -7751,7 +7751,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP8")
+					(reference "TP2")
 					(unit 1)
 				)
 			)
@@ -8246,7 +8246,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "3fb9cb9c-a25d-4a32-ad22-0aef507e8f2e")
-		(property "Reference" "TP9"
+		(property "Reference" "TP4"
 			(at 40.132 115.824 0)
 			(effects
 				(font
@@ -8297,7 +8297,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP9")
+					(reference "TP4")
 					(unit 1)
 				)
 			)
@@ -8510,7 +8510,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "4c3402db-13f9-46c5-ab14-280921648c4f")
-		(property "Reference" "TP3"
+		(property "Reference" "TP15"
 			(at 223.52 116.078 0)
 			(effects
 				(font
@@ -8561,7 +8561,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP3")
+					(reference "TP15")
 					(unit 1)
 				)
 			)
@@ -9564,7 +9564,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6c4b98c1-0a52-4359-9952-b433d7b5b663")
-		(property "Reference" "TP13"
+		(property "Reference" "TP7"
 			(at 96.012 54.864 0)
 			(effects
 				(font
@@ -9615,7 +9615,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP13")
+					(reference "TP7")
 					(unit 1)
 				)
 			)
@@ -9834,7 +9834,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "793e45b0-1a6d-4e54-9aa3-f06cffdf7f0f")
-		(property "Reference" "TP17"
+		(property "Reference" "TP12"
 			(at 190.5 61.214 0)
 			(effects
 				(font
@@ -9885,7 +9885,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP17")
+					(reference "TP12")
 					(unit 1)
 				)
 			)
@@ -10519,7 +10519,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8a337249-72f1-43a3-8488-1dba4a48b721")
-		(property "Reference" "TP7"
+		(property "Reference" "TP1"
 			(at 40.132 35.306 0)
 			(effects
 				(font
@@ -10570,7 +10570,7 @@
 		(instances
 			(project ""
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP7")
+					(reference "TP1")
 					(unit 1)
 				)
 			)
@@ -11640,7 +11640,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "adcf03c1-247c-4fb1-8f07-9e0aa9c279bd")
-		(property "Reference" "TP14"
+		(property "Reference" "TP8"
 			(at 96.012 117.094 0)
 			(effects
 				(font
@@ -11691,7 +11691,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP14")
+					(reference "TP8")
 					(unit 1)
 				)
 			)
@@ -11706,7 +11706,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b1d07c9c-c9ab-4448-a140-35c1169ced6c")
-		(property "Reference" "TP1"
+		(property "Reference" "TP11"
 			(at 184.658 42.926 0)
 			(effects
 				(font
@@ -11757,7 +11757,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP1")
+					(reference "TP11")
 					(unit 1)
 				)
 			)
@@ -11993,7 +11993,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "c1d1acbc-d050-4899-a894-65311efd82ce")
-		(property "Reference" "TP5"
+		(property "Reference" "TP17"
 			(at 224.79 39.878 0)
 			(effects
 				(font
@@ -12044,7 +12044,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP5")
+					(reference "TP17")
 					(unit 1)
 				)
 			)
@@ -12060,7 +12060,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "c1e4e176-64ec-440a-8a36-079027bd1dd7")
-		(property "Reference" "TP16"
+		(property "Reference" "TP10"
 			(at 126.746 117.094 0)
 			(effects
 				(font
@@ -12111,7 +12111,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP16")
+					(reference "TP10")
 					(unit 1)
 				)
 			)
@@ -12126,7 +12126,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "c4243427-2e08-4d58-b4e6-f38be175a7c9")
-		(property "Reference" "TP2"
+		(property "Reference" "TP13"
 			(at 184.658 105.156 0)
 			(effects
 				(font
@@ -12177,7 +12177,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP2")
+					(reference "TP13")
 					(unit 1)
 				)
 			)
@@ -12192,7 +12192,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "c960a14f-0fbf-4028-9e79-cd655a8503c2")
-		(property "Reference" "TP4"
+		(property "Reference" "TP16"
 			(at 223.52 151.638 0)
 			(effects
 				(font
@@ -12243,7 +12243,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP4")
+					(reference "TP16")
 					(unit 1)
 				)
 			)
@@ -13242,7 +13242,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e5e3e824-3e85-4bed-b064-6c46ad81bc5c")
-		(property "Reference" "TP15"
+		(property "Reference" "TP9"
 			(at 126.746 54.864 0)
 			(effects
 				(font
@@ -13293,7 +13293,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP15")
+					(reference "TP9")
 					(unit 1)
 				)
 			)
@@ -13309,7 +13309,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e7437c69-3a0c-4478-aa5b-7d7857e8fae0")
-		(property "Reference" "TP11"
+		(property "Reference" "TP6"
 			(at 61.722 52.324 0)
 			(effects
 				(font
@@ -13360,7 +13360,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP11")
+					(reference "TP6")
 					(unit 1)
 				)
 			)
@@ -13587,7 +13587,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f272aacf-1f70-4e51-a76b-49c5cfe37e39")
-		(property "Reference" "TP10"
+		(property "Reference" "TP3"
 			(at 40.132 97.536 0)
 			(effects
 				(font
@@ -13638,7 +13638,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP10")
+					(reference "TP3")
 					(unit 1)
 				)
 			)
@@ -13720,7 +13720,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f6ffc133-1c09-47be-9beb-22ba9349b20d")
-		(property "Reference" "TP6"
+		(property "Reference" "TP18"
 			(at 224.79 75.438 0)
 			(effects
 				(font
@@ -13771,7 +13771,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "TP6")
+					(reference "TP18")
 					(unit 1)
 				)
 			)
