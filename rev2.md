@@ -76,7 +76,7 @@
   - [Components](#components-2)
   - [Layout Guidelines](#layout-guidelines-1)
     - [Buck converter (TPS54302) — Issue #1 rework](#buck-converter-tps54302--issue-1-rework)
-    - [±12V DC/DC module (TMR 3-1222)](#12v-dcdc-module-tmr-3-1222)
+    - [±12V DC/DC module (TMR 3-1222E)](#12v-dcdc-module-tmr-3-1222e)
     - [General](#general)
   - [Verification](#verification-2)
 - [Appendix: Other Clamp Designs Considered](#appendix-other-clamp-designs-considered)
@@ -537,7 +537,7 @@ audio frequencies.
 
 ### Tolerance Analysis
 
-With ±5% supply tolerance (conservative; the Rev 2 TMR 3-1222 is
+With ±5% supply tolerance (conservative; the Rev 2 TMR 3-1222E is
 regulated to ±2% — the sim analysis below stays worst-case under the
 looser bound) and ±1% resistors:
 
@@ -559,7 +559,7 @@ corners = TYP / OPA_CLIP / CLAMP_TIGHT / CLAMP_LOOSE / GAIN_LOW):
 
 The ±12V rails carry the clamp-divider base-current shift (~13 µA per
 active clamp) and the continuous divider quiescent (~1 mA per side) with
-negligible rail sag — well within the TMR 3-1222's ±125 mA per-rail
+negligible rail sag — well within the TMR 3-1222E's ±125 mA per-rail
 rating.
 
 ## Anti-Alias Filter at Seed Input
@@ -702,7 +702,7 @@ leaves the main PCB.
 | **Input-stage subtotal** | **~29 mA**     | **647 mW** |
 
 This subtotal rolls into the Part 4 whole-board power budget alongside the
-output-stage draw. The ±12V module selection (Traco TMR 3-1222) is sized
+output-stage draw. The ±12V module selection (Traco TMR 3-1222E) is sized
 against that total, not this line-item subtotal — see Part 4 for the full
 sizing argument.
 
@@ -840,7 +840,7 @@ supply pins, with short returns to the analog ground pour.
   signal path from R_in to Seed_In. No splits or slots under the op-amp. Digital
   ground (Seed, USB, MIDI) should not share this pour.
 * **Supply traces (±12V):** Route as a pair to the decoupling caps. Avoid long runs
-  from the TMR 3-1222 — place the module close to the analog section or use wide
+  from the TMR 3-1222E — place the module close to the analog section or use wide
   traces (≥0.5mm).
 * **Seed_In to Seed pin:** Short, direct trace. This node carries the clamped signal
   and connects to both BJT emitters, R_out, C_aa, and R4/C1 (Seed input network).
@@ -853,7 +853,7 @@ supply pins, with short returns to the analog ground pour.
 
 All components in this circuit are in the analog signal path and connect to Analog
 Ground. The clamp reference dividers derive from the ±12V analog supply
-(TMR 3-1222 secondary, Part 4) and terminate at AGND.
+(TMR 3-1222E secondary, Part 4) and terminate at AGND.
 
 ## Verification
 
@@ -973,7 +973,7 @@ No signal-path changes for Rev 2.
   Seed Rev 7 community guidance. Sim-verified −0.27 dB at 20 kHz, −22 dB at
   1 MHz.
 * **Added ±12 V rail protection** (one SMBJ15CA bidirectional TVS per
-  rail, placed on the power sheet near the TMR 3-1222 output —
+  rail, placed on the power sheet near the TMR 3-1222E output —
   consolidated with D1 input over-voltage TVS, single BOM line). Absorbs
   phantom-power back-feed when the gear is powered off and an XLR
   output is plugged into a phantom-enabled mic preamp. See Rail
@@ -1297,7 +1297,7 @@ this with huge margin and provides surge capacity for hot-plug transients.
 
 ## Rail Protection (TVS per rail)
 
-The TMR 3-1222 is a regulated isolated DC-DC converter: it can source
+The TMR 3-1222E is a regulated isolated DC-DC converter: it can source
 current but cannot sink it (like the Rev 1 TMA-1212D). If current is forced **into** the ±12V rails from outside,
 the rail voltage rises uncontrollably.
 
@@ -1324,7 +1324,7 @@ Also handles hot-plug surge transients.
 
 ### Placement
 
-**Both rail TVSs sit on the power sheet, adjacent to the TMR 3-1222
+**Both rail TVSs sit on the power sheet, adjacent to the TMR 3-1222E
 output stage** — grouped with D1 (input over-voltage) and the bulk
 caps in a single power-management zone.
 
@@ -1411,7 +1411,7 @@ Barrel jack (J_DC1, 2.1mm)
   +12V_RAW ─────────┬──────────────────────────────┐
                     │                              │
                     ▼                              ▼
-                 U2 (TPS54302 buck)          U1 (TMR 3-1222 isolated ±12V, 3 W)
+                 U2 (TPS54302 buck)          U1 (TMR 3-1222E isolated ±12V, 3 W)
                  + L3, C1/C2/C6/C7,          ±12V output → L1/L2 ferrites
                  R5/R6 feedback              → +12VA / −12VA rails
                     │
@@ -1422,12 +1422,15 @@ Barrel jack (J_DC1, 2.1mm)
 ## Changes vs. Rev 1
 
 * **±12V DC/DC module:** Traco **TMA-1212D** (1 W, ±42 mA/rail) → Traco
-  **TMR 3-1222** (3 W regulated ±2%, ±125 mA/rail). Driven by the Rev 2
+  **TMR 3-1222E** (3 W regulated ±2%, ±125 mA/rail). Driven by the Rev 2
   load budget: OPA1656 input + output gain stages, LM2903 comparator, and
   BJT clamp reference dividers on top of the Rev 1 THAT1246/THAT1646 draw.
   The daughterboard is fully passive (Part 0) and consumes no ±12V, so the
-  budget is entirely main-PCB consumers plus a defensive margin. New SIP-8
-  footprint; pinout re-verify against datasheet.
+  budget is entirely main-PCB consumers plus a defensive margin. The "E"
+  suffix selects Traco's enhanced-efficiency variant (~87–89% vs ~80–84%
+  for the base TMR 3) — same SIP-8 pinout as the base part, currently the
+  cheaper of the two at the chosen supplier. New SIP-8 footprint; pinout
+  re-verify against datasheet.
 * **+5V rail caps C6 and C7:** 22 µF 0805 10 V → **22 µF 1206 25 V** X7R.
   10 V rating was insufficient derating for a 5 V MLCC
   ([Issue #2](https://github.com/squeedee/daisy-studio/issues/2)). 1206 /
@@ -1475,7 +1478,7 @@ Per rail, quiescent:
 | Clip LEDs (peak, +12V only)       | up to 10  | —         | Intermittent; excluded from sizing   |
 | **Main-board total**              | **~52**   | **~52**   |                                      |
 
-Total output power ≈ 2 × 12 V × 52 mA = **1.25 W**. TMR 3-1222 rating 3 W
+Total output power ≈ 2 × 12 V × 52 mA = **1.25 W**. TMR 3-1222E rating 3 W
 / ±125 mA per rail gives **~2.4× headroom** — defensive margin against
 component-tolerance, temperature, and Rev 1 part-to-part variation; not
 allocated to any user extension.
@@ -1558,7 +1561,7 @@ during a miswired wall-wart event regardless of switch state.
 * 1× SI2301 P-FET, SOT-23 (Q1) — unchanged, reverse-polarity protection
 * 1× SMBJ15CA bidirectional TVS, SMB (D1) — input over-voltage clamp on +12V_RAW
 * 2× SMBJ15CA bidirectional TVS, SMB — rail protection on +12VA→AGND and
-  -12VA→AGND, placed near the TMR 3-1222 output. Same part as D1 (single
+  -12VA→AGND, placed near the TMR 3-1222E output. Same part as D1 (single
   BOM line for all three TVSs across the project). See Part 3 → Rail
   Protection → Placement.
 * 1× 100 µF / 25 V electrolytic, CP_Elec_6.3x7.7 (C5) — unchanged
@@ -1567,7 +1570,7 @@ during a miswired wall-wart event regardless of switch state.
 * 2× 22 µF / 25 V X7R MLCC, **1206** (C6, C7) — **changed footprint & voltage**
 * Supporting R/C around the buck (C1, C2, C3, C4, C8, R1, R2, R3, R4, R5, R6)
   — unchanged values; verify footprints during the Issue #1 layout rework
-* 1× **TMR 3-1222** isolated DC/DC, SIP-8 (U1) — **replaces TMA-1212D**
+* 1× **TMR 3-1222E** isolated DC/DC, SIP-8 (U1) — **replaces TMA-1212D**
 * 2× BLM18PG121SN1 ferrite beads, 0603 (L1, L2) — unchanged, on ±12VA
 * 1× SMAJ5.0A TVS near Seed +5V input — **optional, recommended**
 
@@ -1599,14 +1602,14 @@ Per the TPS54302 datasheet layout guidelines
 5. **Bootstrap cap (C8, 75 pF across BOOT-SW):** placed directly adjacent
    to U2 pins 3 (BOOT) and 6 (SW), short trace.
 
-### ±12V DC/DC module (TMR 3-1222)
+### ±12V DC/DC module (TMR 3-1222E)
 
 * Place the module physically close to the balanced I/O section so ±12V
   delivery traces to THAT1246 / THAT1646 / OPA1656 are short.
 * L1, L2 ferrites immediately at the module output pins.
 * Post-ferrite bulk cap (reuse existing or increase to 10 µF X7R if
   measurement shows ripple > 10 mVpp at the op-amp supply pins).
-* Isolation slot under the module: the TMR 3-1222 has isolated primary
+* Isolation slot under the module: the TMR 3-1222E has isolated primary
   and secondary; preserve 3 mm creepage between PGND (primary) and AGND
   (secondary) on the PCB.
 
@@ -1625,7 +1628,7 @@ Schematic-level checks (pre-layout):
 1. `kicad-cli sch export netlist --output /dev/null power.kicad_sch` — parse.
 2. `kicad-cli sch erc power.kicad_sch` — check unconnected pins, missing
    flags, rail conflicts.
-3. Confirm TMR 3-1222 symbol / footprint present in
+3. Confirm TMR 3-1222E symbol / footprint present in
    `daisy-studio.kicad_sym` or an imported library.
 4. Confirm J_SW footprint (JST VH B2P-VH) present in `daisy-studio.pretty`
    or a library.
@@ -1638,7 +1641,7 @@ Bench validation (post-board):
    output 24 Vpp differential).
 3. Scope ±12V ripple at op-amp supply pins; verify < 10 mVpp audio band.
 4. Pull a 25 mA/rail test load at the ±12V rail caps; verify rails stay
-   within the TMR 3-1222's ±2% spec. (Not a user-extension test — daughter-
+   within the TMR 3-1222E's ±2% spec. (Not a user-extension test — daughter-
    board and J2 don't carry ±12V; this is a defensive margin check.)
 5. Verify power switch header: shunt populated → power on; shunt removed →
    power off.
