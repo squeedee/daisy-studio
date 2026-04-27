@@ -6124,7 +6124,7 @@
 				)
 			)
 		)
-		(property "Value" "75p"
+		(property "Value" "75pF"
 			(at 218.694 69.85 0)
 			(effects
 				(font
@@ -6494,7 +6494,7 @@
 				)
 			)
 		)
-		(property "Value" "49k9 1%"
+		(property "Value" "49.9R 1%"
 			(at 230.378 61.722 0)
 			(effects
 				(font
@@ -6699,7 +6699,7 @@
 				)
 			)
 		)
-		(property "Value" "22u"
+		(property "Value" "22u 25V"
 			(at 214.122 61.214 0)
 			(effects
 				(font
@@ -7521,7 +7521,7 @@
 				)
 			)
 		)
-		(property "Value" "100u"
+		(property "Value" "100u 25V"
 			(at 187.96 138.43 90)
 			(effects
 				(font
@@ -8032,7 +8032,7 @@
 				)
 			)
 		)
-		(property "Value" "13k3 1%"
+		(property "Value" "13.3R 1%"
 			(at 230.378 86.36 0)
 			(effects
 				(font
@@ -8105,7 +8105,7 @@
 				)
 			)
 		)
-		(property "Value" "22u"
+		(property "Value" "22u 25V"
 			(at 198.628 61.976 0)
 			(effects
 				(font
