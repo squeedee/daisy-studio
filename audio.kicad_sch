@@ -11,6 +11,458 @@
 		(company "Rasheed Abdul-Aziz")
 	)
 	(lib_symbols
+		(symbol "2N3904_1"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "Q"
+				(at 5.08 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "2N3904"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_THT:TO-92_Inline"
+				(at 5.08 -1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.onsemi.com/pub/Collateral/2N3903-D.PDF"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Description" "0.2A Ic, 40V Vce, Small Signal NPN Transistor, TO-92"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Sim.Device" "NPN"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Sim.Pins" "1=E 2=B 3=C"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "NPN Transistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "TO?92*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "2N3904_1_0_1"
+				(polyline
+					(pts
+						(xy -2.54 0) (xy 0.635 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 1.905) (xy 0.635 -1.905)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 1.27 0)
+					(radius 2.8194)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "2N3904_1_1_1"
+				(polyline
+					(pts
+						(xy 0.635 0.635) (xy 2.54 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 -0.635) (xy 2.54 -2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 -1.778) (xy 1.778 -1.27) (xy 2.286 -2.286) (xy 1.27 -1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(pin input line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 5.08 270)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 -5.08 90)
+					(length 2.54)
+					(name "E"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "2N3906_1"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "Q"
+				(at 5.08 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "2N3906"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_THT:TO-92_Inline"
+				(at 5.08 -1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.onsemi.com/pub/Collateral/2N3906-D.PDF"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Description" "-0.2A Ic, -40V Vce, Small Signal PNP Transistor, TO-92"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Sim.Device" "PNP"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Sim.Pins" "1=E 2=B 3=C"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "PNP Transistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "TO?92*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "2N3906_1_0_1"
+				(polyline
+					(pts
+						(xy -2.54 0) (xy 0.635 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 1.905) (xy 0.635 -1.905)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 0.635) (xy 2.54 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 -0.635) (xy 2.54 -2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 1.27 0)
+					(radius 2.8194)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.286 -1.778) (xy 1.778 -2.286) (xy 1.27 -1.27) (xy 2.286 -1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+			)
+			(symbol "2N3906_1_1_1"
+				(pin input line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 5.08 270)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 -5.08 90)
+					(length 2.54)
+					(name "E"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Amplifier_Operational:OPA1656ID"
 			(pin_names
 				(offset 0.127)
@@ -1291,6 +1743,9 @@
 			(embedded_fonts no)
 		)
 		(symbol "Device:R_Potentiometer_Trim"
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 1.016)
 				(hide yes)
@@ -1454,7 +1909,177 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "R_Potentiometer_Trim_1"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "RV"
+				(at -4.445 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "R_Potentiometer_Trim"
+				(at -2.54 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Trim-potentiometer"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "resistor variable trimpot trimmer"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Potentiometer*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_Potentiometer_Trim_1_0_1"
+				(rectangle
+					(start 1.016 2.54)
+					(end -1.016 -2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.524 0.762) (xy 1.524 -0.762)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 0) (xy 1.524 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_Potentiometer_Trim_1_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 0 180)
+					(length 1.27)
+					(name "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Transistor_BJT:2N3904"
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0)
 				(hide yes)
@@ -1678,6 +2303,9 @@
 			(embedded_fonts no)
 		)
 		(symbol "Transistor_BJT:2N3906"
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0)
 				(hide yes)
@@ -5462,6 +6090,7 @@
 		)
 	)
 	(symbol
+		(lib_name "R_Potentiometer_Trim_1")
 		(lib_id "Device:R_Potentiometer_Trim")
 		(at 163.83 120.65 0)
 		(unit 1)
@@ -5479,7 +6108,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "R_Potentiometer_Trim"
+		(property "Value" "10k"
 			(at 160.782 121.92 0)
 			(effects
 				(font
@@ -5506,7 +6135,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Trim-potentiometer"
+		(property "Description" "Multi-Turn Trim-potentiometer"
 			(at 163.83 120.65 0)
 			(effects
 				(font
@@ -5748,7 +6377,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "10k 1%"
 			(at 241.3 35.5599 0)
 			(effects
 				(font
@@ -5800,6 +6429,7 @@
 		)
 	)
 	(symbol
+		(lib_name "2N3906_1")
 		(lib_id "Transistor_BJT:2N3906")
 		(at 153.67 104.14 0)
 		(mirror y)
@@ -5903,15 +6533,15 @@
 		(dnp no)
 		(uuid "12fa6f10-5105-4834-aeb7-ef110cce150d")
 		(property "Reference" "R25"
-			(at 182.626 31.75 90)
+			(at 183.642 30.734 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "R"
-			(at 184.658 31.75 90)
+		(property "Value" "1k"
+			(at 183.642 32.766 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6213,7 +6843,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100n"
 			(at 19.05 155.956 0)
 			(effects
 				(font
@@ -6397,6 +7027,7 @@
 		)
 	)
 	(symbol
+		(lib_name "2N3904_1")
 		(lib_id "Transistor_BJT:2N3904")
 		(at 148.59 52.07 0)
 		(mirror x)
@@ -6491,92 +7122,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Comparator:LM2903")
-		(at 181.61 118.11 0)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "22116267-5d48-4c6e-aae3-16d1d3034f49")
-		(property "Reference" "U13"
-			(at 181.61 123.444 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "LM2903"
-			(at 181.864 125.984 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 181.61 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm393.pdf"
-			(at 181.61 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Low-Power, Low-Offset Voltage, Dual Comparators, DIP-8/SOIC-8/SOP-8/TSSOP-8/VSSOP-8"
-			(at 181.61 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "7"
-			(uuid "cbc80375-abad-4e5b-bb56-6fa5402e1098")
-		)
-		(pin "8"
-			(uuid "42b7ab8e-570b-4ea8-a7d8-620235c78dce")
-		)
-		(pin "4"
-			(uuid "4b007952-67e1-426a-b8e9-d91a967e2645")
-		)
-		(pin "3"
-			(uuid "8afb52b9-3140-48a1-ac3a-3049fec9b2b0")
-		)
-		(pin "5"
-			(uuid "064ad0e9-9106-4ed5-a992-df708a86cc55")
-		)
-		(pin "6"
-			(uuid "2d270e86-7642-4a0b-8655-8e2cbe1dc100")
-		)
-		(pin "2"
-			(uuid "e42b9eb0-9af3-44b9-aeff-6623daaea15a")
-		)
-		(pin "1"
-			(uuid "5675c8b2-c383-413c-a005-bf7f71d4069a")
-		)
-		(instances
-			(project "daisy-studio"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "U13")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 251.46 120.65 0)
 		(unit 1)
@@ -6594,7 +7139,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "47u"
 			(at 255.27 121.9199 0)
 			(effects
 				(font
@@ -6730,7 +7275,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100n"
 			(at 53.34 185.4199 0)
 			(effects
 				(font
@@ -6799,7 +7344,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100n"
 			(at 131.318 171.45 0)
 			(effects
 				(font
@@ -7148,7 +7693,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "10u"
 			(at 122.428 179.07 0)
 			(effects
 				(font
@@ -7324,92 +7869,6 @@
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "#PWR71")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Amplifier_Operational:OPA1656ID")
-		(at 86.36 109.22 0)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "41398110-a102-4ca9-8aad-3f3e715104c7")
-		(property "Reference" "U12"
-			(at 86.868 114.808 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "OPA1656ID"
-			(at 87.376 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
-			(at 86.36 109.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/opa1656.pdf"
-			(at 86.36 109.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Dual Ultra-Low-Noise, Low-Distortion, FET-Input, Burr-Brown Audio Operational Amplifiers, SOIC-8"
-			(at 86.36 109.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "3"
-			(uuid "41c65d34-3eab-4d1c-b0a7-5fab2e5f9969")
-		)
-		(pin "2"
-			(uuid "9b5bc4b3-ea28-4cc1-b2ec-98153c87de52")
-		)
-		(pin "1"
-			(uuid "9957b3d6-afb4-4ea6-aada-9be6420d84fc")
-		)
-		(pin "5"
-			(uuid "7e255f23-4c32-433c-9b39-c663601d5043")
-		)
-		(pin "6"
-			(uuid "922016fc-f2d1-48ab-9cb5-44497c033abd")
-		)
-		(pin "7"
-			(uuid "64b8671a-e881-4c7d-b13b-453fbb69bdc8")
-		)
-		(pin "8"
-			(uuid "8f6c25cd-7ab5-4a46-a4ab-156f2e41cb24")
-		)
-		(pin "4"
-			(uuid "bbea3a8e-a85e-4e47-908f-bb211a6024a6")
-		)
-		(instances
-			(project "daisy-studio"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
-					(reference "U12")
 					(unit 1)
 				)
 			)
@@ -8273,7 +8732,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "1n"
 			(at 41.148 156.718 0)
 			(effects
 				(font
@@ -8408,7 +8867,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100n"
 			(at 59.436 156.21 0)
 			(effects
 				(font
@@ -8478,7 +8937,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "47u"
 			(at 255.27 147.3199 0)
 			(effects
 				(font
@@ -8612,7 +9071,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "R_Potentiometer_Trim"
+		(property "Value" "10k"
 			(at 160.782 59.69 0)
 			(effects
 				(font
@@ -8639,7 +9098,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Trim-potentiometer"
+		(property "Description" "Multi-Turn Trim-potentiometer"
 			(at 163.83 58.42 0)
 			(effects
 				(font
@@ -8684,7 +9143,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "10u"
 			(at 83.058 179.07 0)
 			(effects
 				(font
@@ -8754,7 +9213,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100n"
 			(at 35.56 185.4199 0)
 			(effects
 				(font
@@ -8888,7 +9347,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100n"
 			(at 131.318 179.07 0)
 			(effects
 				(font
@@ -9023,7 +9482,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "10k 1%"
 			(at 240.03 157.4799 0)
 			(effects
 				(font
@@ -9091,7 +9550,7 @@
 				)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "12k 1%"
 			(at 86.106 97.79 90)
 			(effects
 				(font
@@ -9159,7 +9618,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100n"
 			(at 91.948 171.45 0)
 			(effects
 				(font
@@ -9572,7 +10031,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "10u"
 			(at 122.428 171.45 0)
 			(effects
 				(font
@@ -9641,7 +10100,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "47u"
 			(at 256.54 45.7199 0)
 			(effects
 				(font
@@ -9710,7 +10169,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "10u"
 			(at 83.058 171.45 0)
 			(effects
 				(font
@@ -10024,7 +10483,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "a1007001-0002-4000-8000-000000000001")
+		(uuid "a1007001-0002-4000-8000-000000000002")
 		(property "Reference" "U8"
 			(at 52.07 31.75 0)
 			(effects
@@ -10078,28 +10537,28 @@
 			)
 		)
 		(pin "1"
-			(uuid "65897da1-496a-4ffc-a52f-d77e491c0866")
+			(uuid "65897da1-496a-4ffc-a52f-d77e491c0867")
 		)
 		(pin "2"
-			(uuid "f1350711-cd0f-4aa4-9938-6483d1353b7c")
+			(uuid "f1350711-cd0f-4aa4-9938-6483d1353b7d")
 		)
 		(pin "3"
-			(uuid "a9f69aaa-bbe6-4856-9019-c1a77f1686c2")
+			(uuid "a9f69aaa-bbe6-4856-9019-c1a77f1686c3")
 		)
 		(pin "4"
-			(uuid "d3cf2d20-632f-4fe2-b889-04228d726d36")
+			(uuid "d3cf2d20-632f-4fe2-b889-04228d726d37")
 		)
 		(pin "5"
-			(uuid "164ddc70-b104-444e-b567-63ab58370b3b")
+			(uuid "164ddc70-b104-444e-b567-63ab58370b3c")
 		)
 		(pin "6"
-			(uuid "58a7fb08-b39d-4769-aac2-1a127eba80b1")
+			(uuid "58a7fb08-b39d-4769-aac2-1a127eba80b2")
 		)
 		(pin "7"
-			(uuid "63e85a51-d317-44ee-9cb8-2361648fa78c")
+			(uuid "63e85a51-d317-44ee-9cb8-2361648fa78d")
 		)
 		(pin "8"
-			(uuid "4f1ffb87-5a77-481c-a780-668840d5a2e9")
+			(uuid "4f1ffb87-5a77-481c-a780-668840d5a2ea")
 		)
 		(instances
 			(project ""
@@ -10205,7 +10664,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "10k 1%"
 			(at 240.03 111.7599 0)
 			(effects
 				(font
@@ -10406,7 +10865,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "1.5k 1%"
 			(at 240.03 147.3199 0)
 			(effects
 				(font
@@ -10520,19 +10979,19 @@
 			(uuid "5734fe40-cc16-44c0-ac43-a50bff5651e2")
 		)
 		(pin "5"
-			(uuid "7e255f23-4c32-433c-9b39-c663601d5043")
+			(uuid "7e255f23-4c32-433c-9b39-c663601d5044")
 		)
 		(pin "6"
-			(uuid "922016fc-f2d1-48ab-9cb5-44497c033abd")
+			(uuid "922016fc-f2d1-48ab-9cb5-44497c033abe")
 		)
 		(pin "7"
-			(uuid "64b8671a-e881-4c7d-b13b-453fbb69bdc8")
+			(uuid "64b8671a-e881-4c7d-b13b-453fbb69bdc9")
 		)
 		(pin "8"
-			(uuid "8f6c25cd-7ab5-4a46-a4ab-156f2e41cb24")
+			(uuid "8f6c25cd-7ab5-4a46-a4ab-156f2e41cb25")
 		)
 		(pin "4"
-			(uuid "bbea3a8e-a85e-4e47-908f-bb211a6024a6")
+			(uuid "bbea3a8e-a85e-4e47-908f-bb211a6024a7")
 		)
 		(instances
 			(project ""
@@ -10628,7 +11087,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "10k 1%"
 			(at 241.3 81.2799 0)
 			(effects
 				(font
@@ -10697,7 +11156,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "1n"
 			(at 35.814 156.21 0)
 			(effects
 				(font
@@ -10914,7 +11373,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "AUDIO_IN_L"
+		(property "Value" "AUDIO_IN_R"
 			(at 182.118 107.95 0)
 			(effects
 				(font
@@ -11045,7 +11504,7 @@
 				)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "3.3k 1%"
 			(at 137.16 113.538 90)
 			(effects
 				(font
@@ -11097,6 +11556,92 @@
 	)
 	(symbol
 		(lib_id "Comparator:LM2903")
+		(at 181.61 118.11 0)
+		(mirror x)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "cb4660a6-725e-4242-ad7e-5d746e914272")
+		(property "Reference" "U11"
+			(at 182.626 124.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "LM2903"
+			(at 182.626 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 181.61 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm393.pdf"
+			(at 181.61 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Low-Power, Low-Offset Voltage, Dual Comparators, DIP-8/SOIC-8/SOP-8/TSSOP-8/VSSOP-8"
+			(at 181.61 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "7"
+			(uuid "cbc80375-abad-4e5b-bb56-6fa5402e1099")
+		)
+		(pin "8"
+			(uuid "42b7ab8e-570b-4ea8-a7d8-620235c78dcf")
+		)
+		(pin "4"
+			(uuid "4b007952-67e1-426a-b8e9-d91a967e2646")
+		)
+		(pin "3"
+			(uuid "83ad69ed-57bc-4336-bb91-116505f0f754")
+		)
+		(pin "5"
+			(uuid "064ad0e9-9106-4ed5-a992-df708a86cc56")
+		)
+		(pin "6"
+			(uuid "2d270e86-7642-4a0b-8655-8e2cbe1dc101")
+		)
+		(pin "2"
+			(uuid "2c2202c2-2c9f-4a05-9173-d10d11010ed1")
+		)
+		(pin "1"
+			(uuid "bdc98dc5-3e14-43d4-b321-dd845bdd5512")
+		)
+		(instances
+			(project "daisy-studio"
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
+					(reference "U11")
+					(unit 2)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Comparator:LM2903")
 		(at 181.61 55.88 0)
 		(mirror x)
 		(unit 1)
@@ -11104,7 +11649,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "cb4660a6-725e-4242-ad7e-5d746e914272")
+		(uuid "cb4660a6-725e-4242-ad7e-5d746e914273")
 		(property "Reference" "U11"
 			(at 181.61 61.214 0)
 			(effects
@@ -11149,28 +11694,28 @@
 			)
 		)
 		(pin "7"
-			(uuid "cbc80375-abad-4e5b-bb56-6fa5402e1098")
+			(uuid "cbc80375-abad-4e5b-bb56-6fa5402e109a")
 		)
 		(pin "8"
-			(uuid "42b7ab8e-570b-4ea8-a7d8-620235c78dce")
+			(uuid "42b7ab8e-570b-4ea8-a7d8-620235c78dd0")
 		)
 		(pin "4"
-			(uuid "4b007952-67e1-426a-b8e9-d91a967e2645")
+			(uuid "4b007952-67e1-426a-b8e9-d91a967e2647")
 		)
 		(pin "3"
-			(uuid "83ad69ed-57bc-4336-bb91-116505f0f754")
+			(uuid "83ad69ed-57bc-4336-bb91-116505f0f755")
 		)
 		(pin "5"
-			(uuid "064ad0e9-9106-4ed5-a992-df708a86cc55")
+			(uuid "064ad0e9-9106-4ed5-a992-df708a86cc57")
 		)
 		(pin "6"
-			(uuid "2d270e86-7642-4a0b-8655-8e2cbe1dc100")
+			(uuid "2d270e86-7642-4a0b-8655-8e2cbe1dc102")
 		)
 		(pin "2"
-			(uuid "2c2202c2-2c9f-4a05-9173-d10d11010ed1")
+			(uuid "2c2202c2-2c9f-4a05-9173-d10d11010ed2")
 		)
 		(pin "1"
-			(uuid "bdc98dc5-3e14-43d4-b321-dd845bdd5512")
+			(uuid "bdc98dc5-3e14-43d4-b321-dd845bdd5513")
 		)
 		(instances
 			(project "daisy-studio"
@@ -11199,7 +11744,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100n"
 			(at 91.948 179.07 0)
 			(effects
 				(font
@@ -11325,15 +11870,15 @@
 		(dnp no)
 		(uuid "d0fe9bc2-89c7-40bf-8ba9-137ac7e9377c")
 		(property "Reference" "R26"
-			(at 182.626 93.98 90)
+			(at 183.642 92.964 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "R"
-			(at 184.658 93.98 90)
+		(property "Value" "1k"
+			(at 183.642 94.996 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11399,7 +11944,7 @@
 				)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "3.3k 1%"
 			(at 137.16 51.308 90)
 			(effects
 				(font
@@ -11585,7 +12130,7 @@
 			(uuid "efccb3a6-4d9c-4e74-931c-27a447e6d307")
 		)
 		(pin "4"
-			(uuid "d3cf2d20-632f-4fe2-b889-04228d726d36")
+			(uuid "d3cf2d20-632f-4fe2-b889-04228d726d38")
 		)
 		(pin "5"
 			(uuid "025abdf8-9dcb-48e2-9c9a-2427621d543e")
@@ -11594,10 +12139,10 @@
 			(uuid "fe90bd4f-04f4-4e95-ad0f-f649a0b22a81")
 		)
 		(pin "7"
-			(uuid "63e85a51-d317-44ee-9cb8-2361648fa78c")
+			(uuid "63e85a51-d317-44ee-9cb8-2361648fa78e")
 		)
 		(pin "8"
-			(uuid "4f1ffb87-5a77-481c-a780-668840d5a2e9")
+			(uuid "4f1ffb87-5a77-481c-a780-668840d5a2eb")
 		)
 		(instances
 			(project "daisy-studio"
@@ -11616,7 +12161,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "dd3b62a6-bb2a-4592-a6cc-3d5213eb903d")
+		(uuid "dd3b62a6-bb2a-4592-a6cc-3d5213eb903e")
 		(property "Reference" "U9"
 			(at 101.092 166.37 0)
 			(effects
@@ -11672,28 +12217,28 @@
 			)
 		)
 		(pin "1"
-			(uuid "cfcd3054-ae62-4c69-9d4a-e62e5dc62578")
+			(uuid "cfcd3054-ae62-4c69-9d4a-e62e5dc62579")
 		)
 		(pin "2"
-			(uuid "aca0fe17-e79e-453b-bd69-d7664ddd660a")
+			(uuid "aca0fe17-e79e-453b-bd69-d7664ddd660b")
 		)
 		(pin "3"
-			(uuid "efccb3a6-4d9c-4e74-931c-27a447e6d307")
+			(uuid "efccb3a6-4d9c-4e74-931c-27a447e6d308")
 		)
 		(pin "4"
-			(uuid "d3cf2d20-632f-4fe2-b889-04228d726d36")
+			(uuid "d3cf2d20-632f-4fe2-b889-04228d726d39")
 		)
 		(pin "5"
-			(uuid "025abdf8-9dcb-48e2-9c9a-2427621d543e")
+			(uuid "025abdf8-9dcb-48e2-9c9a-2427621d543f")
 		)
 		(pin "6"
-			(uuid "fe90bd4f-04f4-4e95-ad0f-f649a0b22a81")
+			(uuid "fe90bd4f-04f4-4e95-ad0f-f649a0b22a82")
 		)
 		(pin "7"
-			(uuid "63e85a51-d317-44ee-9cb8-2361648fa78c")
+			(uuid "63e85a51-d317-44ee-9cb8-2361648fa78f")
 		)
 		(pin "8"
-			(uuid "4f1ffb87-5a77-481c-a780-668840d5a2e9")
+			(uuid "4f1ffb87-5a77-481c-a780-668840d5a2ec")
 		)
 		(instances
 			(project "daisy-studio"
@@ -11723,7 +12268,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "1.5k 1%"
 			(at 241.3 71.1199 0)
 			(effects
 				(font
@@ -11770,6 +12315,92 @@
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
 					(reference "R33")
 					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Amplifier_Operational:OPA1656ID")
+		(at 86.36 109.22 0)
+		(mirror x)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e1bdc1c6-b80c-4d8c-ba45-535e805bb0b3")
+		(property "Reference" "U10"
+			(at 86.614 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "OPA1656ID"
+			(at 86.614 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
+			(at 86.36 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/opa1656.pdf"
+			(at 86.36 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Dual Ultra-Low-Noise, Low-Distortion, FET-Input, Burr-Brown Audio Operational Amplifiers, SOIC-8"
+			(at 86.36 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "62b36be9-bbc4-490e-acd0-fb325f352fd4")
+		)
+		(pin "2"
+			(uuid "e0801d09-2d09-408e-8dda-da37e4d3e432")
+		)
+		(pin "1"
+			(uuid "5734fe40-cc16-44c0-ac43-a50bff5651e3")
+		)
+		(pin "5"
+			(uuid "7e255f23-4c32-433c-9b39-c663601d5045")
+		)
+		(pin "6"
+			(uuid "922016fc-f2d1-48ab-9cb5-44497c033abf")
+		)
+		(pin "7"
+			(uuid "64b8671a-e881-4c7d-b13b-453fbb69bdca")
+		)
+		(pin "8"
+			(uuid "8f6c25cd-7ab5-4a46-a4ab-156f2e41cb26")
+		)
+		(pin "4"
+			(uuid "bbea3a8e-a85e-4e47-908f-bb211a6024a8")
+		)
+		(instances
+			(project ""
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-7777-4000-8000-000000000007"
+					(reference "U10")
+					(unit 2)
 				)
 			)
 		)
@@ -12000,7 +12631,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "47u"
 			(at 256.54 71.1199 0)
 			(effects
 				(font
@@ -12068,7 +12699,7 @@
 				)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "12k 1%"
 			(at 86.106 35.56 90)
 			(effects
 				(font
@@ -12399,7 +13030,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "1.5k 1%"
 			(at 240.03 121.9199 0)
 			(effects
 				(font
@@ -12469,7 +13100,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "1.5k 1%"
 			(at 241.3 45.7199 0)
 			(effects
 				(font

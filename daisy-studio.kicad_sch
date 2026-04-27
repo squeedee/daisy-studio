@@ -12,7 +12,7 @@
 	)
 	(lib_symbols)
 	(sheet
-		(at 80.01 62.23)
+		(at 172.212 31.75)
 		(size 39.37 21.59)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -28,7 +28,7 @@
 		)
 		(uuid "5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7")
 		(property "Sheetname" "Audio Output"
-			(at 80.01 61.5184 0)
+			(at 172.212 31.0384 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -37,7 +37,7 @@
 			)
 		)
 		(property "Sheetfile" "audio_outpu.kicad_sch"
-			(at 80.01 84.4046 0)
+			(at 172.212 53.9246 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -54,7 +54,7 @@
 		)
 	)
 	(sheet
-		(at 30.48 63.5)
+		(at 77.216 31.242)
 		(size 36.83 20.32)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -70,7 +70,7 @@
 		)
 		(uuid "75aee282-6ddd-4543-b5fc-0fc86bf548ec")
 		(property "Sheetname" "Seed"
-			(at 30.48 62.7884 0)
+			(at 77.216 30.5304 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -79,7 +79,7 @@
 			)
 		)
 		(property "Sheetfile" "daisy_seed.kicad_sch"
-			(at 30.48 84.4046 0)
+			(at 77.216 52.1466 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -96,7 +96,7 @@
 		)
 	)
 	(sheet
-		(at 80.264 93.472)
+		(at 76.962 61.722)
 		(size 39.116 24.384)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -112,7 +112,7 @@
 		)
 		(uuid "9196cbbe-7bd4-4d56-b9dd-cbcb720624e2")
 		(property "Sheetname" "Daughter Board"
-			(at 80.264 92.7604 0)
+			(at 76.962 61.0104 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -121,7 +121,7 @@
 			)
 		)
 		(property "Sheetfile" "daughter.kicad_sch"
-			(at 80.264 118.4406 0)
+			(at 76.962 86.6906 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -179,7 +179,7 @@
 		)
 	)
 	(sheet
-		(at 78.74 31.75)
+		(at 124.714 31.242)
 		(size 40.64 20.32)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -194,7 +194,7 @@
 		)
 		(uuid "a1b2c3d4-7777-4000-8000-000000000007")
 		(property "Sheetname" "Audio Input"
-			(at 78.74 31.0394 0)
+			(at 124.714 30.5314 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -203,7 +203,7 @@
 			)
 		)
 		(property "Sheetfile" "audio.kicad_sch"
-			(at 78.74 52.6646 0)
+			(at 124.714 52.1566 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -220,7 +220,7 @@
 		)
 	)
 	(sheet
-		(at 30.48 92.202)
+		(at 30.988 60.96)
 		(size 40.386 26.416)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -236,7 +236,7 @@
 		)
 		(uuid "e5f1de27-957d-4de2-a85c-711399db8cbb")
 		(property "Sheetname" "Main Board Misc"
-			(at 30.48 91.4904 0)
+			(at 30.988 60.2484 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -245,7 +245,7 @@
 			)
 		)
 		(property "Sheetfile" "misc.kicad_sch"
-			(at 30.48 119.2026 0)
+			(at 30.988 87.9606 0)
 			(effects
 				(font
 					(size 1.27 1.27)
