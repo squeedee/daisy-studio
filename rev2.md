@@ -971,11 +971,12 @@ No signal-path changes for Rev 2.
   at ~80 kHz, attenuates PCM3060 delta-sigma noise above the audio band per
   Seed Rev 7 community guidance. Sim-verified −0.27 dB at 20 kHz, −22 dB at
   1 MHz.
-* **Added ±12 V rail protection** (one TVS per rail, e.g. SMAJ15A or
-  SMAJ15CA). Absorbs phantom-power back-feed when the gear is powered
-  off and an XLR output is plugged into a phantom-enabled mic preamp.
-  Placement near the THAT1646s or near the DC-DC output both work — see
-  Rail Protection → Placement.
+* **Added ±12 V rail protection** (one SMBJ15CA bidirectional TVS per
+  rail, placed on the power sheet near the TMR 3-1222 output —
+  consolidated with D1 input over-voltage TVS, single BOM line). Absorbs
+  phantom-power back-feed when the gear is powered off and an XLR
+  output is plugged into a phantom-enabled mic preamp. See Rail
+  Protection → Placement for the trade-off.
 * **Removed 3.5 mm in/out jacks** ([Issue #11](https://github.com/squeedee/daisy-studio/issues/11)).
   XLR is the only audio I/O now.
 * **Unchanged from Rev 1:** THAT1646 balanced driver and phantom-protection
@@ -1307,47 +1308,46 @@ with no sink. Rail caps charge up; eventually the rail can pump toward the
 phantom supply voltage, destroying the OPA1656 (±22V abs max) and THAT1646
 (±20V abs max) when the gear is next powered on.
 
-**Mitigation:** one TVS per rail to AGND:
+**Mitigation:** one TVS per rail to AGND, both **bidirectional SMBJ15CA**
+(SMB package) — same part as the input over-voltage TVS (D1) for BOM
+consolidation across the project.
 
-* `+12V → AGND`: unidirectional 15V TVS (e.g. SMAJ15A), cathode on +12V,
-  anode on AGND. Reverse-biased in normal operation, clamps when +12V pumps
-  above ~16V.
-* `-12V → AGND`: unidirectional 15V TVS, cathode on AGND, anode on -12V.
-* Or a single bidirectional 15V TVS (SMAJ15CA) per rail works equally well
-  and simplifies BOM by part-number consolidation.
+* `+12V → AGND`: SMBJ15CA, either terminal to either node (bidirectional).
+  Clamps when +12V exceeds ~16V (normal operation: reverse-biased, ~µA
+  leakage).
+* `-12V → AGND`: SMBJ15CA, same part. Clamps when -12V drops below ~−16V.
 
-Under a sustained 28 mA fault the TVS dissipates ~0.4 W — well within the
-1 W rating of a SMAJ part. Also handles hot-plug surge transients.
+Under a sustained 28 mA fault each TVS dissipates ~0.4 W — well within
+the SMB-package 600 W (peak pulse) / ~3 W (steady-state derated) rating.
+Also handles hot-plug surge transients.
 
 ### Placement
 
-Two layouts both work for this design's fault profile:
+**Both rail TVSs sit on the power sheet, adjacent to the TMR 3-1222
+output stage** — grouped with D1 (input over-voltage) and the bulk
+caps in a single power-management zone.
 
-* **Near the THAT1646 outputs (best for fast-edge surge protection).**
-  Trace inductance between the SM4004 and the TVS is minimised, so during
-  hot-plug surge transients the rail can't briefly spike above the TVS
-  clamp before the far-end TVS responds. Recommended if board area near
-  the audio output stage allows.
-* **Near the TMR 3-1222 output (acceptable here, simpler power-zone
-  layout).** The dominant fault — sustained DC powered-off phantom (28 mA
-  continuous) — is governed by trace *resistance*, not inductance, and
-  even a few cm of rail produces sub-mV drop at this current. The
-  hot-plug surge case is brief (tens of ns) and small in current
-  (SM4004s absorb the bulk at the XLR pin), so an extra cm or two of
-  rail inductance still leaves multi-volt margin to the OPA1656 / THAT1646
-  abs-max ratings. This option groups the TVS with other power-management
-  parts (input D1, bulk caps) for a cleaner audio-section layout.
+Rationale: the dominant fault here is sustained DC (powered-off phantom,
+28 mA continuous) which is governed by trace *resistance* — not
+inductance — so a few cm of +12VA / -12VA rail trace produces sub-mV
+drop and is electrically irrelevant. The hot-plug surge case is brief
+(tens of ns) and small in current (SM4004s absorb the bulk at the XLR
+pin), leaving multi-volt margin to the OPA1656 / THAT1646 abs-max
+ratings even with the TVS at the DC-DC end of the rail.
 
-Either placement is supported. Near-the-load is the textbook-best
-choice; near-the-DC-DC is a reasonable simplification given the
-dominant DC fault profile.
+Trade-off: the textbook-best layout (TVS near THAT1646 outputs,
+minimising loop inductance for fast-edge surge containment) is not used
+here. The DC-DC-side placement is the simplification picked for layout
+cleanliness; documented here so the choice is traceable.
 
 ## Components
 
 **Per channel (main PCB):**
 
 * 1× R_in (2.2kΩ, 1%) — op-amp inverting input resistor
-* 1× R_fb_fixed (15kΩ, 1%) — op-amp feedback floor
+* 1× R_fb_fixed (15kΩ, any tolerance) — op-amp feedback floor; absolute
+  value is trimmed out by R_fb_trim during bring-up calibration, so 1%
+  is not required (5% is fine)
 * 1× R_fb_trim (10kΩ multi-turn cermet, e.g. Bourns 3296W-1-103) — gain
   calibration, wired rheostat-mode in series with R_fb_fixed
 * 1× C_fb (100pF C0G MLCC, 0402 or 0603) — reconstruction LPF across
@@ -1364,9 +1364,9 @@ dominant DC fault profile.
 * 1× OPA1656 dual op-amp (SOIC-8) — both output channels
 * 2× 100nF + 2× 1nF MLCC — OPA1656 supply decoupling (V+ and V-), same
   scheme as the input stage
-* 2× SMAJ15A (or 1× SMAJ15CA per rail) — rail protection against
-  powered-off phantom faults
 * THAT1646 decoupling per datasheet (unchanged from Rev 1)
+* (Rail-protection TVSs live on the power sheet, not the audio_output
+  sheet — see Rail Protection → Placement above.)
 
 
 # Part 4: Power Section
@@ -1401,7 +1401,7 @@ Barrel jack (J_DC1, 2.1mm)
   Q1  (SI2301 P-FET reverse-polarity protection)
      │
      ▼
-  D1  (SMBJ15A TVS — overvoltage clamp)
+  D1  (SMBJ15CA bidirectional TVS — overvoltage clamp)
      │
      ▼
   C5  (100 µF / 25 V electrolytic, bulk)
@@ -1555,7 +1555,11 @@ during a miswired wall-wart event regardless of switch state.
 * 1× barrel jack 2.1 mm (J_DC1, THT) — unchanged
 * 1× JST B2P-VH 2-pin THT header (J_SW) — **new, [Issue #5](https://github.com/squeedee/daisy-studio/issues/5)**
 * 1× SI2301 P-FET, SOT-23 (Q1) — unchanged, reverse-polarity protection
-* 1× SMBJ15A TVS, SMB (D1) — unchanged, input over-voltage clamp
+* 1× SMBJ15CA bidirectional TVS, SMB (D1) — input over-voltage clamp on +12V_RAW
+* 2× SMBJ15CA bidirectional TVS, SMB — rail protection on +12VA→AGND and
+  -12VA→AGND, placed near the TMR 3-1222 output. Same part as D1 (single
+  BOM line for all three TVSs across the project). See Part 3 → Rail
+  Protection → Placement.
 * 1× 100 µF / 25 V electrolytic, CP_Elec_6.3x7.7 (C5) — unchanged
 * 1× TPS54302 buck, SOT-23-6 (U2) — unchanged
 * 1× 10 µH Bourns SRN6045TA inductor (L3) — unchanged
