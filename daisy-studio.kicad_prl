@@ -1,12 +1,11 @@
 {
   "board": {
-    "active_layer": 2,
+    "active_layer": 31,
     "active_layer_preset": "",
     "auto_track_width": true,
     "hidden_netclasses": [],
     "hidden_nets": [
-      "GND",
-      "Earth"
+      "GND"
     ],
     "high_contrast_mode": 0,
     "net_color_mode": 1,
@@ -33,11 +32,14 @@
     },
     "visible_items": [
       "vias",
+      "footprint_text",
       "footprint_anchors",
       "ratsnest",
       "grid",
       "footprints_front",
       "footprints_back",
+      "footprint_values",
+      "footprint_references",
       "tracks",
       "drc_errors",
       "drawing_sheet",
@@ -46,6 +48,7 @@
       "zones",
       "drc_warnings",
       "drc_exclusions",
+      "locked_item_shadows",
       "conflict_shadows",
       "shapes"
     ],
