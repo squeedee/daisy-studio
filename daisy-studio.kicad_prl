@@ -1,18 +1,11 @@
 {
   "board": {
-    "active_layer": 0,
+    "active_layer": 6,
     "active_layer_preset": "",
     "auto_track_width": true,
     "hidden_netclasses": [],
     "hidden_nets": [
-      "GND",
-      "-12VA",
-      "+12VA",
-      "+12V_RAW",
-      "+5V",
-      "+3V3D",
-      "CHASSIS",
-      "+3V3A"
+      "GND"
     ],
     "high_contrast_mode": 0,
     "net_color_mode": 1,
@@ -58,7 +51,7 @@
       "conflict_shadows",
       "shapes"
     ],
-    "visible_layers": "ffffffff_ffffffff_fffffff5_dfffffff",
+    "visible_layers": "ffffffff_ffffffff_aaaaaaa0_0aaaaaff",
     "zone_display_mode": 0
   },
   "git": {
