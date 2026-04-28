@@ -2660,7 +2660,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "31461a71-8195-4b8c-8e01-806422fe7e7c")
-		(property "Reference" "#PWR087"
+		(property "Reference" "#PWR090"
 			(at 66.04 86.36 0)
 			(effects
 				(font
@@ -2710,7 +2710,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/9196cbbe-7bd4-4d56-b9dd-cbcb720624e2"
-					(reference "#PWR087")
+					(reference "#PWR090")
 					(unit 1)
 				)
 			)
@@ -3330,7 +3330,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "fe2b05fd-7d90-465e-aaf2-47657ae2e82c")
-		(property "Reference" "#PWR088"
+		(property "Reference" "#PWR091"
 			(at 81.28 86.36 0)
 			(effects
 				(font
@@ -3380,7 +3380,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/9196cbbe-7bd4-4d56-b9dd-cbcb720624e2"
-					(reference "#PWR088")
+					(reference "#PWR091")
 					(unit 1)
 				)
 			)
