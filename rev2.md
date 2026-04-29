@@ -1399,7 +1399,7 @@ Barrel jack (J_DC1, 2.1mm)
   JST VH 2-pin (J_SW) ── panel switch or shunt harness (Issue #5)
      │
      ▼
-  Q1  (SI2301 P-FET reverse-polarity protection)
+  Q1  (DMP3056L P-FET reverse-polarity protection)
      │
      ▼
   D1  (SMBJ15CA bidirectional TVS — overvoltage clamp)
@@ -1441,8 +1441,18 @@ Barrel jack (J_DC1, 2.1mm)
   the TPS54302 buck at nominal load.
 * **Buck converter PCB layout:** rework per TPS54302 datasheet layout
   guidelines (https://www.ti.com/document-viewer/tps54302/datasheet)
-  ([Issue #1](https://github.com/squeedee/daisy-studio/issues/1)). No
-  schematic change. See Layout Guidelines below.
+  ([Issue #1](https://github.com/squeedee/daisy-studio/issues/1)). See
+  Layout Guidelines below.
+* **Buck input MLCC (Issue #1, schematic-side):** add a dedicated **10 µF
+  X7R 25 V MLCC, 1206** at U1 (TPS54302) VIN → GND. Rev 1 had only a 100 nF
+  HF bypass and a 100 µF electrolytic on +12V_RAW; the electrolytic's ESR
+  (~80–100 mΩ) and ESL can't supply the buck's pulsed input current at
+  500 kHz, and 100 nF is undersized for the pulse charge. The new 10 µF
+  MLCC is the part the TPS54302 datasheet actually calls for — handles
+  the mid-frequency pulse current with low loop inductance, reducing input
+  ripple at the VIN pin and the EMI burden on the shared +12V_RAW rail
+  (which also feeds the RS3-1212D primary). Layout: within 5 mm of U1
+  pin 3 (VIN), return to U1 pin 1 (GND), loop area < 20 mm².
 * **Panel power switch:** new J_SW (JST B2P-VH, 3.96 mm pitch, 2-pin) in
   series between the barrel jack and Q1. Ships with a pre-crimped shunt
   harness (VHR-2N housing, two SVH-21T-P1.1 contacts bonded by a short wire
@@ -1462,9 +1472,15 @@ Barrel jack (J_DC1, 2.1mm)
   passive input clamp dumping signal overdrive into +5V. Rev 2's BJT clamp
   references ±1.565 V derived from ±12V and sinks clamp current to AGND via
   the BJT collectors; +5V is no longer in the fault path. A defensive
-  SMAJ5.0A across +5V → GND near the Seed header is left as **optional** —
-  5 ¢ of insurance against future back-feeds, does nothing at nominal 5 V.
-  Recommend populating on the first Rev 2 build.
+  SMAJ5.0A across +5V → GND near the Seed header is populated on every
+  build — placed on the daisy_seed sheet next to U3 pin 39 (VIN).
+* **Reverse-polarity FET (Q1):** Vishay **SI2301CDS-T1-GE3** (VGS_max ±8 V)
+  → Diodes Inc **DMP3056L-13** (VGS_max ±20 V). The Rev 1 SI2301 was
+  silently over-driven at −12 V on the gate (12 V input, gate pulled to
+  GND) — outside the absolute-max rating in the version of the datasheet
+  currently published. The DMP3056L is rated for the use case, drops into
+  the same SOT-23-3 footprint and pinout (1=G, 2=S, 3=D), and offers
+  better RDS(on) (~51 mΩ vs ~80 mΩ). No schematic topology change.
 
 ## Power Budget (±12V Rails)
 
@@ -1504,10 +1520,15 @@ setting Vout ≈ 5.07 V. Inductor L3 = 10 µH (Bourns SRN6045TA). Load is the
 Daisy Seed (~150 mA typical, up to ~500 mA peak at boot/USB activity) plus
 MIDI front-end (~5 mA). TPS54302 is rated 3 A — very large headroom.
 
-Two fixes apply:
+Three fixes apply:
 
 * **C6, C7 cap spec:** 22 µF **1206 / 25 V X7R** (was 0805 / 10 V).
   [Issue #2](https://github.com/squeedee/daisy-studio/issues/2).
+* **Add buck input MLCC** (new ref, e.g. C9): 10 µF X7R 25 V 1206, at
+  U1 VIN → GND. Rev 1 lacked the input MLCC the TPS54302 datasheet calls
+  for; only a 100 nF HF bypass and a 100 µF electrolytic sat on the input
+  rail. [Issue #1](https://github.com/squeedee/daisy-studio/issues/1)
+  schematic-side fix.
 * **PCB layout:** follow the TPS54302 datasheet layout guidelines
   (https://www.ti.com/document-viewer/tps54302/datasheet) — specifically
   (a) input cap loop from Vin to PGND as short as possible, both on the
@@ -1561,17 +1582,24 @@ during a miswired wall-wart event regardless of switch state.
 
 * 1× barrel jack 2.1 mm (J_DC1, THT) — unchanged
 * 1× JST B2P-VH 2-pin THT header (J_SW) — **new, [Issue #5](https://github.com/squeedee/daisy-studio/issues/5)**
-* 1× SI2301 P-FET, SOT-23 (Q1) — unchanged, reverse-polarity protection
+* 1× **DMP3056L-13** P-FET, SOT-23-3 (Q1) — reverse-polarity protection.
+  Replaces the Rev 1 SI2301CDS-T1-GE3, which has VGS_max = ±8 V and was
+  being over-driven at −12 V on the gate. The DMP3056L is rated VGS = ±20 V,
+  same SOT-23-3 footprint and pinout (1=G, 2=S, 3=D), 51 mΩ RDS(on) — drop-in
+  with no topology change.
 * 1× SMBJ15CA bidirectional TVS, SMB (D1) — input over-voltage clamp on +12V_RAW
 * 2× SMBJ15CA bidirectional TVS, SMB — rail protection on +12VA→AGND and
   -12VA→AGND, placed near the RS3-1212D output. Same part as D1 (single
   BOM line for all three TVSs across the project). See Part 3 → Rail
   Protection → Placement.
-* 1× 100 µF / 25 V electrolytic, CP_Elec_6.3x7.7 (C5) — unchanged
-* 1× TPS54302 buck, SOT-23-6 (U2) — unchanged
+* 1× 100 µF / 25 V electrolytic, CP_Elec_6.3x7.7 (C4) — bulk on +12V_RAW
+* 1× TPS54302 buck, SOT-23-6 (U1) — unchanged
 * 1× 10 µH Bourns SRN6045TA inductor (L3) — unchanged
-* 2× 22 µF / 25 V X7R MLCC, **1206** (C6, C7) — **changed footprint & voltage**
-* Supporting R/C around the buck (C1, C2, C3, C4, C8, R1, R2, R3, R4, R5, R6)
+* 2× 22 µF / 25 V X7R MLCC, **1206** (C6, C7) — TPS54302 output, **changed footprint & voltage**
+* 1× **10 µF X7R 25 V MLCC, 1206** (new — assign next free C ref) — **TPS54302
+  input MLCC, NEW for Rev 2**, [Issue #1](https://github.com/squeedee/daisy-studio/issues/1)
+  schematic side. Place within 5 mm of U1 VIN.
+* Supporting R/C around the buck (C3, C5, C8, R1, R2, R3, R4, R5, R6)
   — unchanged values; verify footprints during the Issue #1 layout rework
 * 1× **Recom RS3-1212D** isolated DC/DC, SIP-8 (PS1, was U1 in older
   drafts) — **replaces TMA-1212D**. Pin 3 (CTRL) **must be NC** — see

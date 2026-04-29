@@ -4651,6 +4651,16 @@
 	)
 	(wire
 		(pts
+			(xy 208.28 124.46) (xy 209.55 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "37c18ed2-2b42-4bbc-a8fd-10c92dda2c31")
+	)
+	(wire
+		(pts
 			(xy 162.56 78.74) (xy 170.18 78.74)
 		)
 		(stroke
@@ -5051,6 +5061,16 @@
 	)
 	(wire
 		(pts
+			(xy 222.25 119.38) (xy 222.25 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "743ac8c8-d203-4a9f-bd8a-5d93af7e07ed")
+	)
+	(wire
+		(pts
 			(xy 52.07 121.92) (xy 52.07 132.08)
 		)
 		(stroke
@@ -5398,6 +5418,16 @@
 			(type default)
 		)
 		(uuid "9b378dd3-7c30-4766-930b-baec9964c909")
+	)
+	(wire
+		(pts
+			(xy 208.28 120.65) (xy 208.28 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9b5d4314-62c7-4ec2-a0f8-a680e598ec91")
 	)
 	(wire
 		(pts
@@ -7393,7 +7423,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0330802b-b976-4382-b684-3df9832c437c")
-		(property "Reference" "#PWR030"
+		(property "Reference" "#PWR029"
 			(at 215.9 166.37 0)
 			(effects
 				(font
@@ -7443,7 +7473,7 @@
 		(instances
 			(project "triptech"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/75aee282-6ddd-4543-b5fc-0fc86bf548ec"
-					(reference "#PWR030")
+					(reference "#PWR029")
 					(unit 1)
 				)
 			)
@@ -9566,7 +9596,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "bd71873d-42f7-4577-b4be-2e14913ff473")
-		(property "Reference" "#PWR029"
+		(property "Reference" "#PWR030"
 			(at 222.25 123.19 0)
 			(effects
 				(font
@@ -9616,7 +9646,7 @@
 		(instances
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/75aee282-6ddd-4543-b5fc-0fc86bf548ec"
-					(reference "#PWR029")
+					(reference "#PWR030")
 					(unit 1)
 				)
 			)

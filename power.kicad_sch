@@ -3775,6 +3775,16 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "Physically close to U1\n\n\n"
+		(exclude_from_sim no)
+		(at 154.178 121.412 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "08550258-3f12-4992-b728-d63707d50854")
+	)
 	(text "TPS54302 Buck: 12V to 5V, 3A max"
 		(exclude_from_sim no)
 		(at 163.068 33.02 0)
@@ -4109,6 +4119,16 @@
 	)
 	(wire
 		(pts
+			(xy 149.86 142.24) (xy 149.86 152.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0ae3fa52-d6f1-4d27-a675-185220aee426")
+	)
+	(wire
+		(pts
 			(xy 130.81 127) (xy 130.81 128.27)
 		)
 		(stroke
@@ -4316,6 +4336,16 @@
 			(type default)
 		)
 		(uuid "35b75181-88dd-4b1e-91ba-fef5e682855f")
+	)
+	(wire
+		(pts
+			(xy 149.86 134.62) (xy 149.86 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "36adebcd-1a46-482a-bb4d-b53e0b8f5825")
 	)
 	(wire
 		(pts
@@ -6096,6 +6126,71 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+12V_RAW")
+		(at 149.86 127 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "3c1fc176-1ed2-4c88-887f-eae24f86624a")
+		(property "Reference" "#PWR092"
+			(at 149.86 130.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+12V_RAW"
+			(at 149.86 122.682 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 149.86 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 149.86 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+12V\""
+			(at 149.86 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9e98657d-f710-49a2-ac28-14f9d2578ed9")
+		)
+		(instances
+			(project "daisy-studio"
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
+					(reference "#PWR092")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 134.62 152.4 0)
 		(unit 1)
@@ -6221,6 +6316,72 @@
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
 					(reference "#PWR02")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 149.86 152.4 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4dca56cd-2126-4b5d-b769-652c0a0163dc")
+		(property "Reference" "#PWR093"
+			(at 149.86 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 148.59 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 149.86 152.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 149.86 152.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 149.86 152.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1468d55f-fffd-4df6-8a7d-1a3c8ce10e29")
+		)
+		(instances
+			(project "daisy-studio"
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
+					(reference "#PWR093")
 					(unit 1)
 				)
 			)
@@ -6390,7 +6551,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "Conn_02x04_Odd_Even"
+		(property "Value" "Conn_02x02_Odd_Even"
 			(at 203.962 125.476 90)
 			(effects
 				(font
@@ -6399,7 +6560,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical"
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical"
 			(at 194.31 123.19 0)
 			(effects
 				(font
@@ -6533,22 +6694,22 @@
 		(dnp no)
 		(uuid "6084cb14-b783-47ac-8f08-8f49911276d9")
 		(property "Reference" "C1"
-			(at 76.2 141.224 0)
+			(at 67.818 143.002 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "10u"
-			(at 75.692 143.256 0)
+		(property "Value" "22u 25V"
+			(at 68.072 144.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
 			(at 73.3552 146.05 0)
 			(effects
 				(font
@@ -6591,6 +6752,76 @@
 			(project "power"
 				(path "/a1b2c3d4-1111-4000-8000-000000000001"
 					(reference "C1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 149.86 138.43 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "659e7eaa-c198-4d68-bc94-5d136fe24b44")
+		(property "Reference" "C44"
+			(at 153.67 137.1599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10u 25V"
+			(at 153.67 139.6999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
+			(at 150.8252 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 149.86 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 149.86 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2f40840f-a08b-4830-8806-770acc94a016")
+		)
+		(pin "2"
+			(uuid "e6ab5e9f-f760-4ede-b932-376916c86bd7")
+		)
+		(instances
+			(project ""
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
+					(reference "C44")
 					(unit 1)
 				)
 			)
@@ -7160,7 +7391,7 @@
 				)
 			)
 		)
-		(property "Value" "SI2301CDS-T1-GE3"
+		(property "Value" "DMP3056L-13"
 			(at 68.072 42.926 0)
 			(effects
 				(font
@@ -7168,7 +7399,7 @@
 				)
 			)
 		)
-		(property "Footprint" "daisy-studio:SOT95P237X112-3N"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-3"
 			(at 74.93 -45.39 0)
 			(effects
 				(font
@@ -7178,7 +7409,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.vishay.com/docs/68741/si2301cd.pdf"
+		(property "Datasheet" "https://4donline.ihs.com/images/VipMasterIC/IC/DIOD/DIOD-S-A0012884531/DIOD-S-A0012915142-1.pdf?hkey=CECEF36DEECDED6468708AAF2E19C0C6"
 			(at 74.93 -145.39 0)
 			(effects
 				(font
@@ -7188,7 +7419,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "SI2301CDS-T1-GE3, P-channel MOSFET Transistor 2.3 A 20 V, 3-Pin SOT-23, TO-236"
+		(property "Description" "DMP3056L-13"
 			(at 58.42 49.53 0)
 			(effects
 				(font
@@ -7207,7 +7438,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser Part Number" "781-SI2301CDS-T1-GE3"
+		(property "Mouser Part Number" "621-DMP3056L-13"
 			(at 74.93 -445.39 0)
 			(effects
 				(font
@@ -7217,7 +7448,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/Vishay-Semiconductors/SI2301CDS-T1-GE3?qs=IRuQNBqMOcnWEzfGi6KYYw%3D%3D"
+		(property "Mouser Price/Stock" "https://www.mouser.com/ProductDetail/Diodes-Incorporated/DMP3056L-13?qs=OVC8WVYZliRFsnMzvbeoig%3D%3D"
 			(at 74.93 -545.39 0)
 			(effects
 				(font
@@ -7227,7 +7458,7 @@
 				(hide yes)
 			)
 		)
-		(property "Manufacturer_Name" "Vishay"
+		(property "Manufacturer_Name" "Diodes Incorporated"
 			(at 74.93 -645.39 0)
 			(effects
 				(font
@@ -7237,7 +7468,7 @@
 				(hide yes)
 			)
 		)
-		(property "Manufacturer_Part_Number" "SI2301CDS-T1-GE3"
+		(property "Manufacturer_Part_Number" "DMP3056L-13"
 			(at 74.93 -745.39 0)
 			(effects
 				(font
@@ -8290,22 +8521,22 @@
 		(dnp no)
 		(uuid "a100a001-0021-4000-8000-000000000001")
 		(property "Reference" "C2"
-			(at 84.328 141.732 0)
+			(at 84.328 142.748 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "10u"
-			(at 83.82 144.018 0)
+		(property "Value" "22u 25V"
+			(at 83.82 145.034 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
 			(at 80.9752 146.05 0)
 			(effects
 				(font
