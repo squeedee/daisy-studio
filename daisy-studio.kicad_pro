@@ -48,7 +48,7 @@
         "silk_text_thickness": 0.15,
         "silk_text_upright": false,
         "zones": {
-          "min_clearance": 0.25
+          "min_clearance": 0.3
         }
       },
       "diff_pair_dimensions": [
@@ -58,7 +58,60 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        [
+          "unconnected_items|105380000|112900000|F.Cu|4|c3c8e0b5-930c-4233-b2bc-9f753f77b622|18e37817-316f-400d-8fcf-8a85b4a3cab6",
+          "Interconnect"
+        ],
+        [
+          "unconnected_items|112600000|64460000|F.Cu|4|4daf3747-ed4a-4f08-8dda-6361603f34a7|f3f13918-d2e2-4da2-9886-d050e4090cc3",
+          "Interconnect"
+        ],
+        [
+          "unconnected_items|118337500|70075000|F.Cu|4|fda61442-a382-42c2-9eee-04b7231f2827|32a83d32-2240-4b42-b649-c3a1cf168d61",
+          "Interconnect"
+        ],
+        [
+          "unconnected_items|121550000|69075000|F.Cu|4|b5f4e343-fb93-42ed-904b-02e1612afbfc|62444ac8-b502-4be3-9876-ac4cd53bd43b",
+          "Interconnect"
+        ],
+        [
+          "unconnected_items|131360000|112900000|F.Cu|4|48e8535e-699f-4df7-b622-cbfae869d370|9c022bf7-ecc7-4d7c-941b-6716911c2825",
+          "Interconnect"
+        ],
+        [
+          "unconnected_items|134150000|129900000|F.Cu|4|e7e98c39-e816-4231-8cbf-370908267027|8c0dd6a7-705a-4b28-8904-b9df24964579",
+          "Interconnect"
+        ],
+        [
+          "unconnected_items|152097162|108200500|F.Cu|4|1cacbc74-5b30-4cf2-acaf-b1d16d0fd842|e50d7652-d886-44f3-aedd-fb918184b6aa",
+          "Interconnect"
+        ],
+        [
+          "unconnected_items|47150000|131400000|F.Cu|4|e0f33fef-cee2-4554-95c6-85e976a0ebf8|c3f12c99-cbcb-4c3b-9e33-d459afe7e86c",
+          "Interconnect"
+        ],
+        [
+          "unconnected_items|73025000|63100000|F.Cu|4|5ac84630-f212-4226-bc23-a7b0af67bcba|a5961471-f00e-414e-b1b3-699e71fa6274",
+          "Interconnect"
+        ],
+        [
+          "unconnected_items|73700000|70800000|F.Cu|4|af804738-1703-4a47-901e-70e3fa548685|6bfbe6aa-e8a9-4f6b-89d5-b2a170ee2549",
+          "Interconnect"
+        ],
+        [
+          "unconnected_items|74400000|129650000|F.Cu|4|7e1b7ad4-7c98-4161-b70d-6b495c8ce08d|28ab27ca-c0aa-44e1-8091-35907f12e58b",
+          "Interconnect"
+        ],
+        [
+          "unconnected_items|86787500|63625000|F.Cu|4|7b3cb114-761c-43b7-8dd8-6d117b713f2f|d3221319-5b7a-4f50-9a62-87467881ec57",
+          "Interconnect"
+        ],
+        [
+          "unconnected_items|88350000|135150000|F.Cu|4|406466ad-35ac-4081-a895-4558a98365d6|bcb7f845-82dd-4ce8-bfb0-a833438df8fb",
+          "Interconnect"
+        ]
+      ],
       "meta": {
         "version": 2
       },
