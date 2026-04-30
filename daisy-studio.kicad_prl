@@ -1,6 +1,6 @@
 {
   "board": {
-    "active_layer": 2,
+    "active_layer": 5,
     "active_layer_preset": "",
     "auto_track_width": true,
     "hidden_netclasses": [],
@@ -48,6 +48,7 @@
       "zones",
       "drc_warnings",
       "drc_exclusions",
+      "locked_item_shadows",
       "conflict_shadows",
       "shapes"
     ],
@@ -104,7 +105,7 @@
       103,
       103,
       103,
-      10
+      0
     ],
     "custom_group_rules": [],
     "expanded_rows": [],
