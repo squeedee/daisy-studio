@@ -18,7 +18,7 @@
 "J3,J5","Conn_02x10_Odd_Even","Connector_IDC:IDC-Header_2x10_P2.54mm_Vertical","","","","~","Generic connector, double row, 02x10, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
 "J7,J9,J10","SDS-50J","daisy-studio:SDS50J","Same Sky","SDS-50J","490-SDS-50J","https://www.mouser.com/datasheet/3/6118/1/sds-j.pdf","5 Pin, Right-Angle Receptacle, 180"
 "J8","~","Connector_PinHeader_2.54mm:PinHeader_2x03_P2.54mm_Vertical","","","","~","Generic connector, single row, 01x06, script generated"
-"J11","Conn_02x12_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x14_P2.54mm_Vertical_SMD","","","","~","Generic connector, double row, 02x14, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
+"J11","Conn_02x14_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x14_P2.54mm_Vertical_SMD","","","","~","Generic connector, double row, 02x14, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
 "J12","Conn_02x02_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical","","","","~","Generic connector, single row, 01x04, script generated"
 "J13","Barrel_Jack_MountingPin","Connector_BarrelJack:BarrelJack_Horizontal","","","","~","DC Barrel Jack with a mounting pin"
 "J14","Micro_SD_Card_Det2","Connector_Card:microSD_HC_Hirose_DM3BT-DSF-PEJS","","","","https://www.hirose.com/en/product/document?clcode=&productname=&series=DM3&documenttype=Catalog&lang=en&documentid=D49662_en","Micro SD Card Socket with two card detection pins"
