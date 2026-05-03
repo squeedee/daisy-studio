@@ -136,7 +136,7 @@ enough to fold back on a short before damage.
 Lower clamp risk than the input — build it first so the codec
 spectral check (3.4) runs without depending on input-side silicon.
 
-**Populate:**
+### Populate:
 - OPA1656 (output sheet) + R_in (2.2 kΩ) + R_fb_fixed (15 kΩ) +
   R_fb_trim (10 kΩ Bourns 3296W-1-103) + C_fb (100 pF C0G).
 - OPA1656 supply decoupling (100 nF + 1 nF per rail).
@@ -147,12 +147,10 @@ spectral check (3.4) runs without depending on input-side silicon.
 - Daughterboard header (main-PCB side — IDC or stack-mount, your
   build mode).
 
-**Calibrate:**
+### Calibrate:
 - [ ] **3.1 Output gain trim, channel L.**
-  1. Either set the L output level pot fully clockwise on the
-     daughterboard, **or** temporarily jumper the daughterboard
-     header's `OUT_OPA_L` to `OUT_WIPER_L` if the daughterboard
-     isn't built yet.
+  1. Set the L output level pot fully clockwise on the
+     daughterboard.
   2. Play a digital full-scale 1 kHz sine from the Seed.
   3. Scope differential XLR output.
   4. Adjust R_fb_trim until output reads +24 dBu peak (12.28 V p-p
@@ -161,12 +159,30 @@ spectral check (3.4) runs without depending on input-side silicon.
 - [ ] **3.2 Output gain trim, channel R.** Same procedure on R.
   L/R within ~0.2 dB after both trims locked.
 
-**Verify:**
-- [ ] **3.3 Phantom-power survival.** Power *off* Daisy Studio. Plug
-  an XLR output into a phantom-enabled mic preamp with +48 V
-  asserted. Watch ±12 V rail with scope — SMBJ15CA should clamp at
-  ≈ 16 V, no excursion above. Disconnect, power Daisy Studio back
-  on, confirm op-amp + THAT1646 still pass signal cleanly.
+### Verify:
+- [ ] **3.3 Phantom-power survival (bench-PSU simulated +48 V).**
+  Daisy Studio fully powered down throughout this test (no supply
+  on the barrel jack). A separate bench PSU plus two resistors
+  emulates the phantom feed network of a real preamp.
+  1. Build the phantom feed: 2× **6.81 kΩ, ¼ W** resistors, in
+     parallel between the bench PSU's positive output and the two
+     hot pins (XLR pin 2 + pin 3) of one Daisy Studio output. PSU
+     − returns to Daisy Studio AGND or chassis.
+  2. Scope on +12 V at the RS3-1212D output / an OPA1656 supply
+     pin, DC-coupled.
+  3. Set the bench PSU to **48 V, current limit ≈ 50 mA**. If the
+     supply caps below 48 V, stack two channels in series; a 30 V
+     test exercises the same path but won't push +12 V high enough
+     to engage the TVS, so it isn't a complete check.
+  4. Ramp from 0 → 48 V watching scope and PSU current. Expected:
+     ~5 mA per pin, ~10 mA total into +12 V via the SM4004 forward
+     clamps. SMBJ15CA on +12 V → AGND clamps at **16–24 V** — the
+     +12 V rail should rise to that band and stop, no runaway
+     above.
+  5. Power down phantom PSU, swap to the other XLR output, repeat.
+  6. Disconnect the phantom rig, restore Daisy Studio power,
+     confirm op-amp + THAT1646 still pass signal cleanly (no
+     SM4004 / TVS damage).
 - [ ] **3.4 Reconstruction-LPF spectral check (Seed Rev 7 only).**
   - 3.4a XLR diff noise floor with C_fb **un**populated, Seed playing
     digital silence.
@@ -188,7 +204,8 @@ spectral check (3.4) runs without depending on input-side silicon.
 The BJT clamp + OPA1656 + ±1.565 V reference is sim-validated only.
 This stage is where Rev 2's novel circuitry gets bench-confirmed.
 
-**Populate (Board 1 only at first):**
+### Populate:
+
 - THAT1246 + datasheet decoupling.
 - OPA1656 (input sheet) + R_in (10 kΩ) + R_fb (12 kΩ) + supply
   decoupling.
@@ -200,7 +217,7 @@ This stage is where Rev 2's novel circuitry gets bench-confirmed.
 - LM2903 dual comparator + 1 kΩ LED limit + decoupling.
 - 2× Neutrik NCJ6FA-H-0 input combo jacks.
 
-**Verify on Board 1 before populating Boards 2–5:**
+### Verify:
 - [ ] **4.1 Reference rails.** DMM at +VCLAMP_L, +VCLAMP_R, −VCLAMP_L,
   −VCLAMP_R: each ±1.51 to ±1.62 V (nominal 1.565 V, ±1 % R + ±2 %
   rail). Confirm per-channel independence — driving overdrive on one
@@ -224,7 +241,7 @@ This stage is where Rev 2's novel circuitry gets bench-confirmed.
   off below threshold, proportional glow above. Trim range covers
   the full clean-signal range (0 V to 1.565 V threshold).
 
-**After Boards 2–5 reach this stage:**
+**Later with more boards:**
 - [ ] **4.7 codec_max across boards.** Repeat 4.3 on all five.
   Single-board codec_max is not representative; tolerance corner
   validation needs the population. Want every board ≤ 4.8 V with
