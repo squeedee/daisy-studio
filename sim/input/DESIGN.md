@@ -1,1 +1,0 @@
-This is now in the [Rev2 design doc](../../rev2.md#part-1-op-amp-gain-staged-audio-input)
