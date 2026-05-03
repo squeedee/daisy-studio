@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 3.2,
-          "height": 6.4,
-          "width": 6.4
+          "drill": 0.0,
+          "height": 1.9,
+          "width": 1.5
         },
         "silk_line_width": 0.15,
         "silk_text_italic": false,
@@ -537,7 +537,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "gerbers/",
+      "plot": "gerber/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
@@ -675,8 +675,20 @@
       "Seed"
     ],
     [
+      "5f2bca66-5637-48ba-a11c-0b4e3f7aa9e7",
+      "Audio Output"
+    ],
+    [
       "a1b2c3d4-7777-4000-8000-000000000007",
-      "Audio"
+      "Audio Input"
+    ],
+    [
+      "e5f1de27-957d-4de2-a85c-711399db8cbb",
+      "Main Board Misc"
+    ],
+    [
+      "9196cbbe-7bd4-4d56-b9dd-cbcb720624e2",
+      "Daughter Board"
     ],
     [
       "55cca6a8-30da-4c13-b2f2-a01401e2b54c",
