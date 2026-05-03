@@ -3775,6 +3775,16 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "Attenuator on\nDaughterboard"
+		(exclude_from_sim no)
+		(at 125.984 31.75 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "07bcf347-e688-4096-a516-edb191470465")
+	)
 	(text "Place 1nf closest\n"
 		(exclude_from_sim no)
 		(at 38.862 188.722 0)
@@ -3797,13 +3807,53 @@
 	)
 	(text "sense"
 		(exclude_from_sim no)
-		(at 186.69 44.704 0)
+		(at 186.69 51.054 0)
 		(effects
 			(font
 				(size 1.016 1.016)
 			)
 		)
 		(uuid "7c206d4e-e565-44b8-a783-da4adbad58f8")
+	)
+	(text "Gain"
+		(exclude_from_sim no)
+		(at 96.774 30.734 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "89f2cf2b-254d-41af-877e-78a40ee4b02a")
+	)
+	(text "differential out\n"
+		(exclude_from_sim no)
+		(at 156.718 30.988 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "8f3a2348-c18c-4f4b-bbc2-451391851758")
+	)
+	(text "Audio Output Section\n"
+		(exclude_from_sim no)
+		(at 192.786 177.038 0)
+		(effects
+			(font
+				(size 3.81 3.81)
+			)
+		)
+		(uuid "b70fade2-4786-4b33-bee1-f0e3ee7e8acf")
+	)
+	(text "Protection\n"
+		(exclude_from_sim no)
+		(at 178.562 30.734 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "db669717-ba54-4dc9-8027-df9b5a24474d")
 	)
 	(text "sense"
 		(exclude_from_sim no)
@@ -3817,7 +3867,7 @@
 	)
 	(text "sense"
 		(exclude_from_sim no)
-		(at 186.182 64.77 0)
+		(at 186.182 71.12 0)
 		(effects
 			(font
 				(size 1.016 1.016)
@@ -3832,7 +3882,7 @@
 		(uuid "0786472b-1499-47f8-833d-4134ee938c94")
 	)
 	(junction
-		(at 171.45 36.83)
+		(at 171.45 43.18)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "0a41a00f-c9e4-4c37-a2cb-9699996cbf37")
@@ -3850,7 +3900,7 @@
 		(uuid "0d712ef8-28fa-4dac-82db-f0b92c606493")
 	)
 	(junction
-		(at 207.01 58.42)
+		(at 207.01 64.77)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "107080b2-e172-41cb-80d5-527849d451ed")
@@ -3862,7 +3912,7 @@
 		(uuid "18e58f38-e902-49ea-aa21-ea7e465b9569")
 	)
 	(junction
-		(at 209.55 66.04)
+		(at 209.55 72.39)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "1bb587a5-54bb-4adc-a1b6-ac0393bb3682")
@@ -3880,13 +3930,13 @@
 		(uuid "2f2b30df-bbb0-4c57-9219-6f8232535a7b")
 	)
 	(junction
-		(at 199.39 48.26)
+		(at 199.39 54.61)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "31154f68-fa53-49e2-8d86-cee35131d49e")
 	)
 	(junction
-		(at 177.8 58.42)
+		(at 177.8 64.77)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "318b3363-910e-4445-92bb-c8908b6fbbf9")
@@ -3898,7 +3948,7 @@
 		(uuid "3241587d-1cd0-4f43-ad77-3a2c26efbd6f")
 	)
 	(junction
-		(at 107.95 46.99)
+		(at 107.95 53.34)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "37c8ea4a-430c-4e90-92da-2bf948a6ffd4")
@@ -3910,7 +3960,7 @@
 		(uuid "37d186a6-12d0-434d-adbe-8b4816a5f714")
 	)
 	(junction
-		(at 195.58 58.42)
+		(at 195.58 64.77)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3b94dd28-ffac-4e1b-ab22-fcd7857c326b")
@@ -3958,7 +4008,7 @@
 		(uuid "5cbcce80-e214-4ca0-8d28-b62b325fe821")
 	)
 	(junction
-		(at 171.45 53.34)
+		(at 171.45 59.69)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5ce5b53e-45df-4d25-adc8-d4de5cc19b1c")
@@ -3976,7 +4026,7 @@
 		(uuid "702fbacd-1b16-4b4c-9e83-b29540eeb9a5")
 	)
 	(junction
-		(at 81.28 46.99)
+		(at 81.28 53.34)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "7346165e-04aa-4bff-a2cb-570a837de3a3")
@@ -4000,7 +4050,7 @@
 		(uuid "7dce8fc8-8846-46d3-a5c2-1cc17958897c")
 	)
 	(junction
-		(at 107.95 39.37)
+		(at 107.95 45.72)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "82c1ee14-9f50-4014-bb5e-3f5c152f691e")
@@ -4024,7 +4074,7 @@
 		(uuid "92ac0a52-9af8-40eb-9a9f-c44a8a52d6c0")
 	)
 	(junction
-		(at 81.28 53.34)
+		(at 81.28 59.69)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "961a93e8-7a7a-4843-a099-165508f10a45")
@@ -4066,7 +4116,7 @@
 		(uuid "bc23b763-b6cc-41be-a9ef-c06291b755b9")
 	)
 	(junction
-		(at 198.12 69.85)
+		(at 198.12 76.2)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "bc413757-dd45-49f0-846b-04b338ed2157")
@@ -4078,13 +4128,13 @@
 		(uuid "c19790a6-e48d-4b3f-8375-9c935de49733")
 	)
 	(junction
-		(at 171.45 72.39)
+		(at 171.45 78.74)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "c81841e2-7ffd-41e7-a975-6d04bb426a06")
 	)
 	(junction
-		(at 193.04 53.34)
+		(at 193.04 59.69)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "cc3246ff-5233-4528-837f-f1e17c11b8ac")
@@ -4114,7 +4164,7 @@
 		(uuid "e92a19fc-4a9d-45dd-8237-b3a6f6b96b57")
 	)
 	(junction
-		(at 107.95 55.88)
+		(at 107.95 62.23)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f9d01b70-5139-45fa-abda-8d5b14aae20f")
@@ -4137,7 +4187,7 @@
 	)
 	(wire
 		(pts
-			(xy 177.8 58.42) (xy 177.8 64.77)
+			(xy 177.8 64.77) (xy 177.8 71.12)
 		)
 		(stroke
 			(width 0)
@@ -4187,7 +4237,7 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 72.39) (xy 171.45 76.2)
+			(xy 171.45 78.74) (xy 171.45 82.55)
 		)
 		(stroke
 			(width 0)
@@ -4227,7 +4277,7 @@
 	)
 	(wire
 		(pts
-			(xy 161.29 63.5) (xy 207.01 63.5)
+			(xy 161.29 69.85) (xy 207.01 69.85)
 		)
 		(stroke
 			(width 0)
@@ -4297,7 +4347,7 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 36.83) (xy 177.8 36.83)
+			(xy 171.45 43.18) (xy 177.8 43.18)
 		)
 		(stroke
 			(width 0)
@@ -4307,7 +4357,7 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 72.39) (xy 177.8 72.39)
+			(xy 171.45 78.74) (xy 177.8 78.74)
 		)
 		(stroke
 			(width 0)
@@ -4337,7 +4387,7 @@
 	)
 	(wire
 		(pts
-			(xy 198.12 66.04) (xy 198.12 69.85)
+			(xy 198.12 72.39) (xy 198.12 76.2)
 		)
 		(stroke
 			(width 0)
@@ -4347,7 +4397,7 @@
 	)
 	(wire
 		(pts
-			(xy 199.39 45.72) (xy 199.39 48.26)
+			(xy 199.39 52.07) (xy 199.39 54.61)
 		)
 		(stroke
 			(width 0)
@@ -4357,7 +4407,7 @@
 	)
 	(wire
 		(pts
-			(xy 193.04 53.34) (xy 193.04 74.93)
+			(xy 193.04 59.69) (xy 193.04 81.28)
 		)
 		(stroke
 			(width 0)
@@ -4387,7 +4437,7 @@
 	)
 	(wire
 		(pts
-			(xy 201.93 74.93) (xy 193.04 74.93)
+			(xy 201.93 81.28) (xy 193.04 81.28)
 		)
 		(stroke
 			(width 0)
@@ -4407,7 +4457,7 @@
 	)
 	(wire
 		(pts
-			(xy 193.04 48.26) (xy 199.39 48.26)
+			(xy 193.04 54.61) (xy 199.39 54.61)
 		)
 		(stroke
 			(width 0)
@@ -4417,7 +4467,7 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 46.99) (xy 90.17 46.99)
+			(xy 81.28 53.34) (xy 90.17 53.34)
 		)
 		(stroke
 			(width 0)
@@ -4437,7 +4487,7 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 53.34) (xy 193.04 53.34)
+			(xy 171.45 59.69) (xy 193.04 59.69)
 		)
 		(stroke
 			(width 0)
@@ -4477,7 +4527,7 @@
 	)
 	(wire
 		(pts
-			(xy 60.96 53.34) (xy 64.77 53.34)
+			(xy 60.96 59.69) (xy 64.77 59.69)
 		)
 		(stroke
 			(width 0)
@@ -4487,7 +4537,7 @@
 	)
 	(wire
 		(pts
-			(xy 97.79 46.99) (xy 107.95 46.99)
+			(xy 97.79 53.34) (xy 107.95 53.34)
 		)
 		(stroke
 			(width 0)
@@ -4497,7 +4547,7 @@
 	)
 	(wire
 		(pts
-			(xy 177.8 44.45) (xy 177.8 58.42)
+			(xy 177.8 50.8) (xy 177.8 64.77)
 		)
 		(stroke
 			(width 0)
@@ -4507,7 +4557,7 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 53.34) (xy 83.82 53.34)
+			(xy 81.28 59.69) (xy 83.82 59.69)
 		)
 		(stroke
 			(width 0)
@@ -4517,7 +4567,7 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 46.99) (xy 81.28 53.34)
+			(xy 81.28 53.34) (xy 81.28 59.69)
 		)
 		(stroke
 			(width 0)
@@ -4567,7 +4617,7 @@
 	)
 	(wire
 		(pts
-			(xy 107.95 46.99) (xy 107.95 55.88)
+			(xy 107.95 53.34) (xy 107.95 62.23)
 		)
 		(stroke
 			(width 0)
@@ -4587,7 +4637,7 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 58.42) (xy 81.28 73.66)
+			(xy 81.28 64.77) (xy 81.28 80.01)
 		)
 		(stroke
 			(width 0)
@@ -4597,7 +4647,7 @@
 	)
 	(wire
 		(pts
-			(xy 161.29 45.72) (xy 161.29 48.26)
+			(xy 161.29 52.07) (xy 161.29 54.61)
 		)
 		(stroke
 			(width 0)
@@ -4607,7 +4657,7 @@
 	)
 	(wire
 		(pts
-			(xy 167.64 58.42) (xy 177.8 58.42)
+			(xy 167.64 64.77) (xy 177.8 64.77)
 		)
 		(stroke
 			(width 0)
@@ -4647,7 +4697,7 @@
 	)
 	(wire
 		(pts
-			(xy 161.29 45.72) (xy 199.39 45.72)
+			(xy 161.29 52.07) (xy 199.39 52.07)
 		)
 		(stroke
 			(width 0)
@@ -4687,7 +4737,7 @@
 	)
 	(wire
 		(pts
-			(xy 198.12 69.85) (xy 198.12 76.2)
+			(xy 198.12 76.2) (xy 198.12 82.55)
 		)
 		(stroke
 			(width 0)
@@ -4807,7 +4857,7 @@
 	)
 	(wire
 		(pts
-			(xy 147.32 55.88) (xy 156.21 55.88)
+			(xy 147.32 62.23) (xy 156.21 62.23)
 		)
 		(stroke
 			(width 0)
@@ -4847,7 +4897,7 @@
 	)
 	(wire
 		(pts
-			(xy 207.01 55.88) (xy 207.01 58.42)
+			(xy 207.01 62.23) (xy 207.01 64.77)
 		)
 		(stroke
 			(width 0)
@@ -4867,7 +4917,7 @@
 	)
 	(wire
 		(pts
-			(xy 214.63 66.04) (xy 209.55 66.04)
+			(xy 214.63 72.39) (xy 209.55 72.39)
 		)
 		(stroke
 			(width 0)
@@ -4887,7 +4937,7 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 64.77) (xy 171.45 53.34)
+			(xy 171.45 71.12) (xy 171.45 59.69)
 		)
 		(stroke
 			(width 0)
@@ -4907,7 +4957,7 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 31.75) (xy 171.45 36.83)
+			(xy 171.45 38.1) (xy 171.45 43.18)
 		)
 		(stroke
 			(width 0)
@@ -4927,7 +4977,7 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 35.56) (xy 81.28 46.99)
+			(xy 81.28 41.91) (xy 81.28 53.34)
 		)
 		(stroke
 			(width 0)
@@ -4967,7 +5017,7 @@
 	)
 	(wire
 		(pts
-			(xy 93.98 35.56) (xy 104.14 35.56)
+			(xy 93.98 41.91) (xy 104.14 41.91)
 		)
 		(stroke
 			(width 0)
@@ -4977,7 +5027,7 @@
 	)
 	(wire
 		(pts
-			(xy 83.82 58.42) (xy 81.28 58.42)
+			(xy 83.82 64.77) (xy 81.28 64.77)
 		)
 		(stroke
 			(width 0)
@@ -5027,7 +5077,7 @@
 	)
 	(wire
 		(pts
-			(xy 207.01 58.42) (xy 207.01 63.5)
+			(xy 207.01 64.77) (xy 207.01 69.85)
 		)
 		(stroke
 			(width 0)
@@ -5037,7 +5087,7 @@
 	)
 	(wire
 		(pts
-			(xy 107.95 39.37) (xy 107.95 46.99)
+			(xy 107.95 45.72) (xy 107.95 53.34)
 		)
 		(stroke
 			(width 0)
@@ -5047,7 +5097,7 @@
 	)
 	(wire
 		(pts
-			(xy 167.64 53.34) (xy 171.45 53.34)
+			(xy 167.64 59.69) (xy 171.45 59.69)
 		)
 		(stroke
 			(width 0)
@@ -5057,7 +5107,7 @@
 	)
 	(wire
 		(pts
-			(xy 193.04 48.26) (xy 193.04 53.34)
+			(xy 193.04 54.61) (xy 193.04 59.69)
 		)
 		(stroke
 			(width 0)
@@ -5087,7 +5137,7 @@
 	)
 	(wire
 		(pts
-			(xy 209.55 55.88) (xy 209.55 66.04)
+			(xy 209.55 62.23) (xy 209.55 72.39)
 		)
 		(stroke
 			(width 0)
@@ -5137,7 +5187,7 @@
 	)
 	(wire
 		(pts
-			(xy 214.63 48.26) (xy 214.63 66.04)
+			(xy 214.63 54.61) (xy 214.63 72.39)
 		)
 		(stroke
 			(width 0)
@@ -5147,7 +5197,7 @@
 	)
 	(wire
 		(pts
-			(xy 209.55 66.04) (xy 198.12 66.04)
+			(xy 209.55 72.39) (xy 198.12 72.39)
 		)
 		(stroke
 			(width 0)
@@ -5167,7 +5217,7 @@
 	)
 	(wire
 		(pts
-			(xy 107.95 55.88) (xy 111.76 55.88)
+			(xy 107.95 62.23) (xy 111.76 62.23)
 		)
 		(stroke
 			(width 0)
@@ -5217,7 +5267,7 @@
 	)
 	(wire
 		(pts
-			(xy 207.01 55.88) (xy 207.01 58.42)
+			(xy 207.01 62.23) (xy 207.01 64.77)
 		)
 		(stroke
 			(width 0)
@@ -5227,7 +5277,7 @@
 	)
 	(wire
 		(pts
-			(xy 111.76 39.37) (xy 111.76 35.56)
+			(xy 111.76 45.72) (xy 111.76 41.91)
 		)
 		(stroke
 			(width 0)
@@ -5237,7 +5287,7 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 44.45) (xy 171.45 53.34)
+			(xy 171.45 50.8) (xy 171.45 59.69)
 		)
 		(stroke
 			(width 0)
@@ -5277,7 +5327,7 @@
 	)
 	(wire
 		(pts
-			(xy 86.36 35.56) (xy 81.28 35.56)
+			(xy 86.36 41.91) (xy 81.28 41.91)
 		)
 		(stroke
 			(width 0)
@@ -5387,7 +5437,7 @@
 	)
 	(wire
 		(pts
-			(xy 177.8 58.42) (xy 195.58 58.42)
+			(xy 177.8 64.77) (xy 195.58 64.77)
 		)
 		(stroke
 			(width 0)
@@ -5397,7 +5447,7 @@
 	)
 	(wire
 		(pts
-			(xy 107.95 39.37) (xy 111.76 39.37)
+			(xy 107.95 45.72) (xy 111.76 45.72)
 		)
 		(stroke
 			(width 0)
@@ -5407,7 +5457,7 @@
 	)
 	(wire
 		(pts
-			(xy 201.93 69.85) (xy 198.12 69.85)
+			(xy 201.93 76.2) (xy 198.12 76.2)
 		)
 		(stroke
 			(width 0)
@@ -5437,7 +5487,7 @@
 	)
 	(wire
 		(pts
-			(xy 99.06 55.88) (xy 107.95 55.88)
+			(xy 99.06 62.23) (xy 107.95 62.23)
 		)
 		(stroke
 			(width 0)
@@ -5487,7 +5537,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 58.42) (xy 207.01 58.42)
+			(xy 195.58 64.77) (xy 207.01 64.77)
 		)
 		(stroke
 			(width 0)
@@ -5497,7 +5547,7 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 53.34) (xy 81.28 53.34)
+			(xy 72.39 59.69) (xy 81.28 59.69)
 		)
 		(stroke
 			(width 0)
@@ -5517,7 +5567,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 72.39) (xy 201.93 72.39)
+			(xy 195.58 78.74) (xy 201.93 78.74)
 		)
 		(stroke
 			(width 0)
@@ -5557,7 +5607,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 58.42) (xy 195.58 72.39)
+			(xy 195.58 64.77) (xy 195.58 78.74)
 		)
 		(stroke
 			(width 0)
@@ -5589,7 +5639,7 @@
 	)
 	(global_label "AUDIO_OUT_L"
 		(shape input)
-		(at 60.96 53.34 180)
+		(at 60.96 59.69 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -5599,7 +5649,7 @@
 		)
 		(uuid "64cc71a2-535f-4f20-8ccf-671665f69c16")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 45.7585 53.34 0)
+			(at 45.7585 59.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5611,7 +5661,7 @@
 	)
 	(global_label "OUT_OPA_L"
 		(shape output)
-		(at 111.76 55.88 0)
+		(at 111.76 62.23 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -5621,7 +5671,7 @@
 		)
 		(uuid "76276826-95b5-4dad-a04b-585fcfa7aaae")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 125.0262 55.88 0)
+			(at 125.0262 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5655,7 +5705,7 @@
 	)
 	(global_label "OUT_WIPER_L"
 		(shape input)
-		(at 147.32 55.88 180)
+		(at 147.32 62.23 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -5665,7 +5715,7 @@
 		)
 		(uuid "c2905a52-833d-4465-b7d6-bb6a33a86673")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 131.9977 55.88 0)
+			(at 131.9977 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6116,7 +6166,7 @@
 	)
 	(symbol
 		(lib_id "Diode:SM4004")
-		(at 171.45 68.58 270)
+		(at 171.45 74.93 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6124,7 +6174,7 @@
 		(dnp no)
 		(uuid "1ebeb940-8ad3-4ca8-b165-31f467f5cc28")
 		(property "Reference" "D6"
-			(at 165.1 72.136 90)
+			(at 165.1 78.486 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6132,7 +6182,7 @@
 			)
 		)
 		(property "Value" "SM4004"
-			(at 167.64 73.914 90)
+			(at 167.64 80.264 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6140,7 +6190,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_MELF"
-			(at 167.005 68.58 0)
+			(at 167.005 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6149,7 +6199,7 @@
 			)
 		)
 		(property "Datasheet" "http://cdn-reichelt.de/documents/datenblatt/A400/SMD1N400%23DIO.pdf"
-			(at 171.45 68.58 0)
+			(at 171.45 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6158,7 +6208,7 @@
 			)
 		)
 		(property "Description" "400V 1A General Purpose Rectifier Diode, MELF"
-			(at 171.45 68.58 0)
+			(at 171.45 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6167,7 +6217,7 @@
 			)
 		)
 		(property "Sim.Device" "D"
-			(at 171.45 68.58 0)
+			(at 171.45 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6176,7 +6226,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 171.45 68.58 0)
+			(at 171.45 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6683,7 +6733,7 @@
 	)
 	(symbol
 		(lib_id "Diode:SM4004")
-		(at 177.8 40.64 270)
+		(at 177.8 46.99 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6691,7 +6741,7 @@
 		(dnp no)
 		(uuid "42bb3c3a-ebe8-4cfe-a34b-5f76accf0d6a")
 		(property "Reference" "D2"
-			(at 177.8 32.766 90)
+			(at 177.8 39.116 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6699,7 +6749,7 @@
 			)
 		)
 		(property "Value" "SM4004"
-			(at 180.34 34.544 90)
+			(at 180.34 40.894 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6707,7 +6757,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_MELF"
-			(at 173.355 40.64 0)
+			(at 173.355 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6716,7 +6766,7 @@
 			)
 		)
 		(property "Datasheet" "http://cdn-reichelt.de/documents/datenblatt/A400/SMD1N400%23DIO.pdf"
-			(at 177.8 40.64 0)
+			(at 177.8 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6725,7 +6775,7 @@
 			)
 		)
 		(property "Description" "400V 1A General Purpose Rectifier Diode, MELF"
-			(at 177.8 40.64 0)
+			(at 177.8 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6734,7 +6784,7 @@
 			)
 		)
 		(property "Sim.Device" "D"
-			(at 177.8 40.64 0)
+			(at 177.8 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6743,7 +6793,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 177.8 40.64 0)
+			(at 177.8 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6900,7 +6950,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 90.17 35.56 270)
+		(at 90.17 41.91 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6909,7 +6959,7 @@
 		(fields_autoplaced yes)
 		(uuid "4e493cbd-89b3-4c5c-ba3d-cdd493706ad6")
 		(property "Reference" "R2"
-			(at 90.17 29.21 90)
+			(at 90.17 35.56 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6917,7 +6967,7 @@
 			)
 		)
 		(property "Value" "15k"
-			(at 90.17 31.75 90)
+			(at 90.17 38.1 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6925,7 +6975,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
-			(at 90.17 33.782 90)
+			(at 90.17 40.132 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6934,7 +6984,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 90.17 35.56 0)
+			(at 90.17 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6943,7 +6993,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 90.17 35.56 0)
+			(at 90.17 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7165,7 +7215,7 @@
 	)
 	(symbol
 		(lib_id "power:+12VA")
-		(at 171.45 31.75 0)
+		(at 171.45 38.1 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7173,7 +7223,7 @@
 		(dnp no)
 		(uuid "6d45f629-904b-436f-90dc-b37f74960cdd")
 		(property "Reference" "#PWR044"
-			(at 171.45 35.56 0)
+			(at 171.45 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7182,7 +7232,7 @@
 			)
 		)
 		(property "Value" "+12VA"
-			(at 170.942 27.432 0)
+			(at 170.942 33.782 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7190,7 +7240,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 171.45 31.75 0)
+			(at 171.45 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7199,7 +7249,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 171.45 31.75 0)
+			(at 171.45 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7208,7 +7258,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+12VA\""
-			(at 171.45 31.75 0)
+			(at 171.45 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7295,7 +7345,7 @@
 	)
 	(symbol
 		(lib_id "Amplifier_Operational:OPA1656ID")
-		(at 91.44 55.88 0)
+		(at 91.44 62.23 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7304,7 +7354,7 @@
 		(dnp no)
 		(uuid "7b022d85-8a82-401f-a51f-fbe8814ce467")
 		(property "Reference" "U3"
-			(at 91.44 66.04 0)
+			(at 91.44 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7312,7 +7362,7 @@
 			)
 		)
 		(property "Value" "OPA1656ID"
-			(at 91.44 63.5 0)
+			(at 91.44 69.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7320,7 +7370,7 @@
 			)
 		)
 		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
-			(at 91.44 55.88 0)
+			(at 91.44 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7329,7 +7379,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/opa1656.pdf"
-			(at 91.44 55.88 0)
+			(at 91.44 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7338,7 +7388,7 @@
 			)
 		)
 		(property "Description" "Dual Ultra-Low-Noise, Low-Distortion, FET-Input, Burr-Brown Audio Operational Amplifiers, SOIC-8"
-			(at 91.44 55.88 0)
+			(at 91.44 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7515,7 +7565,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 81.28 73.66 0)
+		(at 81.28 80.01 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7523,7 +7573,7 @@
 		(dnp no)
 		(uuid "89808d80-1c5a-429b-b485-ecbd67fd9d2d")
 		(property "Reference" "#PWR036"
-			(at 81.28 80.01 0)
+			(at 81.28 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7532,7 +7582,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 81.28 77.724 0)
+			(at 81.28 84.074 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7540,7 +7590,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 81.28 73.66 0)
+			(at 81.28 80.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7549,7 +7599,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 81.28 73.66 0)
+			(at 81.28 80.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7558,7 +7608,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 81.28 73.66 0)
+			(at 81.28 80.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7730,7 +7780,7 @@
 	)
 	(symbol
 		(lib_id "power:Earth")
-		(at 198.12 76.2 0)
+		(at 198.12 82.55 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7738,7 +7788,7 @@
 		(dnp no)
 		(uuid "8b58df16-eed2-48b8-850b-8cc57d4262a0")
 		(property "Reference" "#PWR048"
-			(at 198.12 82.55 0)
+			(at 198.12 88.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7747,7 +7797,7 @@
 			)
 		)
 		(property "Value" "CHASSIS"
-			(at 197.866 80.772 0)
+			(at 197.866 87.122 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7755,7 +7805,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 198.12 76.2 0)
+			(at 198.12 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7764,7 +7814,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 198.12 76.2 0)
+			(at 198.12 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7773,7 +7823,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"Earth\""
-			(at 198.12 76.2 0)
+			(at 198.12 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7795,7 +7845,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Audio:NCJ6FA-H-0")
-		(at 207.01 72.39 0)
+		(at 207.01 78.74 0)
 		(mirror y)
 		(unit 2)
 		(exclude_from_sim no)
@@ -7805,7 +7855,7 @@
 		(fields_autoplaced yes)
 		(uuid "93d3c3c0-a5a2-41fa-85a4-77625eb44539")
 		(property "Reference" "J1"
-			(at 214.63 71.7549 0)
+			(at 214.63 78.1049 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7814,7 +7864,7 @@
 			)
 		)
 		(property "Value" "NCJ6FA-H-0"
-			(at 214.63 74.2949 0)
+			(at 214.63 80.6449 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7823,7 +7873,7 @@
 			)
 		)
 		(property "Footprint" "Connector_Audio:Jack_XLR-6.35mm_Neutrik_NCJ6FA-H-0_Horizontal"
-			(at 207.01 72.39 0)
+			(at 207.01 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7832,7 +7882,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.neutrik.com/en/product/ncj6fa-h-0"
-			(at 207.01 72.39 0)
+			(at 207.01 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7841,7 +7891,7 @@
 			)
 		)
 		(property "Description" "Combo A series, 3 pole XLR female receptacle with 6.35mm (1/4in) stereo jack, horizontal PCB mount, retention spring"
-			(at 207.01 72.39 0)
+			(at 207.01 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7979,7 +8029,7 @@
 	(symbol
 		(lib_name "THAT1646_1")
 		(lib_id "daisy-studio:THAT1646")
-		(at 162.56 55.88 0)
+		(at 162.56 62.23 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7987,7 +8037,7 @@
 		(dnp no)
 		(uuid "a1007003-0002-4000-8000-000000000002")
 		(property "Reference" "U1"
-			(at 159.766 65.024 0)
+			(at 159.766 71.374 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7995,7 +8045,7 @@
 			)
 		)
 		(property "Value" "THAT1646"
-			(at 159.766 67.564 0)
+			(at 159.766 73.914 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8003,7 +8053,7 @@
 			)
 		)
 		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
-			(at 162.814 65.278 0)
+			(at 162.814 71.628 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8012,7 +8062,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.mouser.com/datasheet/3/4/1/THAT_1606-1646_Datasheet.pdf"
-			(at 162.56 67.31 0)
+			(at 162.56 73.66 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8021,7 +8071,7 @@
 			)
 		)
 		(property "Description" "THAT1646 balanced line driver, transformer-like, SOIC-8"
-			(at 162.56 69.85 0)
+			(at 162.56 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8030,7 +8080,7 @@
 			)
 		)
 		(property "Placement" "Near output connector. Analog ground reference."
-			(at 162.56 55.88 0)
+			(at 162.56 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8159,7 +8209,7 @@
 	(symbol
 		(lib_name "R_Potentiometer_Trim_1")
 		(lib_id "Device:R_Potentiometer_Trim")
-		(at 107.95 35.56 270)
+		(at 107.95 41.91 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8168,7 +8218,7 @@
 		(fields_autoplaced yes)
 		(uuid "a3ecae17-34ca-47f6-8f45-e9c65a25717b")
 		(property "Reference" "RV2"
-			(at 107.95 29.21 90)
+			(at 107.95 35.56 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8176,7 +8226,7 @@
 			)
 		)
 		(property "Value" "10k"
-			(at 107.95 31.75 90)
+			(at 107.95 38.1 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8184,7 +8234,7 @@
 			)
 		)
 		(property "Footprint" "Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical"
-			(at 107.95 35.56 0)
+			(at 107.95 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8193,7 +8243,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 107.95 35.56 0)
+			(at 107.95 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8202,7 +8252,7 @@
 			)
 		)
 		(property "Description" "Multi-Turn Trim-potentiometer"
-			(at 107.95 35.56 0)
+			(at 107.95 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8296,7 +8346,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 93.98 46.99 90)
+		(at 93.98 53.34 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8305,7 +8355,7 @@
 		(fields_autoplaced yes)
 		(uuid "a8c6ffb1-7092-4322-8f6d-91dcfda126ce")
 		(property "Reference" "C8"
-			(at 93.98 39.37 90)
+			(at 93.98 45.72 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8313,7 +8363,7 @@
 			)
 		)
 		(property "Value" "100p C0G"
-			(at 93.98 41.91 90)
+			(at 93.98 48.26 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8321,7 +8371,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
-			(at 97.79 46.0248 0)
+			(at 97.79 52.3748 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8330,7 +8380,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 93.98 46.99 0)
+			(at 93.98 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8339,7 +8389,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 93.98 46.99 0)
+			(at 93.98 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9212,7 +9262,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 68.58 53.34 270)
+		(at 68.58 59.69 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9221,7 +9271,7 @@
 		(fields_autoplaced yes)
 		(uuid "cfd9baad-b5a7-4ced-903d-1dc412d203ef")
 		(property "Reference" "R5"
-			(at 68.58 46.99 90)
+			(at 68.58 53.34 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9229,7 +9279,7 @@
 			)
 		)
 		(property "Value" "2k2 1%"
-			(at 68.58 49.53 90)
+			(at 68.58 55.88 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9237,7 +9287,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
-			(at 68.58 51.562 90)
+			(at 68.58 57.912 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9246,7 +9296,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 68.58 53.34 0)
+			(at 68.58 59.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9255,7 +9305,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 68.58 53.34 0)
+			(at 68.58 59.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9412,7 +9462,7 @@
 	)
 	(symbol
 		(lib_id "Diode:SM4004")
-		(at 177.8 68.58 270)
+		(at 177.8 74.93 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9420,7 +9470,7 @@
 		(dnp no)
 		(uuid "e2ff650b-d87f-4fee-af63-4b677e66a28f")
 		(property "Reference" "D4"
-			(at 177.8 74.676 90)
+			(at 177.8 81.026 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9428,7 +9478,7 @@
 			)
 		)
 		(property "Value" "SM4004"
-			(at 180.34 76.454 90)
+			(at 180.34 82.804 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9436,7 +9486,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_MELF"
-			(at 173.355 68.58 0)
+			(at 173.355 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9445,7 +9495,7 @@
 			)
 		)
 		(property "Datasheet" "http://cdn-reichelt.de/documents/datenblatt/A400/SMD1N400%23DIO.pdf"
-			(at 177.8 68.58 0)
+			(at 177.8 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9454,7 +9504,7 @@
 			)
 		)
 		(property "Description" "400V 1A General Purpose Rectifier Diode, MELF"
-			(at 177.8 68.58 0)
+			(at 177.8 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9463,7 +9513,7 @@
 			)
 		)
 		(property "Sim.Device" "D"
-			(at 177.8 68.58 0)
+			(at 177.8 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9472,7 +9522,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 177.8 68.58 0)
+			(at 177.8 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9497,7 +9547,7 @@
 	)
 	(symbol
 		(lib_id "Diode:SM4004")
-		(at 171.45 40.64 270)
+		(at 171.45 46.99 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9505,7 +9555,7 @@
 		(dnp no)
 		(uuid "e4f14106-de01-41e7-95e8-a8a9fcae3c2c")
 		(property "Reference" "D1"
-			(at 168.91 33.528 90)
+			(at 168.91 39.878 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9513,7 +9563,7 @@
 			)
 		)
 		(property "Value" "SM4004"
-			(at 171.45 35.306 90)
+			(at 171.45 41.656 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9521,7 +9571,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_MELF"
-			(at 167.005 40.64 0)
+			(at 167.005 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9530,7 +9580,7 @@
 			)
 		)
 		(property "Datasheet" "http://cdn-reichelt.de/documents/datenblatt/A400/SMD1N400%23DIO.pdf"
-			(at 171.45 40.64 0)
+			(at 171.45 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9539,7 +9589,7 @@
 			)
 		)
 		(property "Description" "400V 1A General Purpose Rectifier Diode, MELF"
-			(at 171.45 40.64 0)
+			(at 171.45 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9548,7 +9598,7 @@
 			)
 		)
 		(property "Sim.Device" "D"
-			(at 171.45 40.64 0)
+			(at 171.45 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9557,7 +9607,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 171.45 40.64 0)
+			(at 171.45 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9651,7 +9701,7 @@
 	(symbol
 		(lib_name "NCJ6FA-H-0_2")
 		(lib_id "Connector_Audio:NCJ6FA-H-0")
-		(at 207.01 48.26 0)
+		(at 207.01 54.61 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -9661,7 +9711,7 @@
 		(fields_autoplaced yes)
 		(uuid "e80d9ef6-c665-4b99-950f-4f728e1c511f")
 		(property "Reference" "J1"
-			(at 207.01 38.1 0)
+			(at 207.01 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9669,7 +9719,7 @@
 			)
 		)
 		(property "Value" "NCJ6FA-H-0"
-			(at 207.01 40.64 0)
+			(at 207.01 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9677,7 +9727,7 @@
 			)
 		)
 		(property "Footprint" "Connector_Audio:Jack_XLR-6.35mm_Neutrik_NCJ6FA-H-0_Horizontal"
-			(at 207.01 48.26 0)
+			(at 207.01 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9686,7 +9736,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.neutrik.com/en/product/ncj6fa-h-0"
-			(at 207.01 48.26 0)
+			(at 207.01 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9695,7 +9745,7 @@
 			)
 		)
 		(property "Description" "Combo A series, 3 pole XLR female receptacle with 6.35mm (1/4in) stereo jack, horizontal PCB mount, retention spring"
-			(at 207.01 48.26 0)
+			(at 207.01 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9735,7 +9785,7 @@
 	)
 	(symbol
 		(lib_id "power:-12VA")
-		(at 171.45 76.2 0)
+		(at 171.45 82.55 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -9745,7 +9795,7 @@
 		(fields_autoplaced yes)
 		(uuid "eb216785-bd2e-4d69-b36a-719dfa99807c")
 		(property "Reference" "#PWR045"
-			(at 171.45 72.39 0)
+			(at 171.45 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9754,7 +9804,7 @@
 			)
 		)
 		(property "Value" "-12VA"
-			(at 171.45 81.28 0)
+			(at 171.45 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9762,7 +9812,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 171.45 76.2 0)
+			(at 171.45 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9771,7 +9821,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 171.45 76.2 0)
+			(at 171.45 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9780,7 +9830,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"-12VA\""
-			(at 171.45 76.2 0)
+			(at 171.45 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)

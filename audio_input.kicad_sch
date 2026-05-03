@@ -3258,9 +3258,9 @@
 		)
 		(uuid "8b5eaa1d-c186-42d3-9073-f4e72ca5263d")
 	)
-	(text "Audio Input Management"
+	(text "Audio Input Section\n"
 		(exclude_from_sim no)
-		(at 185.928 177.038 0)
+		(at 179.578 176.784 0)
 		(effects
 			(font
 				(size 2.54 2.54)

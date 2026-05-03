@@ -870,6 +870,16 @@
 		)
 		(uuid "3339a6b4-b51f-4961-a64a-0daae4e98bb7")
 	)
+	(text "Main Board\n"
+		(exclude_from_sim no)
+		(at 177.8 177.038 0)
+		(effects
+			(font
+				(size 3.81 3.81)
+			)
+		)
+		(uuid "d3816d9e-187a-4633-8a11-175790664b88")
+	)
 	(junction
 		(at 119.38 62.23)
 		(diameter 0)
