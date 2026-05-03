@@ -103,7 +103,7 @@ enough to fold back on a short before damage.
 
 ## Stage 2 — Daisy Seed + MIDI
 
-**Populate:**
+### Populate:
 - Daisy Seed module (**Rev 7 — required for Stage 3.4's PCM3060
   noise test**).
 - H11L1SM optoisolator.
@@ -112,16 +112,24 @@ enough to fold back on a short before damage.
 - 3× SDS-50J DIN-5 jacks.
 - Micro SD socket.
 
-**Verify:**
+### Verify:
 - [ ] **2.1 Seed boots.** Power up. Boot LED on; USB enumerate when
   plugged into a host (DFU / serial device).
 - [ ] **2.2 +3V3D from Seed.** DMM at the +3V3D pin on the GPIO
   breakout header.
-- [ ] **2.3 MIDI loopback.** External synth or USB-MIDI interface +
-  DIN cables. DIN-5 IN → THRU passes notes through unchanged. Seed
-  UART TX → DIN-5 OUT → external MIDI input (load a Seed program
-  emitting note-ons). 31.25 kbaud.
-- [ ] **2.4 SD card.** Mount + read a card from a test program.
+- [ ] **2.3 MIDI THRU passthrough.** External MIDI source (synth or
+  USB-MIDI interface) into DIN-5 IN, monitor DIN-5 THRU with an
+  external MIDI sink. Send a stream of note-ons; THRU should emit
+  the same messages, byte-for-byte, with no Seed firmware involved
+  — this exercises the H11L1SM forward path + 33 Ω THRU buffer
+  resistors only.
+- [ ] **2.4 MIDI IN + OUT (digital thru on the Seed).** Load a Seed
+  program that echoes every received MIDI byte straight back out
+  (RX → TX, a software MIDI thru). External source → DIN-5 IN; sink
+  on DIN-5 OUT. Notes sent in should reappear at OUT, exercising
+  the full IN-side optoisolation path *and* the OUT-side driver in
+  a single loop. 
+- [ ] **2.5 SD card.** Mount + read a card from a test program.
 
 ## Stage 3 — Audio output stage
 
