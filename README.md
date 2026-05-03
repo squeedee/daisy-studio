@@ -1,7 +1,13 @@
 # Daisy Studio
 
+| Front | Back |
+|-------|------|
+| ![Front render](docs/front-render.png) | ![Back render](docs/back-render.png) |
+
 A development board for the [Electrosmith Daisy Seed](https://www.electro-smith.com/daisy/daisy)
 DSP module, providing professional studio-grade balanced line input and output.
+
+Schematic PDF: [docs/Daisy Studio Rev2.pdf](docs/Daisy%20Studio%20Rev2.pdf)
 
 The board is designed as a **flexible development board** to prototype designs
 for:
