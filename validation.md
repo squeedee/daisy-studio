@@ -26,34 +26,80 @@ Before reflow / hand-soldering anything:
 Goal: all three rails (+5 V, ±12 V) up and clean before any signal-path
 silicon is at risk.
 
-**Populate:**
-- Barrel jack, SW1 with shunt harness, DMP3056L reverse-polarity FET,
-  SMBJ15CA input TVS, 100 µF / 25 V bulk on +12V_RAW.
+### Populate:
+- Barrel jack, DMP3056L reverse-polarity FET, SMBJ15CA input TVS,
+  100 µF / 25 V bulk on +12V_RAW. Leave SW1 unjumpered initially —
+  see 1.2; we're not stocking the JST switch header for this run, so
+  SW1 will be wire-bridged after the open-state safety checks.
 - TPS54302 + L3 (10 µH) + input MLCC (10 µF X7R 1206) + output caps
   (2× 22 µF / 25 V X7R 1206) + feedback divider + bootstrap cap.
 - RS3-1212D + L1, L2 ferrites + post-ferrite bulk caps.
 - SMAJ5.0A TVS on +5 V near the Seed footprint.
-- JP1 solder jumper bridged.
 
-**Verify:**
-- [ ] **1.1 +12V_RAW present.** 12 V wall-wart in, shunt on SW1, DMM on
-  +12V_RAW (downstream of bulk cap). 11.5–13 V depending on supply.
-- [ ] **1.2 Reverse-polarity blocks.** Reverse the wall-wart with a
-  sacrificial cable. DMP3056L blocks; no rail activity, no current
-  draw. Restore polarity, confirm rails recover.
-- [ ] **1.3 Panel-switch header.** Pull the shunt harness — power off.
-  Reinstall — power on. (Verifies SW1 is in series, not parallel.)
-- [ ] **1.4 +5 V rail.** DMM on +5 V should read 5.05–5.15 V (FB
+(JP1 ships pre-bridged from fab — no soldering required to keep
+AGND/DGND/CHASSIS tied. See 1.1 for the optional cut-and-restore
+isolation check.)
+
+### Preload:
+
+Before first power-up, install dummy loads across the rail breakout
+header so each regulator has something to drive — confirms rails
+come up under load and surfaces shorts/runaway without putting
+downstream silicon at risk:
+
+- **+12VA → AGND**: ~480 Ω, 1 W (≈ 25 mA).
+- **−12VA → AGND**: ~480 Ω, 1 W (≈ 25 mA).
+- **+5V → DGND**: ~100 Ω, 0.5 W (≈ 50 mA) — gives the TPS54302
+  enough load to leave discontinuous-conduction mode for a clean
+  ripple measurement; the Seed isn't fitted yet.
+
+Leave these in place for the full Stage 1 power-up sequence — the
+RS3-1212D should never see a no-load condition.
+
+### Verify:
+
+All Stage 1 power-up steps use a **bench-top PSU with current
+limiting** in place of a wall-wart. Suggested starting limit: 300 mA
+at 12 V — comfortably above the expected ~100–200 mA stage-1 draw
+(dummy loads + DC/DC quiescent + buck efficiency loss) and tight
+enough to fold back on a short before damage.
+
+- [ ] **1.1 Ground continuity (power off).** With JP1 bridged
+  (default), DMM continuity from AGND through to each chassis
+  mounting hole and to the ground shell of every Neutrik combo
+  jack. Catches missing CHASSIS bonds and unstitched ground pours
+  before any rail comes up.
+  - *Optional isolation check (one board only):* cut JP1, confirm
+    AGND/DGND no longer reads continuous to CHASSIS while the
+    chassis-to-Neutrik-shell continuity remains. Re-bridge JP1
+    with solder before continuing.
+- [ ] **1.2 SW1-open safety pass (board still powered down).** With
+  SW1 unjumpered, set PSU to 12 V / 300 mA limit, leads connected to
+  the barrel jack with correct polarity. DMM on +12V_RAW — should
+  stay at 0 V, PSU current ≈ 0. Reverse the PSU leads, repeat —
+  again 0 V at +12V_RAW, no current. This proves SW1 isolates the
+  rest of the board and that nothing bypasses it. Then **bridge
+  SW1** with a short wire link soldered across its two pads (the
+  panel-switch JST hardware isn't stocked for this build).
+- [ ] **1.3 +12V_RAW present.** PSU at 12 V, correct polarity, ramp
+  from 0 V watching current. DMM on +12V_RAW downstream of the bulk
+  cap reaches 11.7–11.9 V (small Vds drop across DMP3056L). Steady-
+  state PSU current matches the preload + quiescent budget; nothing
+  unexpected.
+- [ ] **1.4 Reverse-polarity blocks (FET).** Power down, reverse the
+  PSU leads, ramp back up. DMP3056L blocks; +12V_RAW stays at 0 V,
+  PSU current limited only by leakage (≪ 1 mA). Power down, restore
+  polarity, confirm rails recover.
+- [ ] **1.5 +5 V rail.** DMM on +5 V should read 5.05–5.15 V (FB
   divider 100 k / 13.3 k → 0.6 V × 8.52). AC-coupled scope at the
   same node — ripple well under 50 mV pp at the 500 kHz switching
   frequency.
-- [ ] **1.5 ±12 V rails (no Seed yet).** DMM at the +12VA / −12VA test
-  points: ±11.76 to ±12.24 V (RS3-1212D ±2%). Scope ripple at the same
-  nodes after the ferrites — target < 10 mVpp in the audio band.
-- [ ] **1.6 ±12 V under load.** Apply ~25 mA dummy load per rail
-  (≈ 480 Ω, 1 W resistor between each rail and AGND). Rails stay
-  within ±2%. Defensive margin check — neither header carries ±12 V
-  to user circuitry.
+- [ ] **1.6 ±12 V rails (under preload).** DMM at the +12VA / −12VA
+  test points: ±11.76 to ±12.24 V (RS3-1212D ±2%). Scope ripple at
+  the same nodes after the ferrites — target < 10 mVpp in the audio
+  band. The Preload resistors are the load throughout — **do not
+  power the RS3-1212D unloaded**, no-load operation is the failure
+  mode we're avoiding.
 
 ## Stage 2 — Daisy Seed + MIDI
 
@@ -214,9 +260,11 @@ This stage is where Rev 2's novel circuitry gets bench-confirmed.
   4.8).
 - Balanced signal source capable of +4 / +14 / +24 dBu, or AD2
   WaveGen + a balanced driver.
-- 2× ~480 Ω, 1 W dummy-load resistors (Stage 1.6).
-- Sacrificial 12 V wall-wart / cable for the reverse-polarity test
-  (Stage 1.2).
+- **Bench-top PSU with current limit and voltage ramp** — primary
+  Stage 1 supply. Reverse-polarity test is done by reversing the
+  leads, no sacrificial cable needed.
+- 3× dummy-load resistors for the Stage 1 preload: 2× ~480 Ω 1 W
+  (±12 V) + 1× ~100 Ω 0.5 W (+5 V).
 - External synth + 2× DIN-5 MIDI cables, or USB-MIDI interface
   (Stage 2.3).
 - Phantom-enabled mic preamp (Stage 3.3).
