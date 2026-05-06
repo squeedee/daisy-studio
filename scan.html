@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BOM Scanner</title>
+<style>
+  :root { color-scheme: light dark; }
+  html, body { height: 100%; }
+  body { font: 14px/1.4 system-ui, sans-serif; margin: 0; padding: 1rem; box-sizing: border-box;
+         display: flex; flex-direction: column; gap: 1rem; }
+  header { display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; flex: 0 0 auto; }
+  #video-wrap { position: relative; width: 360px; max-width: 100%; }
+  video { width: 100%; background: #000; border-radius: 6px; display: block; }
+  #controls { flex: 1; min-width: 260px; }
+  #controls label { display: block; margin: .25rem 0; }
+  #controls input[type=text] { width: 100%; padding: .35rem; font: inherit; }
+  #status { margin: .5rem 0; padding: .4rem .6rem; border-radius: 4px; background: rgba(127,127,127,.15); }
+  #last { font-family: ui-monospace, monospace; font-size: 12px; word-break: break-all; }
+  #log { font-family: ui-monospace, monospace; font-size: 12px; max-height: 100px; overflow-y: auto; border: 1px solid rgba(127,127,127,.3); padding: .25rem; }
+  #table-wrap { flex: 1 1 auto; overflow-y: auto; border: 1px solid rgba(127,127,127,.3); border-radius: 4px; min-height: 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  th, td { border: 1px solid rgba(127,127,127,.3); padding: .25rem .4rem; text-align: left; vertical-align: top; }
+  th { position: sticky; top: 0; background: Canvas; z-index: 1; }
+  tr.match { background: #ffe680; color: #000; }
+  tr.flash { animation: flash 1.2s ease-out; }
+  @keyframes flash {
+    0%   { background: #ffb300; }
+    100% { background: #ffe680; }
+  }
+  button { font: inherit; padding: .35rem .7rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div id="video-wrap">
+    <video id="video" muted playsinline></video>
+  </div>
+  <div id="controls">
+    <label>Camera:
+      <select id="cam"></select>
+    </label>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <button id="clear">Clear matches</button>
+    <label style="margin-top:.5rem">Manual entry (Mouser P/N or any text):
+      <input id="manual" type="text" placeholder="e.g. 187-CL21B104KBCNNNC">
+    </label>
+    <div id="status">Loading BOM…</div>
+    <div>Session decodes: <span id="session">—</span></div>
+    <div>Recent scans:</div>
+    <div id="log"></div>
+  </div>
+</header>
+
+<div id="table-wrap">
+  <table id="bom"><thead></thead><tbody></tbody></table>
+</div>
+
+<script type="module">
+import { readBarcodes, prepareZXingModule } from 'https://esm.sh/zxing-wasm@2.1.0/reader';
+prepareZXingModule({ fireImmediately: true });
+
+const $ = (id) => document.getElementById(id);
+const status = (msg) => $('status').textContent = msg;
+
+// --- CSV parsing (handles quoted fields with commas) ---
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i+1] === '"') { field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else if (c === '\r') { /* skip */ }
+      else field += c;
+    }
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  return rows.filter(r => r.length > 1 || (r.length === 1 && r[0] !== ''));
+}
+
+let bomHeaders = [], bomRows = [], mouserCol = -1;
+
+async function loadBOM() {
+  try {
+    const res = await fetch('bom.csv');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text = await res.text();
+    const rows = parseCSV(text);
+    bomHeaders = rows[0];
+    bomRows = rows.slice(1);
+    mouserCol = bomHeaders.findIndex(h => /mouser\s*p\/?n/i.test(h));
+    if (mouserCol < 0) throw new Error('Mouser P/N column not found in header');
+    renderTable();
+    status(`Loaded ${bomRows.length} BOM rows. Mouser P/N column: "${bomHeaders[mouserCol]}". Ready to scan.`);
+  } catch (e) {
+    status(`Failed to load bom.csv: ${e.message}. Serve this folder over HTTP (e.g. \`python3 -m http.server\`).`);
+  }
+}
+
+function renderTable() {
+  const thead = $('bom').querySelector('thead');
+  const tbody = $('bom').querySelector('tbody');
+  thead.innerHTML = '<tr>' + bomHeaders.map(h => `<th>${escapeHtml(h)}</th>`).join('') + '</tr>';
+  tbody.innerHTML = bomRows.map((r, i) =>
+    `<tr data-i="${i}">` + r.map(c => `<td>${escapeHtml(c)}</td>`).join('') + '</tr>'
+  ).join('');
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// --- Matching: accumulate across frames; render union of matches ---
+const sessionDecodes = new Set();   // every distinct decoded string seen
+const sessionMatches = new Set();   // BOM row indices matched so far
+
+function findMatches(decoded) {
+  if (!decoded || mouserCol < 0) return [];
+  const hay = decoded.toUpperCase();
+  const matches = [];
+  for (let i = 0; i < bomRows.length; i++) {
+    const pn = (bomRows[i][mouserCol] || '').trim();
+    if (!pn) continue;
+    if (hay.includes(pn.toUpperCase())) matches.push(i);
+  }
+  return matches;
+}
+
+function renderSession(newRows = []) {
+  document.querySelectorAll('#bom tbody tr.match').forEach(tr => tr.classList.remove('match'));
+  for (const i of sessionMatches) {
+    const tr = document.querySelector(`#bom tbody tr[data-i="${i}"]`);
+    if (tr) tr.classList.add('match');
+  }
+  if (newRows.length) {
+    const tr = document.querySelector(`#bom tbody tr[data-i="${newRows[0]}"]`);
+    if (tr) {
+      tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      tr.classList.remove('flash'); void tr.offsetWidth; tr.classList.add('flash');
+    }
+  }
+
+  $('session').textContent = sessionDecodes.size
+    ? [...sessionDecodes].map(s => s.slice(0,40)).join(' | ')
+    : '—';
+  const pns = [...sessionMatches].map(i => bomRows[i][mouserCol]).join(', ');
+  status(sessionMatches.size
+    ? `Matched ${sessionMatches.size} row(s) from ${sessionDecodes.size} code(s): ${pns}`
+    : (sessionDecodes.size ? `Decoded ${sessionDecodes.size} code(s), no BOM match yet.` : 'Scanning…'));
+}
+
+function logScan(text, matched) {
+  const line = document.createElement('div');
+  line.textContent = `${new Date().toLocaleTimeString()} ${matched ? '✓' : '✗'} ${text.slice(0,120)}`;
+  $('log').prepend(line);
+}
+
+function handleDecoded(text) {
+  if (sessionDecodes.has(text)) return; // already counted this code
+  sessionDecodes.add(text);
+  const matches = findMatches(text);
+  const newRows = matches.filter(i => !sessionMatches.has(i));
+  newRows.forEach(i => sessionMatches.add(i));
+  logScan(text, matches.length > 0);
+  renderSession(newRows);
+}
+
+function clearSession() {
+  sessionDecodes.clear();
+  sessionMatches.clear();
+  renderSession();
+}
+
+// --- Camera / scanning ---
+const readerOptions = {
+  formats: ['DataMatrix', 'Code128', 'QRCode', 'Code39', 'EAN-13'],
+  tryHarder: true,
+  maxNumberOfSymbols: 8,
+};
+
+let stream = null;
+let scanTimer = null;
+let decoding = false;
+const decodeCanvas = document.createElement('canvas');
+
+async function listCams() {
+  if (!navigator.mediaDevices?.enumerateDevices) {
+    status('mediaDevices unavailable. Page must be served over http://localhost or https.');
+    return;
+  }
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const cams = devices.filter(d => d.kind === 'videoinput');
+    const sel = $('cam');
+    const prev = sel.value;
+    sel.innerHTML = '';
+    cams.forEach((d, i) => {
+      const opt = document.createElement('option');
+      opt.value = d.deviceId;
+      opt.textContent = d.label || `Camera ${i + 1}`;
+      sel.appendChild(opt);
+    });
+    if (prev && cams.find(c => c.deviceId === prev)) sel.value = prev;
+    if (!cams.length) status('No cameras detected. Click Start to grant permission.');
+    else if (cams.every(c => !c.label)) status(`${cams.length} camera(s) found — click Start to grant permission and reveal names.`);
+  } catch (e) {
+    console.error('listCams', e);
+    status(`Could not list cameras: ${e.message}`);
+  }
+}
+
+async function decodeFrame() {
+  if (decoding) return;
+  const video = $('video');
+  if (!video.videoWidth) return;
+  decoding = true;
+  try {
+    decodeCanvas.width = video.videoWidth;
+    decodeCanvas.height = video.videoHeight;
+    const ctx = decodeCanvas.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(video, 0, 0);
+    const imageData = ctx.getImageData(0, 0, decodeCanvas.width, decodeCanvas.height);
+    const results = await readBarcodes(imageData, readerOptions);
+    for (const r of results) {
+      if (r.isValid && r.text) handleDecoded(r.text);
+    }
+  } catch (e) {
+    console.warn('decodeFrame', e);
+  } finally {
+    decoding = false;
+  }
+}
+
+async function start() {
+  if (stream) return;
+  const deviceId = $('cam').value || undefined;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: deviceId
+        ? { deviceId: { exact: deviceId }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+        : { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } },
+    });
+    const video = $('video');
+    video.srcObject = stream;
+    await video.play();
+    status('Scanning… hold sticker ~10–15 cm from camera');
+    scanTimer = setInterval(decodeFrame, 200);
+    listCams(); // refresh labels now that permission is granted
+  } catch (e) {
+    console.error('start', e);
+    status(`Camera error: ${e.name}: ${e.message}`);
+  }
+}
+
+function stop() {
+  if (scanTimer) { clearInterval(scanTimer); scanTimer = null; }
+  if (stream) {
+    stream.getTracks().forEach(t => t.stop());
+    stream = null;
+    $('video').srcObject = null;
+    status('Stopped.');
+  }
+}
+
+$('start').addEventListener('click', start);
+$('stop').addEventListener('click', stop);
+$('clear').addEventListener('click', clearSession);
+$('cam').addEventListener('change', async () => { if (stream) { stop(); await start(); } });
+
+if (navigator.mediaDevices?.addEventListener) {
+  navigator.mediaDevices.addEventListener('devicechange', listCams);
+}
+$('manual').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && e.target.value.trim()) {
+    handleDecoded(e.target.value.trim());
+    e.target.select();
+  }
+});
+
+await loadBOM();
+await listCams();
+</script>
+
+</body>
+</html>
