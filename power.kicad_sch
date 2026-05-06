@@ -5356,7 +5356,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "~"
+		(property "Value" "Conn_02x03"
 			(at 142.494 116.332 90)
 			(effects
 				(font
