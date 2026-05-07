@@ -22,11 +22,12 @@
   table { border-collapse: collapse; width: 100%; font-size: 12px; }
   th, td { border: 1px solid rgba(127,127,127,.3); padding: .25rem .4rem; text-align: left; vertical-align: top; }
   th { position: sticky; top: 0; background: Canvas; z-index: 1; }
-  tr.match { background: #ffe680; color: #000; }
+  tr.match { background: #fff3b0; color: #000; }
+  tr.latest { background: #7fdc8a; color: #000; }
   tr.flash { animation: flash 1.2s ease-out; }
   @keyframes flash {
-    0%   { background: #ffb300; }
-    100% { background: #ffe680; }
+    0%   { background: #1faa3d; }
+    100% { background: #7fdc8a; }
   }
   button { font: inherit; padding: .35rem .7rem; }
 </style>
@@ -120,6 +121,7 @@ function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;'
 // --- Matching: accumulate across frames; render union of matches ---
 const sessionDecodes = new Set();   // every distinct decoded string seen
 const sessionMatches = new Set();   // BOM row indices matched so far
+let latestMatch = null;             // most recent match (highlighted differently)
 
 function findMatches(decoded) {
   if (!decoded || mouserCol < 0) return [];
@@ -134,10 +136,13 @@ function findMatches(decoded) {
 }
 
 function renderSession(newRows = []) {
-  document.querySelectorAll('#bom tbody tr.match').forEach(tr => tr.classList.remove('match'));
+  document.querySelectorAll('#bom tbody tr.match, #bom tbody tr.latest').forEach(tr => {
+    tr.classList.remove('match', 'latest');
+  });
   for (const i of sessionMatches) {
     const tr = document.querySelector(`#bom tbody tr[data-i="${i}"]`);
-    if (tr) tr.classList.add('match');
+    if (!tr) continue;
+    tr.classList.add(i === latestMatch ? 'latest' : 'match');
   }
   if (newRows.length) {
     const tr = document.querySelector(`#bom tbody tr[data-i="${newRows[0]}"]`);
@@ -168,6 +173,7 @@ function handleDecoded(text) {
   const matches = findMatches(text);
   const newRows = matches.filter(i => !sessionMatches.has(i));
   newRows.forEach(i => sessionMatches.add(i));
+  if (matches.length) latestMatch = matches[0];
   logScan(text, matches.length > 0);
   renderSession(newRows);
 }
@@ -175,6 +181,7 @@ function handleDecoded(text) {
 function clearSession() {
   sessionDecodes.clear();
   sessionMatches.clear();
+  latestMatch = null;
   renderSession();
 }
 
