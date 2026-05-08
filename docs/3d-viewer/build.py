@@ -268,19 +268,21 @@ def build_board_mesh(top_tex: Image.Image, bottom_tex: Image.Image | None) -> tr
 
     # --- Edge band ------------------------------------------------------------
     # Side ribbon connecting top and bottom — solid color, no texture.
+    # Each side: 4 vertices ordered CCW when viewed from OUTSIDE the board, so
+    # the outward normal comes out of the (a→b) × (b→c) cross product.
     edge_v = np.array([
-        # north side (Z = z0)
+        # NORTH (z=z0, outward normal -Z)
         [x0, yt, z0], [x1, yt, z0], [x1, yb, z0], [x0, yb, z0],
-        # south side (Z = z1)
-        [x0, yt, z1], [x1, yt, z1], [x1, yb, z1], [x0, yb, z1],
-        # west side (X = x0)
-        [x0, yt, z0], [x0, yt, z1], [x0, yb, z1], [x0, yb, z0],
-        # east side (X = x1)
+        # SOUTH (z=z1, outward normal +Z)
+        [x1, yt, z1], [x0, yt, z1], [x0, yb, z1], [x1, yb, z1],
+        # WEST  (x=x0, outward normal -X)
+        [x0, yt, z1], [x0, yt, z0], [x0, yb, z0], [x0, yb, z1],
+        # EAST  (x=x1, outward normal +X)
         [x1, yt, z0], [x1, yt, z1], [x1, yb, z1], [x1, yb, z0],
     ])
     edge_f = []
     for i in range(0, 16, 4):
-        edge_f.extend([[i, i + 2, i + 1], [i, i + 3, i + 2]])
+        edge_f.extend([[i, i + 1, i + 2], [i, i + 2, i + 3]])
     edge_f = np.array(edge_f)
     edge = trimesh.Trimesh(vertices=edge_v, faces=edge_f, process=False)
     edge.visual.face_colors = list(EDGE_RGB) + [255]
