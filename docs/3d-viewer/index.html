@@ -70,6 +70,8 @@
 
   .calibration { gap: 12px; flex-wrap: wrap; align-items: stretch; display: none; }
   body.admin .calibration { display: flex; }
+  .admin-only { display: none !important; }
+  body.admin .admin-only { display: inline-flex !important; }
   .cal-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; flex: 1; min-width: 280px;
   }
@@ -81,7 +83,8 @@
   .cal-grid input[type="range"] { width: 100%; height: 14px; accent-color: var(--accent); }
   .cal-actions { display: flex; gap: 6px; align-items: center; }
 
-  .docs { padding: 32px 40px 80px; max-width: 760px; overflow-y: auto; }
+  .docs { padding: 32px 40px 80px; overflow-y: auto; }
+  .docs > * { max-width: 760px; }   /* keep prose readable even on wide screens */
   .docs h1 { margin: 0 0 4px; font-size: 28px; letter-spacing: -0.01em; }
   .docs h2 { margin: 32px 0 8px; font-size: 20px; letter-spacing: -0.005em; }
   .docs h3 { margin: 24px 0 6px; font-size: 16px; color: var(--ink); }
@@ -130,15 +133,22 @@
       tone-mapping="agx"
       environment-image="neutral"
       camera-orbit="35deg 60deg auto"
-      min-camera-orbit="auto auto auto"
+      min-camera-orbit="auto auto 20mm"
       max-camera-orbit="auto auto auto"
+      field-of-view="35deg"
+      min-field-of-view="35deg"
+      max-field-of-view="35deg"
       interaction-prompt="none">
     </model-viewer>
     <div class="hud">
       <div class="field"><b>orbit</b> <code id="orbit">—</code></div>
       <div class="field"><b>target</b> <code id="target">—</code></div>
+      <div class="field"><b>fov</b> <code id="fov">—</code></div>
       <div class="spacer"></div>
-      <button id="copyBtn" class="ghost" title="Copy current view as a JS snippet">Copy view</button>
+      <span class="admin-only field"><b>active</b> <code id="activeView">—</code></span>
+      <button id="saveViewBtn" class="ghost admin-only" title="Replace the active view with the current camera position">Save as active</button>
+      <button id="exportViewsBtn" class="ghost admin-only" title="Copy the full views map for pasting into index.html">Export views</button>
+      <button id="copyBtn" class="ghost" title="Copy current orbit/target as a JS snippet">Copy view</button>
       <button id="resetBtn">Reset</button>
     </div>
     <div class="hud calibration">
@@ -263,19 +273,20 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
   // model-viewer will frame the model on first load; orbit "auto" radius
   // fills the canvas. After tuning, paste copied values back into this map.
   const views = {
-    'overview':         { orbit: '0deg 65deg auto',     target: 'auto auto auto' },
-    'back':             { orbit: '180deg 115deg auto',  target: 'auto auto auto' },
-    'audio-input':      { orbit: '0deg 55deg 120mm',    target: '170mm 2mm -60mm' },
-    'audio-output':     { orbit: '0deg 55deg 120mm',    target: '95mm 2mm -60mm'  },
-    'midi':             { orbit: '0deg 55deg 110mm',    target: '220mm 2mm -45mm' },
-    'power':            { orbit: '0deg 55deg 110mm',    target: '285mm 2mm -55mm' },
-    'seed':             { orbit: '0deg 55deg 110mm',    target: '260mm 2mm -53mm' },
-    'daughter-header':  { orbit: '0deg 50deg 80mm',     target: '138mm 5mm -56mm' },
+    'overview':        { orbit: '49.33deg 42.80deg 339.25mm',   target: '186.71mm 1.58mm 50.08mm',  fov: '35.00deg' },
+    'back':            { orbit: '215.76deg 67.68deg 318.32mm',  target: '133.77mm 19.19mm 30.08mm', fov: '35.00deg' },
+    'audio-input':     { orbit: '-0.08deg 3.08deg 133.71mm',    target: '164.78mm 1.60mm 51.63mm',  fov: '35.00deg' },
+    'audio-output':    { orbit: '-0.28deg 3.10deg 154.49mm',    target: '95.65mm 1.60mm 47.68mm',   fov: '35.00deg' },
+    'midi':            { orbit: '180.71deg 12.10deg 127.80mm',  target: '224.94mm 1.60mm 44.39mm',  fov: '35.00deg' },
+    'power':           { orbit: '-143.03deg 31.76deg 110.87mm', target: '284.64mm 1.82mm 53.29mm',  fov: '35.00deg' },
+    'seed':            { orbit: '89.81deg 17.05deg 114.00mm',   target: '239.93mm 13.51mm 61.55mm', fov: '35.00deg' },
+    'daughter-header': { orbit: '37.49deg 16.26deg 104.46mm',   target: '45.61mm 11.60mm 56.56mm',  fov: '35.00deg' },
   };
 
   const mv = document.getElementById('mv');
   const orbitEl = document.getElementById('orbit');
   const targetEl = document.getElementById('target');
+  const fovEl = document.getElementById('fov');
   const toast = document.getElementById('toast');
 
   function fmt(n, unit = '') {
@@ -288,6 +299,7 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
     return {
       orbit: `${fmt(o.theta * 180 / Math.PI, 'deg')} ${fmt(o.phi * 180 / Math.PI, 'deg')} ${fmt(o.radius * 1000, 'mm')}`,
       target: `${fmt(t.x * 1000, 'mm')} ${fmt(t.y * 1000, 'mm')} ${fmt(t.z * 1000, 'mm')}`,
+      fov: `${fmt(mv.getFieldOfView(), 'deg')}`,
     };
   }
 
@@ -296,13 +308,19 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
     const c = readCamera();
     orbitEl.textContent = c.orbit;
     targetEl.textContent = c.target;
+    if (fovEl) fovEl.textContent = c.fov;
   }
+
+  let activeViewName = 'overview';
 
   function setView(name, { push = true } = {}) {
     const v = views[name];
     if (!v) return false;
     mv.cameraOrbit = v.orbit;
     mv.cameraTarget = v.target;
+    if (v.fov) mv.fieldOfView = v.fov;
+    activeViewName = name;
+    document.getElementById('activeView').textContent = name;
     if (push) {
       const newHash = `#view=${name}`;
       if (location.hash !== newHash) history.replaceState(null, '', newHash);
@@ -329,18 +347,47 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
     setView('overview');
   });
 
+  function showToast(text, ms = 2000) {
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), ms);
+  }
+
+  async function copyText(text) {
+    try { await navigator.clipboard.writeText(text); return true; }
+    catch { window.prompt('Copy this:', text); return false; }
+  }
+
   // Copy current view as a JS snippet for tuning
   document.getElementById('copyBtn').addEventListener('click', async () => {
     const c = readCamera();
-    const snippet = `{ orbit: '${c.orbit}', target: '${c.target}' },`;
-    try {
-      await navigator.clipboard.writeText(snippet);
-      toast.textContent = 'Copied: ' + snippet;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
-    } catch {
-      window.prompt('Copy this view:', snippet);
+    const snippet = `'${activeViewName}': { orbit: '${c.orbit}', target: '${c.target}', fov: '${c.fov}' },`;
+    if (await copyText(snippet)) showToast('Copied: ' + snippet, 2500);
+  });
+
+  // Save the current camera position into the active view (in-memory).
+  document.getElementById('saveViewBtn').addEventListener('click', () => {
+    const c = readCamera();
+    if (!views[activeViewName]) {
+      showToast(`No view named "${activeViewName}"`);
+      return;
     }
+    views[activeViewName] = { orbit: c.orbit, target: c.target, fov: c.fov };
+    showToast(`Saved → ${activeViewName}`);
+  });
+
+  // Dump the entire views object as JS source you can paste back in.
+  document.getElementById('exportViewsBtn').addEventListener('click', async () => {
+    const lines = ['const views = {'];
+    const maxKey = Math.max(...Object.keys(views).map(k => k.length));
+    for (const [name, v] of Object.entries(views)) {
+      const padding = ' '.repeat(maxKey - name.length);
+      const fovPart = v.fov ? `, fov: '${v.fov}'` : '';
+      lines.push(`  '${name}':${padding} { orbit: '${v.orbit}', target: '${v.target}'${fovPart} },`);
+    }
+    lines.push('};');
+    const text = lines.join('\n');
+    if (await copyText(text)) showToast(`Copied ${Object.keys(views).length} views to clipboard`, 3000);
   });
 
   // Live HUD update
