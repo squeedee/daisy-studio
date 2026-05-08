@@ -611,12 +611,12 @@
 		(uuid "35b89127-4c27-44b9-aba4-ecaeb7ed7d37")
 	)
 	(embedded_fonts no)
-	(model "${KIPRJMOD}/daisy-studio.pretty/SDS-50J.stp"
+	(model "${KIPRJMOD}/daisy-studio.pretty/SDS-50J.wrl"
 		(offset
 			(xyz -7.479999907 -4.989999696 -0.009999999626)
 		)
 		(scale
-			(xyz 1 1 1)
+			(xyz 0.39370078 0.39370078 0.39370078)
 		)
 		(rotate
 			(xyz -90 0 0)

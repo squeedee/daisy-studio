@@ -3638,12 +3638,12 @@
 			(uuid "e59e1991-682c-43fd-913a-52d7d90aee66")
 		)
 		(embedded_fonts no)
-		(model "${KIPRJMOD}/daisy-studio.pretty/SDS-50J.stp"
+		(model "${KIPRJMOD}/daisy-studio.pretty/SDS-50J.wrl"
 			(offset
 				(xyz -7.479999907 -4.989999696 -0.009999999626)
 			)
 			(scale
-				(xyz 1 1 1)
+				(xyz 0.39370078 0.39370078 0.39370078)
 			)
 			(rotate
 				(xyz -90 0 0)
@@ -6604,12 +6604,12 @@
 			(uuid "386dee05-8a9e-4cda-b0db-64372f138a71")
 		)
 		(embedded_fonts no)
-		(model "SDS-50J.stp"
+		(model "SDS-50J.wrl"
 			(offset
 				(xyz -7.479999907 -4.989999696 -0.009999999626)
 			)
 			(scale
-				(xyz 1 1 1)
+				(xyz 0.39370078 0.39370078 0.39370078)
 			)
 			(rotate
 				(xyz -90 0 0)
@@ -30549,12 +30549,12 @@
 			(uuid "767a46cd-3706-46b0-89c1-471e7efeb331")
 		)
 		(embedded_fonts no)
-		(model "SDS-50J.stp"
+		(model "SDS-50J.wrl"
 			(offset
 				(xyz -7.479999907 -4.989999696 -0.009999999626)
 			)
 			(scale
-				(xyz 1 1 1)
+				(xyz 0.39370078 0.39370078 0.39370078)
 			)
 			(rotate
 				(xyz -90 0 0)
