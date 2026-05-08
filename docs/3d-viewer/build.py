@@ -210,10 +210,13 @@ def build_board_mesh(top_tex: Image.Image, bottom_tex: Image.Image | None) -> tr
     Coordinates: same as KiCad GLB export — X = PCB X (m), Y = up (m),
     Z = PCB Y (m). The board occupies Y ∈ [-t/2, +t/2]."""
     # Convert mm → m for glTF.
+    # KiCad's GLB export places the board substrate from Y=0 (bottom copper)
+    # to Y=+thickness (top copper), with SMD component bases sitting on the
+    # top surface. Match that so components don't float above the texture.
     x0, x1 = BOARD_X0 / 1000.0, BOARD_X1 / 1000.0
     z0, z1 = BOARD_Y0 / 1000.0, BOARD_Y1 / 1000.0
-    yt = +(BOARD_THICKNESS_MM / 2) / 1000.0
-    yb = -(BOARD_THICKNESS_MM / 2) / 1000.0
+    yt = BOARD_THICKNESS_MM / 1000.0
+    yb = 0.0
 
     scene = trimesh.Scene()
 
