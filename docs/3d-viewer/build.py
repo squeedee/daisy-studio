@@ -46,8 +46,24 @@ BOARD_W = BOARD_X1 - BOARD_X0
 BOARD_H = BOARD_Y1 - BOARD_Y0
 BOARD_THICKNESS_MM = 1.6
 
-# US Legal page (project default); used as SVG canvas in --page-size-mode 1.
-PAGE_W_MM, PAGE_H_MM = 355.6, 215.9
+# With --fit-page-to-board, KiCad fits the SVG canvas to all plottable content
+# (Edge.Cuts + any layer overflow like rotated silkscreen text). Same bbox is
+# returned for every layer of the same project, so layers composite pixel-for-
+# pixel. Measured for daisy-studio.kicad_pcb; if the board changes, re-run
+# `kicad-cli pcb export svg --layers Edge.Cuts --fit-page-to-board ...` and
+# update these.
+PAGE_W_MM, PAGE_H_MM = 278.4856, 70.5612
+
+# Texture-vs-component alignment calibration. Source: in-viewer sliders
+# (index.html). Workflow: load the page, dial sliders until pads/silk align
+# with their 3D components, hit Copy, paste values here, rerun this build.
+# After baking, the sliders can sit at zero — this is the residual that the
+# automatic SVG-path-derived crop doesn't catch (rasterizer sub-pixel quirks,
+# stroke-width nuances).
+CAL_OFFSET_X_MM = -0.23   # slider 'length offset'
+CAL_OFFSET_Y_MM = -0.25   # slider 'width offset'
+CAL_SCALE_X     = 0.9985  # slider 'length scale'
+CAL_SCALE_Y     = 1.0025  # slider 'width scale'
 
 
 # ----- color palette (composite mode) -----------------------------------------
@@ -71,12 +87,13 @@ def run(*cmd, **kw):
 
 
 def export_layer_svg(layer: str, out_path: Path, black_and_white: bool = True):
-    """Export ONE layer to an SVG using the project page (mode 1).
-    All SVGs share the same coordinate system, so per-pixel composite is safe."""
+    """Export ONE layer to an SVG fitted tight to the board+overflow.
+    All SVGs of the same project share the same viewBox so layers composite
+    pixel-for-pixel."""
     args = [
         KICAD, "pcb", "export", "svg",
         "--layers", layer,
-        "--page-size-mode", "1",
+        "--fit-page-to-board",
         "--exclude-drawing-sheet",
         "--mode-single",
         "--output", str(out_path),
@@ -91,33 +108,123 @@ _MM_UNIT_RE = __import__("re").compile(r'(width|height)="([\d.]+)mm"')
 
 
 def rasterize_svg_mask(svg_path: Path, px_per_mm: float) -> np.ndarray:
-    """Render a B&W SVG to a uint8 grayscale mask. White=255 ink, black=0 ink
-    is what KiCad emits with --black-and-white (paths are black on white bg).
+    """Render a B&W SVG to a uint8 grayscale mask. KiCad's --black-and-white
+    SVG draws paths as black on transparent; with background='white', ink reads
+    as low values. We invert so 255 = ink, 0 = background. Shape: (H, W).
 
-    We invert: returned array is 0=background, 255=ink. Shape: (H, W).
+    NOTE on resvg-py sizing: when BOTH width and height are passed, resvg
+    rounds the content scale internally and undersizes by ~30 px on the right
+    edge. Passing only width and letting resvg compute height from the SVG
+    viewBox aspect produces correct, full-width content. Verified empirically.
     """
     width = round(PAGE_W_MM * px_per_mm)
-    height = round(PAGE_H_MM * px_per_mm)
-    # resvg-py rejects "mm" units in width/height attributes — strip them
-    # (svg viewBox already encodes the geometry; unitless = px which we override anyway).
+    # Strip "mm" suffix — resvg-py rejects unit-suffixed dimensions.
     svg = svg_path.read_text()
     svg = _MM_UNIT_RE.sub(r'\1="\2"', svg)
     png_data = bytes(resvg_py.svg_to_bytes(
-        svg_string=svg, width=width, height=height,
-        background='white',  # B&W SVG bg is transparent; force white so ink reads as 0
+        svg_string=svg, width=width, background='white',
     ))
     img = Image.open(io.BytesIO(png_data)).convert("L")
     arr = np.asarray(img, dtype=np.uint8)
     return 255 - arr  # invert: ink → 255
 
 
+_CROP_BOX_CACHE: dict[float, tuple[int, int, int, int]] = {}
+_EDGE_CUTS_SVG_BBOX_CACHE: tuple[float, float, float, float] | None = None
+
+
+def get_edge_cuts_svg_bbox() -> tuple[float, float, float, float]:
+    """Parse the Edge.Cuts SVG path to extract the rect's CENTERLINE coords
+    (in SVG mm). Returns (x_min, y_min, x_max, y_max). KiCad emits Edge.Cuts
+    as a `<path d="M x0,y0 x1,y0 x1,y1 x0,y1 Z" />` — we just read the path."""
+    global _EDGE_CUTS_SVG_BBOX_CACHE
+    if _EDGE_CUTS_SVG_BBOX_CACHE is not None:
+        return _EDGE_CUTS_SVG_BBOX_CACHE
+
+    edge_svg = TEX_DIR / "_edge.svg"
+    if not edge_svg.exists():
+        export_layer_svg("Edge.Cuts", edge_svg)
+    text = edge_svg.read_text()
+    # The first <path d="M ..."> in the Edge.Cuts SVG is the board outline.
+    m = __import__("re").search(
+        r'<path[^>]*d="M\s*([\d.-]+),([\d.-]+)\s+([\d.-]+),([\d.-]+)\s+([\d.-]+),([\d.-]+)',
+        text,
+    )
+    if not m:
+        raise RuntimeError("Could not locate Edge.Cuts path in SVG")
+    x0, y0 = float(m[1]), float(m[2])
+    x1, _ = float(m[3]), float(m[4])
+    _, y1 = float(m[5]), float(m[6])
+    raw = (min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1))
+    print(f"  Edge.Cuts SVG path bbox: {raw} mm")
+
+    # Apply user-tuned calibration (see CAL_* constants above).
+    # Center shift comes from the slider 'offset' values; width/height shrink
+    # by the slider 'scale' values (zoom = expand source crop region).
+    cx = (raw[0] + raw[2]) / 2 - CAL_OFFSET_X_MM
+    cy = (raw[1] + raw[3]) / 2 + CAL_OFFSET_Y_MM
+    w  = (raw[2] - raw[0]) / CAL_SCALE_X
+    h  = (raw[3] - raw[1]) / CAL_SCALE_Y
+    bbox = (cx - w/2, cy - h/2, cx + w/2, cy + h/2)
+    print(f"  after calibration: {bbox} mm "
+          f"(center shift X={-CAL_OFFSET_X_MM:+.3f} Y={CAL_OFFSET_Y_MM:+.3f}, "
+          f"size ×({1/CAL_SCALE_X:.4f},{1/CAL_SCALE_Y:.4f}))")
+    _EDGE_CUTS_SVG_BBOX_CACHE = bbox
+    return bbox
+
+
+def get_crop_box(px_per_mm: float) -> tuple[int, int, int, int]:
+    """(x0, y0, x1, y1) pixel crop covering the Edge.Cuts CENTERLINE rectangle
+    in the rendered raster. Uses the path coordinates parsed straight from the
+    SVG — sidesteps inkbbox + stroke-width approximation, which was off by
+    fractions of a millimetre."""
+    if px_per_mm in _CROP_BOX_CACHE:
+        return _CROP_BOX_CACHE[px_per_mm]
+
+    sx0, sy0, sx1, sy1 = get_edge_cuts_svg_bbox()
+    box = (
+        round(sx0 * px_per_mm),
+        round(sy0 * px_per_mm),
+        round(sx1 * px_per_mm),
+        round(sy1 * px_per_mm),
+    )
+    _CROP_BOX_CACHE[px_per_mm] = box
+    print(f"  centerline crop @ {px_per_mm:.4f} px/mm: {box} "
+          f"(mm: {box[0]/px_per_mm:.3f},{box[1]/px_per_mm:.3f} → "
+          f"{box[2]/px_per_mm:.3f},{box[3]/px_per_mm:.3f})")
+    return box
+
+
 def crop_board(arr: np.ndarray, px_per_mm: float) -> np.ndarray:
-    """Crop a full-page raster to the Edge.Cuts rectangle."""
-    x0 = round(BOARD_X0 * px_per_mm)
-    y0 = round(BOARD_Y0 * px_per_mm)
-    x1 = round(BOARD_X1 * px_per_mm)
-    y1 = round(BOARD_Y1 * px_per_mm)
-    return arr[y0:y1, x0:x1]
+    """Crop the full-page raster tight to the Edge.Cuts CENTERLINE rect.
+
+    Two axes need independent scale factors: resvg renders the SVG with NON-
+    uniform scaling (verified empirically — horizontal scale matches `width=`
+    arg exactly, vertical can be off by ~0.8% from viewBox aspect). Using a
+    single px_per_mm shifts content widthwise by a fraction of a millimetre.
+    Compute axis-specific px/mm from the actual image dimensions and the
+    fitted-SVG canvas size, then sample at sub-pixel float coords via PIL
+    bilinear."""
+    sx0, sy0, sx1, sy1 = get_edge_cuts_svg_bbox()
+    img_h, img_w = arr.shape[:2]
+    ppm_x = img_w / PAGE_W_MM
+    ppm_y = img_h / PAGE_H_MM
+    fx0, fy0 = sx0 * ppm_x, sy0 * ppm_y
+    fx1, fy1 = sx1 * ppm_x, sy1 * ppm_y
+    # Use the requested px_per_mm to size the OUTPUT (so all layers share the
+    # same final dimensions even with axis-asymmetric source rasters).
+    out_w = round((sx1 - sx0) * px_per_mm)
+    out_h = round((sy1 - sy0) * px_per_mm)
+    sx_out_to_in = (fx1 - fx0) / out_w
+    sy_out_to_in = (fy1 - fy0) / out_h
+    img = Image.fromarray(arr)
+    # AFFINE: input_x = sx_out_to_in * out_x + fx0, input_y = sy_out_to_in * out_y + fy0.
+    cropped = img.transform(
+        (out_w, out_h), Image.AFFINE,
+        (sx_out_to_in, 0, fx0, 0, sy_out_to_in, fy0),
+        resample=Image.BILINEAR,
+    )
+    return np.asarray(cropped, dtype=np.uint8)
 
 
 def composite_face(side: str, px_per_mm: float, mirror_x: bool = False) -> Image.Image:

@@ -61,6 +61,19 @@
   .hud button:hover { filter: brightness(1.1); }
   .hud button.ghost { background: transparent; color: var(--accent); border: 1px solid var(--rule); }
 
+  .calibration { gap: 12px; flex-wrap: wrap; align-items: stretch; display: none; }
+  body.admin .calibration { display: flex; }
+  .cal-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; flex: 1; min-width: 280px;
+  }
+  .cal-grid label {
+    display: grid; grid-template-columns: 100px 70px 1fr; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--muted);
+  }
+  .cal-grid label .mm { color: var(--ink); font-family: ui-monospace, monospace; text-align: right; }
+  .cal-grid input[type="range"] { width: 100%; height: 14px; accent-color: var(--accent); }
+  .cal-actions { display: flex; gap: 6px; align-items: center; }
+
   .docs { padding: 32px 40px 80px; max-width: 760px; overflow-y: auto; }
   .docs h1 { margin: 0 0 4px; font-size: 28px; letter-spacing: -0.01em; }
   .docs h2 { margin: 32px 0 8px; font-size: 20px; letter-spacing: -0.005em; }
@@ -118,6 +131,26 @@
       <div class="spacer"></div>
       <button id="copyBtn" class="ghost" title="Copy current view as a JS snippet">Copy view</button>
       <button id="resetBtn">Reset</button>
+    </div>
+    <div class="hud calibration">
+      <div class="cal-grid">
+        <label>length offset <span class="mm" id="oxv">0.00</span> mm
+          <input type="range" id="ox" min="-3" max="3" step="0.01" value="0">
+        </label>
+        <label>length scale <span class="mm" id="sxv">1.0000</span>
+          <input type="range" id="sx" min="0.97" max="1.03" step="0.0005" value="1">
+        </label>
+        <label>width offset <span class="mm" id="ozv">0.00</span> mm
+          <input type="range" id="oz" min="-3" max="3" step="0.01" value="0">
+        </label>
+        <label>width scale <span class="mm" id="szv">1.0000</span>
+          <input type="range" id="sz" min="0.97" max="1.03" step="0.0005" value="1">
+        </label>
+      </div>
+      <div class="cal-actions">
+        <button id="calCopy" class="ghost" title="Copy current values to clipboard">Copy</button>
+        <button id="calReset" title="Zero offsets, scale = 1">Reset</button>
+      </div>
     </div>
     <div id="toast" class="toast">Copied!</div>
   </section>
@@ -305,9 +338,162 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
   mv.addEventListener('load', () => {
     refreshHud();
     applyHash();
+    setupCalibration();
   });
 
   window.addEventListener('hashchange', applyHash);
+
+  // ---- Calibration sliders (admin-only) -----------------------------------
+  // Visible when the page is loaded with `?admin=true`. Used to dial in the
+  // texture-vs-component alignment, then bake the values into build.py's
+  // CAL_* constants.
+  if (new URLSearchParams(location.search).get('admin') === 'true') {
+    document.body.classList.add('admin');
+  }
+
+  // Board dims in PCB mm — used to convert mm offsets into UV space.
+  const BOARD_W_MM = 278.35;
+  const BOARD_H_MM = 56.7;
+
+  // Try every known way to reach the underlying THREE.Scene that <model-viewer>
+  // is rendering. The element exposes a Symbol(scene) property in 4.x; if not
+  // found, fall back to scanning for any object with .isObject3D.
+  function findThreeScene() {
+    for (const sym of Object.getOwnPropertySymbols(mv)) {
+      const v = mv[sym];
+      if (v && v.isObject3D) return v;
+      if (v && v.scene && v.scene.isObject3D) return v.scene;
+    }
+    for (const k of Object.keys(mv)) {
+      const v = mv[k];
+      if (v && v.isObject3D) return v;
+    }
+    return null;
+  }
+
+  function findBoardTextures() {
+    const scene = findThreeScene();
+    if (!scene) return [];
+    const out = [];
+    scene.traverse(obj => {
+      if (!obj.isMesh || !obj.material) return;
+      // The board faces: meshes whose name contains "board_top" or "board_bottom".
+      // (trimesh writes these as the GLB node names.)
+      const n = (obj.name || '').toLowerCase();
+      if (!n.includes('board_top') && !n.includes('board_bottom')) return;
+      const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+      for (const m of mats) {
+        if (m.map) out.push({ name: obj.name, mesh: obj, texture: m.map });
+      }
+    });
+    return out;
+  }
+
+  let boardTextures = [];
+  let mvScene = null;
+  function setupCalibration() {
+    mvScene = findThreeScene();
+    boardTextures = findBoardTextures();
+    console.log('calibration: found', boardTextures.length, 'board textures',
+      boardTextures.map(t => t.name), 'scene:', mvScene?.constructor?.name);
+    applyCalibration();
+  }
+
+  function forceRender() {
+    // model-viewer's internal scene exposes queueRender(); calling it pumps
+    // its render-on-demand loop. Without this, edits to UV attributes don't
+    // appear until the next camera move.
+    if (mvScene?.queueRender) { mvScene.queueRender(); return; }
+    if (mv?.queueRender) { mv.queueRender(); return; }
+    // Last resort: nudge the camera by re-assigning the orbit string.
+    const o = mv.cameraOrbit;
+    mv.cameraOrbit = o;
+  }
+
+  function applyCalibration() {
+    const oxMm = parseFloat(document.getElementById('ox').value);
+    const ozMm = parseFloat(document.getElementById('oz').value);
+    const sx   = parseFloat(document.getElementById('sx').value);
+    const sz   = parseFloat(document.getElementById('sz').value);
+
+    document.getElementById('oxv').textContent = oxMm.toFixed(2);
+    document.getElementById('ozv').textContent = ozMm.toFixed(2);
+    document.getElementById('sxv').textContent = sx.toFixed(4);
+    document.getElementById('szv').textContent = sz.toFixed(4);
+
+    // Convert sliders to UV-space transform.
+    //
+    //   offset (mm → UV): for positive `oxMm` to make texture content appear
+    //   shifted toward larger PCB-X, the vertex at a given physical X must
+    //   sample the pixel that was originally `oxMm` to its LEFT. UV.u shifts
+    //   by -oxMm/BOARD_W. Width axis: with build.py's V-flip + three.js's
+    //   default flipY, +ozMm (toward viewer / larger PCB-Y) → +V offset.
+    //
+    //   scale (>1 = zoom in, texture appears LARGER on mesh): UV deviation
+    //   from texture center (0.5) is divided by scale, so corners sample a
+    //   sub-region of the texture.
+    const offsetU = -oxMm / BOARD_W_MM;
+    const offsetV = +ozMm / BOARD_H_MM;
+
+    // Drive UV attributes directly — KHR_texture_transform / texture.matrix
+    // is unreliable across model-viewer's shader compilation paths, but
+    // mesh.geometry.attributes.uv is just a Float32 buffer the shader samples
+    // verbatim, so writing it always takes effect.
+    //
+    // Conversion (top face): for content to APPEAR shifted by +oxMm in PCB
+    // lengthwise, the vertex at physical X=p needs to sample the pixel that
+    // was at X=p-oxMm. That's UV shift -oxMm/BOARD_W. Scale stretches around
+    // the texture center (0.5, 0.5).
+    for (const { name, mesh } of boardTextures) {
+      const uvAttr = mesh.geometry.attributes.uv;
+      if (!uvAttr) continue;
+      // Cache original UVs once.
+      if (!mesh.userData.originalUV) {
+        mesh.userData.originalUV = new Float32Array(uvAttr.array);
+      }
+      const orig = mesh.userData.originalUV;
+      const isBottom = name.toLowerCase().includes('bottom');
+      const ou = isBottom ? -offsetU : offsetU;
+      const ov = offsetV;
+      for (let i = 0; i < uvAttr.count; i++) {
+        const u0 = orig[i * 2];
+        const v0 = orig[i * 2 + 1];
+        const u1 = (u0 - 0.5) / sx + 0.5 + ou;
+        const v1 = (v0 - 0.5) / sz + 0.5 + ov;
+        uvAttr.array[i * 2] = u1;
+        uvAttr.array[i * 2 + 1] = v1;
+      }
+      uvAttr.needsUpdate = true;
+    }
+
+    forceRender();
+  }
+
+  for (const id of ['ox', 'oz', 'sx', 'sz']) {
+    document.getElementById(id).addEventListener('input', applyCalibration);
+  }
+  document.getElementById('calReset').addEventListener('click', () => {
+    document.getElementById('ox').value = '0';
+    document.getElementById('oz').value = '0';
+    document.getElementById('sx').value = '1';
+    document.getElementById('sz').value = '1';
+    applyCalibration();
+  });
+  document.getElementById('calCopy').addEventListener('click', async () => {
+    const ox = document.getElementById('ox').value;
+    const oz = document.getElementById('oz').value;
+    const sx = document.getElementById('sx').value;
+    const sz = document.getElementById('sz').value;
+    const snippet = `length offset = ${ox} mm, length scale = ${sx}, width offset = ${oz} mm, width scale = ${sz}`;
+    try {
+      await navigator.clipboard.writeText(snippet);
+      toast.textContent = 'Copied: ' + snippet;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    } catch {
+      window.prompt('Copy this:', snippet);
+    }
+  });
 </script>
 </body>
 </html>
