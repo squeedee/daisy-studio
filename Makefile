@@ -41,9 +41,14 @@ baked:
 serve:
 	cd $(VIEWER_DIR) && python3 -m http.server $(PORT) --bind 127.0.0.1
 
+## deploy: rebuild then push docs/3d-viewer/ to the gh-pages branch.
+##         GitHub Pages serves from there. Local build IS the deploy.
+deploy: build
+	./scripts/deploy.sh
+
 ## clean: remove generated GLB / textures / docs.html
 clean:
 	rm -f $(VIEWER_DIR)/model.glb $(VIEWER_DIR)/docs.html
 	rm -rf $(VIEWER_DIR)/textures
 
-.PHONY: help build glb docs baked serve clean
+.PHONY: help build glb docs baked serve deploy clean
