@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daisy Studio — 3D Viewer</title>
+<script type="module" src="https://unpkg.com/@google/model-viewer@4.0.0/dist/model-viewer.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.163.0/build/three.module.js"
+  }
+}
+</script>
+<style>
+  :root {
+    --bg: #0e1014;
+    --panel: #161922;
+    --ink: #e8ecf1;
+    --muted: #8a93a4;
+    --accent: #6cc4ff;
+    --accent-ink: #08111a;
+    --rule: #232838;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; }
+  a { color: var(--accent); }
+  code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  pre { background: #0a0c11; border: 1px solid var(--rule); padding: 12px; overflow-x: auto; font-size: 13px; line-height: 1.45; }
+
+  .app { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); height: 100vh; }
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; grid-template-rows: 50vh 1fr; height: auto; }
+  }
+
+  .viewer {
+    position: sticky; top: 0; height: 100vh;
+    background: linear-gradient(180deg, #11151c 0%, #0a0d12 100%);
+    border-right: 1px solid var(--rule);
+    display: flex; flex-direction: column;
+  }
+  @media (max-width: 900px) {
+    .viewer { position: relative; height: 50vh; border-right: 0; border-bottom: 1px solid var(--rule); }
+  }
+
+  model-viewer {
+    flex: 1; width: 100%; min-height: 0;
+    --poster-color: transparent;
+    background: transparent;
+  }
+
+  .hud {
+    border-top: 1px solid var(--rule);
+    padding: 8px 12px;
+    display: flex; gap: 12px; align-items: center;
+    font-size: 12px; color: var(--muted);
+    background: rgba(0,0,0,0.3); backdrop-filter: blur(6px);
+  }
+  .hud .field { display: flex; gap: 6px; align-items: baseline; }
+  .hud .field b { color: var(--ink); font-weight: 500; }
+  .hud code { color: var(--ink); }
+  .hud .spacer { flex: 1; }
+  .hud button {
+    background: var(--accent); color: var(--accent-ink);
+    border: 0; border-radius: 4px; padding: 4px 10px;
+    font: inherit; font-weight: 600; cursor: pointer;
+  }
+  .hud button:hover { filter: brightness(1.1); }
+  .hud button.ghost { background: transparent; color: var(--accent); border: 1px solid var(--rule); }
+
+  .calibration { gap: 12px; flex-wrap: wrap; align-items: stretch; display: none; }
+  body.admin .calibration { display: flex; }
+  .admin-only { display: none !important; }
+  body.admin .admin-only { display: inline-flex !important; }
+  .cal-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; flex: 1; min-width: 280px;
+  }
+  .cal-grid label {
+    display: grid; grid-template-columns: 100px 70px 1fr; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--muted);
+  }
+  .cal-grid label .mm { color: var(--ink); font-family: ui-monospace, monospace; text-align: right; }
+  .cal-grid input[type="range"] { width: 100%; height: 14px; accent-color: var(--accent); }
+  .cal-actions { display: flex; gap: 6px; align-items: center; }
+
+  .docs { padding: 32px 40px 80px; overflow-y: auto; }
+  .docs > * { max-width: 760px; }   /* keep prose readable even on wide screens */
+  .docs h1 { margin: 0 0 4px; font-size: 28px; letter-spacing: -0.01em; }
+  .docs h2 { margin: 32px 0 8px; font-size: 20px; letter-spacing: -0.005em; }
+  .docs h3 { margin: 24px 0 6px; font-size: 16px; color: var(--ink); }
+  .docs h2 .view-btn, .docs h3 .view-btn { margin-left: 10px; vertical-align: middle; }
+  .docs p { margin: 8px 0; }
+  .docs strong { color: #fff; }
+  .docs hr { border: 0; border-top: 1px solid var(--rule); margin: 24px 0; }
+
+  .view-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: transparent; color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 2px 10px;
+    font: 500 12px ui-sans-serif, system-ui;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .view-btn:hover { background: var(--accent); color: var(--accent-ink); }
+  .view-btn::before { content: "◎"; font-size: 11px; }
+
+  .comp-link {
+    background: rgba(108, 196, 255, 0.10);
+    border-bottom: 1px dotted rgba(108, 196, 255, 0.35);
+    padding: 0 2px;
+    border-radius: 2px;
+    cursor: help;
+    transition: background 0.08s, color 0.08s;
+  }
+  .comp-link.hot, .comp-link:hover {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-bottom-color: transparent;
+  }
+
+  .quickbar { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
+
+  .toast {
+    position: absolute; right: 16px; bottom: 56px;
+    background: var(--panel); border: 1px solid var(--rule);
+    color: var(--ink); padding: 8px 12px; border-radius: 6px;
+    font-size: 13px; opacity: 0; transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="viewer">
+    <model-viewer
+      id="mv"
+      src="model.glb"
+      alt="Daisy Studio PCB"
+      camera-controls
+      touch-action="pan-y"
+      shadow-intensity="1.5"
+      shadow-softness="0.4"
+      exposure="0.95"
+      tone-mapping="agx-cinematic"
+      environment-image="legacy"
+      camera-orbit="49.33deg 42.80deg 339.25mm"
+      camera-target="186.71mm 1.58mm 50.08mm"
+      min-camera-orbit="auto auto 20mm"
+      max-camera-orbit="auto auto auto"
+      field-of-view="35deg"
+      min-field-of-view="35deg"
+      max-field-of-view="35deg"
+      interaction-prompt="none">
+    </model-viewer>
+    <div class="hud">
+      <div class="field"><b>orbit</b> <code id="orbit">—</code></div>
+      <div class="field"><b>target</b> <code id="target">—</code></div>
+      <div class="field"><b>fov</b> <code id="fov">—</code></div>
+      <div class="spacer"></div>
+      <span class="admin-only field"><b>active</b> <code id="activeView">—</code></span>
+      <button id="saveViewBtn" class="ghost admin-only" title="Replace the active view with the current camera position">Save as active</button>
+      <button id="exportViewsBtn" class="ghost admin-only" title="Copy the full views map for pasting into index.html">Export views</button>
+      <button id="copyBtn" class="ghost" title="Copy current orbit/target as a JS snippet">Copy view</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+    <div class="hud calibration">
+      <div class="cal-grid">
+        <label>length offset <span class="mm" id="oxv">0.00</span> mm
+          <input type="range" id="ox" min="-3" max="3" step="0.01" value="0">
+        </label>
+        <label>length scale <span class="mm" id="sxv">1.0000</span>
+          <input type="range" id="sx" min="0.97" max="1.03" step="0.0005" value="1">
+        </label>
+        <label>width offset <span class="mm" id="ozv">0.00</span> mm
+          <input type="range" id="oz" min="-3" max="3" step="0.01" value="0">
+        </label>
+        <label>width scale <span class="mm" id="szv">1.0000</span>
+          <input type="range" id="sz" min="0.97" max="1.03" step="0.0005" value="1">
+        </label>
+      </div>
+      <div class="cal-actions">
+        <button id="calCopy" class="ghost" title="Copy current values to clipboard">Copy</button>
+        <button id="calReset" title="Zero offsets, scale = 1">Reset</button>
+      </div>
+    </div>
+    <div id="toast" class="toast">Copied!</div>
+  </section>
+
+  <aside class="docs" id="docs">
+    <!-- prose injected from docs.html (built from docs.md by build.py) -->
+  </aside>
+  <template id="docs-fallback">
+    <h1>Daisy Studio</h1>
+    <p style="color: var(--muted); margin-top: 0;">
+      Development board for the Electrosmith Daisy Seed — balanced studio I/O,
+      MIDI, and ±12 V analog rails. Click a <span class="view-btn" style="cursor:default">section</span>
+      tag to focus the 3D model on that part of the board.
+    </p>
+
+    <div class="quickbar">
+      <button class="view-btn" data-view="overview">Overview</button>
+      <button class="view-btn" data-view="audio-input">Input</button>
+      <button class="view-btn" data-view="audio-output">Output</button>
+      <button class="view-btn" data-view="midi">MIDI</button>
+      <button class="view-btn" data-view="power">Power</button>
+      <button class="view-btn" data-view="seed">Seed</button>
+      <button class="view-btn" data-view="daughter-header">Daughter</button>
+      <button class="view-btn" data-view="back">Back</button>
+    </div>
+
+    <hr>
+
+    <h2>Audio Input <button class="view-btn" data-view="audio-input">view</button></h2>
+<pre>Balanced in → THAT1246 → OPA1656 (fixed gain) → daughterboard pot
+                                                       ↓
+   Daisy Seed ← C_aa anti-alias ← BJT clamp ← R_out (3.3 kΩ) ←</pre>
+    <p>The <strong>THAT1246</strong> balanced receiver converts the differential XLR input to single-ended at −6 dB, keeping +24 dBu peaks within the ±10 V output swing of the ±12 V rails. Its <strong>Sense pin (5)</strong> is brought back as a separate trace to the OPA1656 inverting node — Kelvin-connected past the input resistor — so the THAT1246's internal feedback amp absorbs any voltage drop across <code>R_in</code>, eliminating it as a gain-error term.</p>
+    <p>The <strong>OPA1656</strong> runs as an inverting amplifier at a <strong>fixed gain of 1.2×</strong> (R_fb = 12 kΩ, R_in = 10 kΩ). At +24 dBu peak input the op-amp output reaches ±10.45 V, ~550 mV from the ±11 V clip rails. Fixed gain (rather than a pot in the feedback path) keeps loop phase margin constant across user level adjustments, and the high-impedance summing junction stays entirely on the main PCB.</p>
+    <p>User level is set by a <strong>10 kΩ log pot on the daughterboard</strong>, wired as a passive three-terminal voltage divider downstream of the op-amp. Both header legs are low-impedance: the op-amp drives the CW terminal, and the pot wiper returns to the main PCB into <code>R_out</code> (3.3 kΩ) which caps fault current into the clamp under pathological overdrive.</p>
+    <p>The <strong>BJT clamp</strong> is the design's centrepiece. A complementary pair (2N3906 PNP + 2N3904 NPN) per channel clamps the Seed input pin against ±1.565 V references derived from the ±12 V rails by 10 kΩ / 1.5 kΩ dividers and held stiff at audio frequencies by 47 µF MLCCs. The transistors' β ≈ 200 means only Ic / β flows through the reference divider base connection, so the references stay nearly stationary even under sustained overdrive — the "reference pumping" failure mode that limits passive diode clamps. The sharp emitter-base knee (NF ≈ 1.24, versus ~1.82 for diodes) lets the clean signal use the full ADC range with no distortion.</p>
+    <p>A <strong>1 nF C0G capacitor</strong> at the Seed input pin, after the clamp, forms a single-pole LPF with <code>R_out</code> plus the pot wiper source impedance. The corner stays between 27 kHz (pot mid) and 48 kHz (pot ends), well above the audio band, attenuating wideband op-amp noise and out-of-band content before it reaches the PCM3060's sigma-delta ADC.</p>
+    <p>A <strong>clip indicator</strong> uses an LM2903 comparator monitoring the Seed input against an adjustable threshold. A trim pot on the daughterboard (0 V to +1.565 V) sets the threshold; the open-collector output sinks an LED current path against +12 V through a 1 kΩ limit on the main PCB. At audio frequencies the LED flickers faster than the eye sees — a dim glow at light clipping, bright at heavy. A single LM2903 covers both channels.</p>
+
+    <h2>MIDI <button class="view-btn" data-view="midi">view</button></h2>
+    <p>Standard MIDI 1.0 — a 5 mA current loop at 31.25 kbaud on three SDS-50J DIN-5 jacks (IN, OUT, THRU).</p>
+<pre>DIN-5 IN ── 220R × 2 ── 1N4148W ── H11L1SM (opto, Schmitt)
+                                       ├── 270R pull-up to +3V3D
+                                       ├── → MIDI_RX → Seed UART RX
+                                       └── 33R × 2 → DIN-5 THRU
+
+Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
+    <p>The H11L1SM Schmitt-trigger optocoupler galvanically isolates the input per the MIDI 1.0 electrical spec and presents clean UART edges to the Seed. THRU buffers the same opto output through a second pair of 33 Ω series resistors. OUT is driven directly from the Seed UART TX through a 33 Ω + 10 Ω series pair.</p>
+
+    <h2>Audio Output <button class="view-btn" data-view="audio-output">view</button></h2>
+<pre>Seed audio → OPA1656 (gain ~9.1×, C_fb LPF) → daughterboard pot
+                                                       ↓
+        XLR ← SM4004 phantom clamps ← THAT1646 balanced driver ←</pre>
+    <p>The Seed's PCM3060 outputs ~2 V p-p at digital full scale (~−1 dBu single-ended, ~+5 dBu differential through the THAT1646 alone). An OPA1656 inverting gain stage closes the ~20 dB gap to the +24 dBu studio peak target. R_in is a fixed 2.2 kΩ; R_fb is <strong>15 kΩ fixed in series with a 10 kΩ multi-turn cermet trimmer</strong> (e.g. Bourns 3296W-1-103). Mid-trim lands at gain ~9.1× (+23.7 dBu peak); the 25-turn trim resolves to ~0.5% of R_fb. The fixed floor prevents accidental hard clipping if the wiper loses contact, and the ceiling (R_fb ≤ 25 kΩ) stays below the OPA1656's onset of clipping.</p>
+    <p>A <strong>100 pF C0G across R_fb</strong> turns the gain stage into a single-pole LPF with f_c ≈ 80 kHz at nominal trim. The Seed Rev 7's PCM3060 has out-of-band delta-sigma noise that the codec's internal RC alone does not adequately attenuate; the in-feedback-loop LPF handles this without adding any series parts. C0G dielectric is required — X5R/X7R have voltage-coefficient distortion that would intrude into the audio band when the cap is in the feedback path. Sim shows −0.27 dB at 20 kHz, −22 dB at 1 MHz.</p>
+    <p>User output level is a <strong>10 kΩ log pot per channel on the daughterboard</strong>, voltage-divider-wired downstream of the op-amp. Two separate pots (not ganged) let users pick their own taper or matching strategy. The THAT1646's high-Z input means the op-amp sees a constant 10 kΩ load regardless of wiper position.</p>
+    <p>The <strong>THAT1646</strong> balanced driver converts the single-ended pot wiper back to a differential XLR pair. Sense pins close the feedback loop at the XLR connector for cross-coupled output impedance and immunity to load imbalance.</p>
+    <p><strong>Phantom-power protection</strong>: four SM4004 diodes per channel (two per XLR pin) clamp the THAT1646 output to the ±12 V rails. If an XLR is plugged into a phantom-enabled mic preamp, +48 V through the preamp's 6.8 kΩ feed produces ~5 mA per pin into the clamp — well within the SM4004's 1 A rating.</p>
+    <p><strong>Rail protection</strong> (phantom back-feed when the gear is powered off): one SMBJ15CA bidirectional TVS on each ±12 V rail to AGND, placed near the RS3-1212D output. Same part as the input over-voltage TVS for BOM consolidation. Clamps when the rail magnitude exceeds ~16 V.</p>
+
+    <h2>Daughterboard Header <button class="view-btn" data-view="daughter-header">view</button></h2>
+    <p>The main PCB commits to a <strong>2×10 (20-pin) 2.54 mm pitch through-hole footprint</strong> for the daughterboard header. Daughterboard PCBs are <strong>fully passive</strong>, populating only:</p>
+    <ul>
+      <li>2× input level pots (10 kΩ log)</li>
+      <li>2× output level pots (10 kΩ log)</li>
+      <li>2× clip LEDs</li>
+    </ul>
+    <p>No ICs, no power rails, and no high-impedance feedback nodes cross the header — shorting any two daughterboard signals together cannot damage the main PCB. The 18 needed signal pins fit in the 20-pin footprint with two AGND pins at the bottom; AGND is interleaved on every audio pair.</p>
+
+    <h2>Daisy Seed &amp; GPIO Breakout <button class="view-btn" data-view="seed">view</button></h2>
+    <p>A <strong>2×14 (28-pin) 2.54 mm vertical pin header</strong> brings out every Seed GPIO not committed to the on-board audio (ADC/DAC), MIDI (UART_RX/TX), or USB (D+/D−, VBUS) — plus +5 V, +3V3D, and DGND for downstream circuits. Pin-to-net assignment is slightly illogical, as they were selected to minimise via count and trace crossings between the Seed and the breakout.</p>
+    <p>Analog ±12 V rails are not on the breakout (or on the daughterboard header); they distribute through the dedicated power header.</p>
+
+    <h2>Power <button class="view-btn" data-view="power">view</button></h2>
+<pre>12 V barrel jack → SW1 (panel switch / shunt) → DMP3056L (rev-polarity)
+                                                       ↓
+                                              SMBJ15CA TVS (overvoltage)
+                                                       ↓
+                                                100 µF bulk → +12V_RAW
+                                                       ├─→ TPS54302 → +5V
+                                                       └─→ RS3-1212D → ±12V</pre>
+    <p>A 12 V wall-wart feeds a 2.1 mm barrel jack. <strong>SW1</strong> — a JST B2P-VH 2-pin THT header in series after the jack — takes either a pre-crimped shunt harness (default, bypasses the switch) or an external panel switch harness. Placing the switch <em>before</em> reverse-polarity protection means rev-pol and TVS clamping still function during a miswired wall-wart event regardless of switch state.</p>
+    <p>Reverse polarity is blocked by a <strong>DMP3056L-13</strong> P-FET (VGS_max ±20 V, RDS_on ~51 mΩ). An <strong>SMBJ15CA</strong> bidirectional TVS clamps any over-voltage spike from a misbehaved supply. A 100 µF / 25 V electrolytic provides bulk on +12V_RAW.</p>
+    <p>The <strong>TPS54302 buck</strong> (SOT-23-6) generates +5 V from +12V_RAW for the Daisy Seed and the MIDI front-end. A dedicated <strong>10 µF / 25 V X7R 1206</strong> input MLCC sits at the VIN pin to handle the buck's pulsed input current at 500 kHz with low loop inductance. A defensive <strong>SMAJ5.0A</strong> TVS clamps +5 V to GND near the Seed.</p>
+    <p>The <strong>Recom RS3-1212D</strong> isolated DC/DC (SIP-8, 3 W, regulated ±2%, ±125 mA per rail) generates the ±12 V analog rails. The output passes through 2× BLM18PG121SN1 ferrite beads into the rest of the board.</p>
+
+    <hr>
+    <p style="color: var(--muted); font-size: 12px;">
+      Source: <code>daisy-studio.kicad_pcb</code> · GLB exported with
+      <code>kicad-cli pcb export glb</code> · Viewer:
+      <a href="https://modelviewer.dev/" target="_blank" rel="noopener">&lt;model-viewer&gt;</a>
+    </p>
+  </template>
+</div>
+
+<script type="module">
+  import * as THREE from 'three';
+  // Named camera views.
+  // model-viewer axis convention (KiCad GLB export):
+  //   X = KiCad X (board long axis, mm)
+  //   Y = up out of board face (board thickness, mm)
+  //   Z = -KiCad Y (board short axis, mm) — KiCad Y points "down" on screen,
+  //       so positive KiCad Y becomes negative model-viewer Z.
+  // model-viewer will frame the model on first load; orbit "auto" radius
+  // fills the canvas. After tuning, paste copied values back into this map.
+  const views = {
+    'overview':        { orbit: '49.33deg 42.80deg 339.25mm',   target: '186.71mm 1.58mm 50.08mm',  fov: '35.00deg' },
+    'back':            { orbit: '215.76deg 67.68deg 318.32mm',  target: '133.77mm 19.19mm 30.08mm', fov: '35.00deg' },
+    'audio-input':     { orbit: '-0.08deg 3.08deg 133.71mm',    target: '164.78mm 1.60mm 51.63mm',  fov: '35.00deg' },
+    'audio-output':    { orbit: '-0.28deg 3.10deg 154.49mm',    target: '95.65mm 1.60mm 47.68mm',   fov: '35.00deg' },
+    'midi':            { orbit: '180.71deg 12.10deg 127.80mm',  target: '224.94mm 1.60mm 44.39mm',  fov: '35.00deg' },
+    'power':           { orbit: '-143.03deg 31.76deg 110.87mm', target: '284.64mm 1.82mm 53.29mm',  fov: '35.00deg' },
+    'seed':            { orbit: '89.81deg 17.05deg 114.00mm',   target: '239.93mm 13.51mm 61.55mm', fov: '35.00deg' },
+    'daughter-header': { orbit: '37.49deg 16.26deg 104.46mm',   target: '45.61mm 11.60mm 56.56mm',  fov: '35.00deg' },
+  };
+
+  const mv = document.getElementById('mv');
+  const orbitEl = document.getElementById('orbit');
+  const targetEl = document.getElementById('target');
+  const fovEl = document.getElementById('fov');
+  const toast = document.getElementById('toast');
+
+  function fmt(n, unit = '') {
+    return Math.abs(n) < 1e-4 ? `0${unit}` : `${n.toFixed(2)}${unit}`;
+  }
+
+  function readCamera() {
+    const o = mv.getCameraOrbit();
+    const t = mv.getCameraTarget();
+    return {
+      orbit: `${fmt(o.theta * 180 / Math.PI, 'deg')} ${fmt(o.phi * 180 / Math.PI, 'deg')} ${fmt(o.radius * 1000, 'mm')}`,
+      target: `${fmt(t.x * 1000, 'mm')} ${fmt(t.y * 1000, 'mm')} ${fmt(t.z * 1000, 'mm')}`,
+      fov: `${fmt(mv.getFieldOfView(), 'deg')}`,
+    };
+  }
+
+  function refreshHud() {
+    if (!mv.loaded) return;
+    const c = readCamera();
+    orbitEl.textContent = c.orbit;
+    targetEl.textContent = c.target;
+    if (fovEl) fovEl.textContent = c.fov;
+  }
+
+  let activeViewName = 'overview';
+
+  function setView(name, { push = true } = {}) {
+    const v = views[name];
+    if (!v) return false;
+    mv.cameraOrbit = v.orbit;
+    mv.cameraTarget = v.target;
+    if (v.fov) mv.fieldOfView = v.fov;
+    activeViewName = name;
+    document.getElementById('activeView').textContent = name;
+    if (push) {
+      const newHash = `#view=${name}`;
+      if (location.hash !== newHash) history.replaceState(null, '', newHash);
+    }
+    return true;
+  }
+
+  function applyHash() {
+    const m = location.hash.match(/view=([\w-]+)/);
+    if (m) setView(m[1], { push: false });
+    else setView('overview', { push: false });
+  }
+
+  // Delegated click on any [data-view] anywhere — works for buttons that get
+  // injected into .docs after we boot (see loadDocs).
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-view]');
+    if (!btn) return;
+    e.preventDefault();
+    setView(btn.dataset.view);
+  });
+
+  async function loadDocs() {
+    const slot = document.getElementById('docs');
+    try {
+      const html = await fetch('docs.html').then(r => {
+        if (!r.ok) throw new Error('docs.html missing');
+        return r.text();
+      });
+      slot.innerHTML = html;
+    } catch (e) {
+      // Fall back to the inline <template> content if the build hasn't run.
+      const tpl = document.getElementById('docs-fallback');
+      if (tpl) slot.innerHTML = tpl.innerHTML;
+      console.warn('using fallback docs (run `make docs` to render docs.md):', e.message);
+    }
+  }
+
+  // Reset button
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    setView('overview');
+  });
+
+  function showToast(text, ms = 2000) {
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), ms);
+  }
+
+  async function copyText(text) {
+    try { await navigator.clipboard.writeText(text); return true; }
+    catch { window.prompt('Copy this:', text); return false; }
+  }
+
+  // Copy current view as a JS snippet for tuning
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const c = readCamera();
+    const snippet = `'${activeViewName}': { orbit: '${c.orbit}', target: '${c.target}', fov: '${c.fov}' },`;
+    if (await copyText(snippet)) showToast('Copied: ' + snippet, 2500);
+  });
+
+  // Save the current camera position into the active view (in-memory).
+  document.getElementById('saveViewBtn').addEventListener('click', () => {
+    const c = readCamera();
+    if (!views[activeViewName]) {
+      showToast(`No view named "${activeViewName}"`);
+      return;
+    }
+    views[activeViewName] = { orbit: c.orbit, target: c.target, fov: c.fov };
+    showToast(`Saved → ${activeViewName}`);
+  });
+
+  // Dump the entire views object as JS source you can paste back in.
+  document.getElementById('exportViewsBtn').addEventListener('click', async () => {
+    const lines = ['const views = {'];
+    const maxKey = Math.max(...Object.keys(views).map(k => k.length));
+    for (const [name, v] of Object.entries(views)) {
+      const padding = ' '.repeat(maxKey - name.length);
+      const fovPart = v.fov ? `, fov: '${v.fov}'` : '';
+      lines.push(`  '${name}':${padding} { orbit: '${v.orbit}', target: '${v.target}'${fovPart} },`);
+    }
+    lines.push('};');
+    const text = lines.join('\n');
+    if (await copyText(text)) showToast(`Copied ${Object.keys(views).length} views to clipboard`, 3000);
+  });
+
+  // Live HUD update
+  mv.addEventListener('camera-change', refreshHud);
+  mv.addEventListener('load', async () => {
+    refreshHud();
+    applyHash();
+    setupCalibration();
+    await loadDocs();
+    await loadComponentIndex();
+    autoLinkDocs();
+    setupHoverHighlight();
+  });
+
+  window.addEventListener('hashchange', applyHash);
+
+  // ---- Calibration sliders (admin-only) -----------------------------------
+  // Visible when the page is loaded with `?admin=true`. Used to dial in the
+  // texture-vs-component alignment, then bake the values into build.py's
+  // CAL_* constants.
+  if (new URLSearchParams(location.search).get('admin') === 'true') {
+    document.body.classList.add('admin');
+  }
+
+  // Board dims in PCB mm — used to convert mm offsets into UV space.
+  const BOARD_W_MM = 278.35;
+  const BOARD_H_MM = 56.7;
+
+  // Try every known way to reach the underlying THREE.Scene that <model-viewer>
+  // is rendering. The element exposes a Symbol(scene) property in 4.x; if not
+  // found, fall back to scanning for any object with .isObject3D.
+  function findThreeScene() {
+    for (const sym of Object.getOwnPropertySymbols(mv)) {
+      const v = mv[sym];
+      if (v && v.isObject3D) return v;
+      if (v && v.scene && v.scene.isObject3D) return v.scene;
+    }
+    for (const k of Object.keys(mv)) {
+      const v = mv[k];
+      if (v && v.isObject3D) return v;
+    }
+    return null;
+  }
+
+  function findBoardTextures() {
+    const scene = findThreeScene();
+    if (!scene) return [];
+    const out = [];
+    scene.traverse(obj => {
+      if (!obj.isMesh || !obj.material) return;
+      // The board faces: meshes whose name contains "board_top" or "board_bottom".
+      // (trimesh writes these as the GLB node names.)
+      const n = (obj.name || '').toLowerCase();
+      if (!n.includes('board_top') && !n.includes('board_bottom')) return;
+      const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+      for (const m of mats) {
+        if (m.map) out.push({ name: obj.name, mesh: obj, texture: m.map });
+      }
+    });
+    return out;
+  }
+
+  let boardTextures = [];
+  let mvScene = null;
+  let lightsAdded = false;
+  function setupCalibration() {
+    mvScene = findThreeScene();
+    boardTextures = findBoardTextures();
+    console.log('calibration: found', boardTextures.length, 'board textures',
+      boardTextures.map(t => t.name), 'scene:', mvScene?.constructor?.name);
+    applyCalibration();
+    if (!lightsAdded) addLights();
+  }
+
+  function addLights() {
+    if (!mvScene) return;
+    // Coordinates: glTF X = lengthwise, Y = up (board thickness), Z = widthwise.
+    // Default camera sits in the +Z hemisphere (theta=0 → looking down -Z),
+    // so:
+    //   key (front-right):  +X (right of camera), +Y above, +Z toward camera
+    //   fill (back, opposite side): -Z behind the board, slightly +Y elevated
+    const key = new THREE.DirectionalLight(0xfff2d6, 4.0);
+    key.position.set(0.30, 0.55, 0.20);
+    key.target.position.set(0.165, 0, 0.05);   // approx board center
+    key.name = 'key_light';
+    mvScene.add(key);
+    mvScene.add(key.target);
+
+    const fill = new THREE.DirectionalLight(0xc7d8ff, 0.4);
+    fill.position.set(0.10, 0.20, -0.15);
+    fill.target.position.set(0.165, 0, 0.05);
+    fill.name = 'fill_light';
+    mvScene.add(fill);
+    mvScene.add(fill.target);
+
+    lightsAdded = true;
+    if (mvScene.queueRender) mvScene.queueRender();
+    console.log('added directional lights: key + fill');
+  }
+
+  function forceRender() {
+    // model-viewer's internal scene exposes queueRender(); calling it pumps
+    // its render-on-demand loop. Without this, edits to UV attributes don't
+    // appear until the next camera move.
+    if (mvScene?.queueRender) { mvScene.queueRender(); return; }
+    if (mv?.queueRender) { mv.queueRender(); return; }
+    // Last resort: nudge the camera by re-assigning the orbit string.
+    const o = mv.cameraOrbit;
+    mv.cameraOrbit = o;
+  }
+
+  function applyCalibration() {
+    const oxMm = parseFloat(document.getElementById('ox').value);
+    const ozMm = parseFloat(document.getElementById('oz').value);
+    const sx   = parseFloat(document.getElementById('sx').value);
+    const sz   = parseFloat(document.getElementById('sz').value);
+
+    document.getElementById('oxv').textContent = oxMm.toFixed(2);
+    document.getElementById('ozv').textContent = ozMm.toFixed(2);
+    document.getElementById('sxv').textContent = sx.toFixed(4);
+    document.getElementById('szv').textContent = sz.toFixed(4);
+
+    // Convert sliders to UV-space transform.
+    //
+    //   offset (mm → UV): for positive `oxMm` to make texture content appear
+    //   shifted toward larger PCB-X, the vertex at a given physical X must
+    //   sample the pixel that was originally `oxMm` to its LEFT. UV.u shifts
+    //   by -oxMm/BOARD_W. Width axis: with build.py's V-flip + three.js's
+    //   default flipY, +ozMm (toward viewer / larger PCB-Y) → +V offset.
+    //
+    //   scale (>1 = zoom in, texture appears LARGER on mesh): UV deviation
+    //   from texture center (0.5) is divided by scale, so corners sample a
+    //   sub-region of the texture.
+    const offsetU = -oxMm / BOARD_W_MM;
+    const offsetV = +ozMm / BOARD_H_MM;
+
+    // Drive UV attributes directly — KHR_texture_transform / texture.matrix
+    // is unreliable across model-viewer's shader compilation paths, but
+    // mesh.geometry.attributes.uv is just a Float32 buffer the shader samples
+    // verbatim, so writing it always takes effect.
+    //
+    // Conversion (top face): for content to APPEAR shifted by +oxMm in PCB
+    // lengthwise, the vertex at physical X=p needs to sample the pixel that
+    // was at X=p-oxMm. That's UV shift -oxMm/BOARD_W. Scale stretches around
+    // the texture center (0.5, 0.5).
+    for (const { name, mesh } of boardTextures) {
+      const uvAttr = mesh.geometry.attributes.uv;
+      if (!uvAttr) continue;
+      // Cache original UVs once.
+      if (!mesh.userData.originalUV) {
+        mesh.userData.originalUV = new Float32Array(uvAttr.array);
+      }
+      const orig = mesh.userData.originalUV;
+      const isBottom = name.toLowerCase().includes('bottom');
+      const ou = isBottom ? -offsetU : offsetU;
+      const ov = offsetV;
+      for (let i = 0; i < uvAttr.count; i++) {
+        const u0 = orig[i * 2];
+        const v0 = orig[i * 2 + 1];
+        const u1 = (u0 - 0.5) / sx + 0.5 + ou;
+        const v1 = (v0 - 0.5) / sz + 0.5 + ov;
+        uvAttr.array[i * 2] = u1;
+        uvAttr.array[i * 2 + 1] = v1;
+      }
+      uvAttr.needsUpdate = true;
+    }
+
+    forceRender();
+  }
+
+  // ---- Component hover highlight ------------------------------------------
+  // components.json: { ref: { value, lib_id, pos_pcb, layer, mesh_names, bbox_gltf } }
+  let componentIndex = null;
+  let refToInfo = null;       // 'R5' -> info
+  let valueToRefs = null;     // 'THAT1246' -> ['U4','U5']
+  let meshNameToRef = null;   // 'comp_R5__...' -> 'R5'
+  let compMeshes = [];        // [{ obj, ref }]
+  const ESC_HTML = c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]);
+  const esc = s => s.replace(/[&<>'"]/g, ESC_HTML);
+  const reEscape = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  async function loadComponentIndex() {
+    try {
+      componentIndex = await fetch('components.json').then(r => r.json());
+    } catch (e) {
+      console.warn('components.json not loadable; hover highlights disabled', e);
+      return;
+    }
+    refToInfo = new Map();
+    valueToRefs = new Map();
+    meshNameToRef = new Map();
+    for (const [ref, info] of Object.entries(componentIndex)) {
+      refToInfo.set(ref, info);
+      if (info.value) {
+        if (!valueToRefs.has(info.value)) valueToRefs.set(info.value, []);
+        valueToRefs.get(info.value).push(ref);
+      }
+      for (const meshName of info.mesh_names) {
+        meshNameToRef.set(meshName, ref);
+      }
+    }
+    console.log(`components.json: ${refToInfo.size} refs, ${valueToRefs.size} unique values, ${meshNameToRef.size} mesh names`);
+  }
+
+  function autoLinkDocs() {
+    if (!refToInfo) return;
+    // Refs: only those known to exist in components.json
+    const refRegex = new RegExp(
+      '\\b(' + Array.from(refToInfo.keys())
+        .sort((a, b) => b.length - a.length)
+        .map(reEscape).join('|') + ')\\b', 'g',
+    );
+    // Values: only ones with at most 5 instances and length >= 3
+    // (skips generic values like '100n', '10k' present on many caps/resistors).
+    const linkableValues = Array.from(valueToRefs.entries())
+      .filter(([v, refs]) => refs.length <= 5 && v.length >= 3)
+      .map(([v]) => v);
+    const valueRegex = linkableValues.length
+      ? new RegExp('\\b(' + linkableValues.map(reEscape).join('|') + ')\\b', 'g')
+      : null;
+
+    const docsEl = document.querySelector('.docs');
+    const walker = document.createTreeWalker(docsEl, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    for (const node of nodes) {
+      // Skip text inside our own UI (buttons, view links, code links)
+      if (node.parentElement?.closest('.comp-link, button, .view-btn')) continue;
+      const text = node.textContent;
+      const matches = [];
+      let mm;
+      refRegex.lastIndex = 0;
+      while ((mm = refRegex.exec(text))) matches.push({ s: mm.index, e: mm.index + mm[0].length, v: mm[0], type: 'ref' });
+      if (valueRegex) {
+        valueRegex.lastIndex = 0;
+        while ((mm = valueRegex.exec(text))) matches.push({ s: mm.index, e: mm.index + mm[0].length, v: mm[0], type: 'value' });
+      }
+      matches.sort((a, b) => a.s - b.s);
+      // Drop overlapping matches; first wins.
+      const filtered = [];
+      for (const x of matches) {
+        if (!filtered.length || x.s >= filtered.at(-1).e) filtered.push(x);
+      }
+      if (!filtered.length) continue;
+      let html = '';
+      let cur = 0;
+      for (const x of filtered) {
+        html += esc(text.slice(cur, x.s));
+        const attr = x.type === 'ref' ? `data-ref="${x.v}"` : `data-value="${esc(x.v)}"`;
+        const tip = x.type === 'ref'
+          ? `${x.v}${refToInfo.get(x.v)?.value ? ' — ' + refToInfo.get(x.v).value : ''}`
+          : `${x.v} (${valueToRefs.get(x.v).join(', ')})`;
+        html += `<span class="comp-link" ${attr} title="${esc(tip)}">${esc(x.v)}</span>`;
+        cur = x.e;
+      }
+      html += esc(text.slice(cur));
+      const wrap = document.createElement('span');
+      wrap.innerHTML = html;
+      node.parentNode.replaceChild(wrap, node);
+    }
+    const refCount = document.querySelectorAll('.comp-link[data-ref]').length;
+    const valCount = document.querySelectorAll('.comp-link[data-value]').length;
+    console.log(`auto-linked ${refCount} refs and ${valCount} values in docs`);
+  }
+
+  // Cache the THREE.Mesh objects keyed to refs after the model loads.
+  function indexCompMeshes() {
+    compMeshes = [];
+    if (!mvScene || !meshNameToRef) return;
+    // Walk the scene once. For each Mesh, look up its name AND walk its
+    // ancestor names — three.js's GLTFLoader sometimes lifts the leaf-mesh
+    // name onto a parent Object3D when consolidating primitives, so the ref
+    // we encoded in the leaf name shows up on a parent.
+    const allMeshes = [];
+    mvScene.traverse(obj => {
+      if (obj.isMesh) allMeshes.push(obj);
+    });
+    let hits = 0, misses = 0;
+    for (const obj of allMeshes) {
+      let ref = meshNameToRef.get(obj.name);
+      if (!ref) {
+        // Walk ancestors looking for a name we recognise.
+        for (let p = obj.parent; p; p = p.parent) {
+          ref = meshNameToRef.get(p.name);
+          if (ref) break;
+        }
+      }
+      if (ref) {
+        compMeshes.push({ obj, ref });
+        hits++;
+      } else {
+        misses++;
+      }
+    }
+    // Per-ref count, so we can see which refs are missing all their meshes.
+    const counts = new Map();
+    for (const { ref } of compMeshes) counts.set(ref, (counts.get(ref) || 0) + 1);
+    const empty = [];
+    const lowCount = [];
+    for (const [ref, info] of refToInfo.entries()) {
+      const n = counts.get(ref) || 0;
+      if (n === 0) empty.push(ref);
+      else if (n < info.mesh_names.length / 5) lowCount.push(`${ref}(${n}/${info.mesh_names.length})`);
+    }
+    console.log(`indexed ${hits} component meshes (${misses} misses)`);
+    if (empty.length) console.warn('refs with NO meshes in scene:', empty);
+    if (lowCount.length) console.warn('refs with very few meshes:', lowCount);
+  }
+
+  // ---- Highlight state ----------------------------------------------------
+  // Materials in glTF are SHARED across meshes that use the same footprint
+  // (every 0805 resistor uses one MeshStandardMaterial), so mutating the
+  // material's emissive bleeds into every other mesh. To highlight a single
+  // ref cleanly we swap in a per-mesh CLONE while highlighted and swap the
+  // original back when un-highlighted.
+  const HIGHLIGHT_COLOR_HEX = 0xffb84d;     // amber
+  const HIGHLIGHT_GLOW_HEX  = 0xff8c1a;     // slightly more saturated for the emissive bump
+  // Cache EdgesGeometry per BufferGeometry — many sub-meshes of a single ref
+  // share geometry data, so we only build once.
+  const _edgesCache = new WeakMap();
+  function _getCachedEdges(geom) {
+    let e = _edgesCache.get(geom);
+    if (!e) { e = new THREE.EdgesGeometry(geom, 30); _edgesCache.set(geom, e); }
+    return e;
+  }
+
+  function _setMeshHighlighted(obj, on) {
+    if (on) {
+      if (obj.userData._highlight) return;
+
+      // 1. Clone the material(s) and add a soft emissive bump so the part
+      //    glows slightly without losing its native colour or texture.
+      const origMat = obj.material;
+      const bump = m => {
+        const c = m.clone();
+        if (c.emissive) {
+          c.emissive.setHex(HIGHLIGHT_GLOW_HEX);
+          c.emissiveIntensity = 0.45;
+        }
+        return c;
+      };
+      obj.material = Array.isArray(origMat) ? origMat.map(bump) : bump(origMat);
+
+      // 2. Add a crisp edge outline drawn last with depthTest off so it reads
+      //    cleanly even when the part is partly occluded.
+      const outlineMat = new THREE.LineBasicMaterial({
+        color: HIGHLIGHT_COLOR_HEX,
+        depthTest: false,
+        transparent: true,
+        opacity: 0.95,
+      });
+      const outline = new THREE.LineSegments(_getCachedEdges(obj.geometry), outlineMat);
+      outline.renderOrder = 999;
+      obj.add(outline);
+
+      obj.userData._highlight = { origMat, outline };
+    } else {
+      const h = obj.userData._highlight;
+      if (!h) return;
+      // Remove outline + dispose the per-highlight materials we created.
+      obj.remove(h.outline);
+      h.outline.material.dispose();
+      const cur = obj.material;
+      if (Array.isArray(cur)) cur.forEach(m => m.dispose && m.dispose());
+      else if (cur && cur.dispose) cur.dispose();
+      obj.material = h.origMat;
+      delete obj.userData._highlight;
+    }
+  }
+
+  function highlightMeshesForRefs(refs, on) {
+    const set = new Set(refs);
+    for (const { obj, ref } of compMeshes) {
+      if (!set.has(ref)) continue;
+      _setMeshHighlighted(obj, on);
+    }
+    if (mvScene?.queueRender) mvScene.queueRender();
+  }
+
+  function highlightTextForRefs(refs, on) {
+    const set = new Set(refs);
+    document.querySelectorAll('.comp-link[data-ref]').forEach(el => {
+      el.classList.toggle('hot', on && set.has(el.dataset.ref));
+    });
+    document.querySelectorAll('.comp-link[data-value]').forEach(el => {
+      const valRefs = valueToRefs?.get(el.dataset.value) || [];
+      el.classList.toggle('hot', on && valRefs.some(r => set.has(r)));
+    });
+  }
+
+  function refsFromElement(el) {
+    if (el.dataset.ref) return [el.dataset.ref];
+    if (el.dataset.value) return valueToRefs?.get(el.dataset.value) || [];
+    return [];
+  }
+
+  function setupHoverHighlight() {
+    indexCompMeshes();
+
+    // Text → 3D
+    const docsEl = document.querySelector('.docs');
+    docsEl.addEventListener('mouseover', e => {
+      const link = e.target.closest('.comp-link');
+      if (!link) return;
+      const refs = refsFromElement(link);
+      if (!refs.length) return;
+      highlightMeshesForRefs(refs, true);
+      highlightTextForRefs(refs, true);
+    });
+    docsEl.addEventListener('mouseout', e => {
+      const link = e.target.closest('.comp-link');
+      if (!link) return;
+      const refs = refsFromElement(link);
+      if (!refs.length) return;
+      highlightMeshesForRefs(refs, false);
+      highlightTextForRefs(refs, false);
+    });
+
+    // 3D → Text  (raycast on pointermove)
+    if (!mvScene) return;
+    const camera = mvScene.getCamera ? mvScene.getCamera() : mvScene.camera;
+    if (!camera) {
+      console.warn('no camera on mvScene; 3D->text highlight disabled');
+      return;
+    }
+    const raycaster = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    let lastHoveredRef = null;
+
+    const onMove = e => {
+      const rect = mv.getBoundingClientRect();
+      ndc.set(
+        ((e.clientX - rect.left) / rect.width) * 2 - 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1,
+      );
+      raycaster.setFromCamera(ndc, camera);
+      // Only test against indexed comp meshes — much fewer than the full scene.
+      const objs = compMeshes.map(c => c.obj);
+      const hits = raycaster.intersectObjects(objs, false);
+      const hitObj = hits[0]?.object;
+      const ref = hitObj ? meshNameToRef.get(hitObj.name) : null;
+      if (window.DEBUG_HOVER && hitObj) {
+        console.log('hit:', hitObj.name, '→ ref:', ref);
+      }
+      if (ref === lastHoveredRef) return;
+      if (lastHoveredRef) {
+        highlightMeshesForRefs([lastHoveredRef], false);
+        highlightTextForRefs([lastHoveredRef], false);
+      }
+      if (ref) {
+        highlightMeshesForRefs([ref], true);
+        highlightTextForRefs([ref], true);
+      }
+      lastHoveredRef = ref;
+    };
+
+    // Throttle to ~30 Hz to keep interaction snappy.
+    let pending = false;
+    mv.addEventListener('pointermove', e => {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(() => { pending = false; onMove(e); });
+    });
+    mv.addEventListener('pointerleave', () => {
+      if (lastHoveredRef) {
+        highlightMeshesForRefs([lastHoveredRef], false);
+        highlightTextForRefs([lastHoveredRef], false);
+        lastHoveredRef = null;
+      }
+    });
+  }
+
+  for (const id of ['ox', 'oz', 'sx', 'sz']) {
+    document.getElementById(id).addEventListener('input', applyCalibration);
+  }
+  document.getElementById('calReset').addEventListener('click', () => {
+    document.getElementById('ox').value = '0';
+    document.getElementById('oz').value = '0';
+    document.getElementById('sx').value = '1';
+    document.getElementById('sz').value = '1';
+    applyCalibration();
+  });
+  document.getElementById('calCopy').addEventListener('click', async () => {
+    const ox = document.getElementById('ox').value;
+    const oz = document.getElementById('oz').value;
+    const sx = document.getElementById('sx').value;
+    const sz = document.getElementById('sz').value;
+    const snippet = `length offset = ${ox} mm, length scale = ${sx}, width offset = ${oz} mm, width scale = ${sz}`;
+    try {
+      await navigator.clipboard.writeText(snippet);
+      toast.textContent = 'Copied: ' + snippet;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    } catch {
+      window.prompt('Copy this:', snippet);
+    }
+  });
+</script>
+</body>
+</html>
