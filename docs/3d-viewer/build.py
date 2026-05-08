@@ -1,4 +1,16 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "pillow",
+#   "trimesh",
+#   "pygltflib",
+#   "resvg-py",
+#   "scipy",
+#   "numpy",
+#   "markdown",
+# ]
+# ///
 """
 build.py — generate model.glb for the 3D viewer.
 
@@ -17,9 +29,13 @@ Two modes (--mode flag):
     - Build a flat textured board mesh ONLY. No live 3D components.
       Lighter file, less interactive.
 
-Run from anywhere:
-    .venv-3d/bin/python docs/3d-viewer/build.py composite
-    .venv-3d/bin/python docs/3d-viewer/build.py baked --resolution 4096
+  docs:
+    - Render docs.md → docs.html (Markdown + [[view:section]] shortcodes).
+
+Run via uv (handles the env automatically):
+    uv run docs/3d-viewer/build.py composite
+    uv run docs/3d-viewer/build.py baked --resolution 8192
+    uv run docs/3d-viewer/build.py docs
 """
 
 import argparse
@@ -335,6 +351,33 @@ def render_baked(side: str, w: int, h: int) -> Image.Image:
     return Image.open(out).convert("RGBA")
 
 
+SHORTCODE_VIEW = re.compile(r'\[\[view:([\w-]+)(?:\|([^\]]+))?\]\]')
+
+
+def render_docs():
+    """Render docs.md → docs.html. Pre-processes [[view:section|label]]
+    shortcodes into <button class="view-btn" data-view="…">label</button>."""
+    src = OUT_DIR / "docs.md"
+    if not src.exists():
+        print(f"  no {src.name} — skipping docs render")
+        return
+    try:
+        import markdown as _md
+    except ImportError:
+        print("  markdown package not installed (pip install markdown) — skipping")
+        return
+
+    text = src.read_text()
+    text = SHORTCODE_VIEW.sub(
+        lambda m: f'<button class="view-btn" data-view="{m.group(1)}">{m.group(2) or "view"}</button>',
+        text,
+    )
+    html = _md.markdown(text, extensions=["extra", "sane_lists"])
+    out = OUT_DIR / "docs.html"
+    out.write_text(html)
+    print(f"  rendered {src.name} → {out.name} ({len(html):,} chars)")
+
+
 def export_components_glb(out_path: Path):
     """Components-only GLB (no board body, no tracks/silk/mask geometry).
     Used in composite mode where we replace the board with a textured plane."""
@@ -585,8 +628,8 @@ def merge_scenes(
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=["composite", "baked"], default="composite",
-                        nargs="?", help="texture generation mode")
+    parser.add_argument("mode", choices=["composite", "baked", "docs"], default="composite",
+                        nargs="?", help="composite/baked = full GLB build; docs = render docs.md only")
     parser.add_argument("--resolution", type=int, default=8192,
                         help="texture width in pixels (default 8192)")
     parser.add_argument("--no-bottom", action="store_true",
@@ -600,6 +643,11 @@ def main():
     px_per_mm = target_w / BOARD_W
 
     print(f"mode: {args.mode}")
+
+    if args.mode == "docs":
+        render_docs()
+        return
+
     print(f"target texture: {target_w} x {target_h} ({px_per_mm:.2f} px/mm)")
 
     if args.mode == "composite":
@@ -636,6 +684,9 @@ def main():
     print(f"writing {out}...")
     scene.export(str(out))
     print(f"  {out.stat().st_size:,} bytes")
+
+    # Render the prose alongside the model so a full build keeps both fresh.
+    render_docs()
 
 
 if __name__ == "__main__":

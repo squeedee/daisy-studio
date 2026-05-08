@@ -189,7 +189,10 @@
     <div id="toast" class="toast">Copied!</div>
   </section>
 
-  <aside class="docs">
+  <aside class="docs" id="docs">
+    <!-- prose injected from docs.html (built from docs.md by build.py) -->
+  </aside>
+  <template id="docs-fallback">
     <h1>Daisy Studio</h1>
     <p style="color: var(--muted); margin-top: 0;">
       Development board for the Electrosmith Daisy Seed — balanced studio I/O,
@@ -274,7 +277,7 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
       <code>kicad-cli pcb export glb</code> · Viewer:
       <a href="https://modelviewer.dev/" target="_blank" rel="noopener">&lt;model-viewer&gt;</a>
     </p>
-  </aside>
+  </template>
 </div>
 
 <script type="module">
@@ -349,13 +352,30 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
     else setView('overview', { push: false });
   }
 
-  // Section / quickbar buttons
-  document.querySelectorAll('[data-view]').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.preventDefault();
-      setView(btn.dataset.view);
-    });
+  // Delegated click on any [data-view] anywhere — works for buttons that get
+  // injected into .docs after we boot (see loadDocs).
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-view]');
+    if (!btn) return;
+    e.preventDefault();
+    setView(btn.dataset.view);
   });
+
+  async function loadDocs() {
+    const slot = document.getElementById('docs');
+    try {
+      const html = await fetch('docs.html').then(r => {
+        if (!r.ok) throw new Error('docs.html missing');
+        return r.text();
+      });
+      slot.innerHTML = html;
+    } catch (e) {
+      // Fall back to the inline <template> content if the build hasn't run.
+      const tpl = document.getElementById('docs-fallback');
+      if (tpl) slot.innerHTML = tpl.innerHTML;
+      console.warn('using fallback docs (run `make docs` to render docs.md):', e.message);
+    }
+  }
 
   // Reset button
   document.getElementById('resetBtn').addEventListener('click', () => {
@@ -411,6 +431,7 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
     refreshHud();
     applyHash();
     setupCalibration();
+    await loadDocs();
     await loadComponentIndex();
     autoLinkDocs();
     setupHoverHighlight();
