@@ -34,7 +34,9 @@ docs/3d-viewer/model.glb
 docs/3d-viewer/textures/
 docs/3d-viewer/components.json
 docs/3d-viewer/docs.html
-docs/3d-viewer/__pycache__/
+# Python bytecode caches anywhere in the tree (FreeCAD writes them next to the
+# script it runs, so they appear at the repo root too).
+__pycache__/
 
 # Python venv (we're on uv now)
 .venv-3d/
