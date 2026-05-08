@@ -141,11 +141,11 @@
       alt="Daisy Studio PCB"
       camera-controls
       touch-action="pan-y"
-      shadow-intensity="0.9"
-      shadow-softness="1"
-      exposure="1.0"
-      tone-mapping="agx"
-      environment-image="neutral"
+      shadow-intensity="1.5"
+      shadow-softness="0.4"
+      exposure="0.95"
+      tone-mapping="agx-cinematic"
+      environment-image="legacy"
       camera-orbit="35deg 60deg auto"
       min-camera-orbit="auto auto 20mm"
       max-camera-orbit="auto auto auto"
@@ -482,14 +482,14 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
     // so:
     //   key (front-right):  +X (right of camera), +Y above, +Z toward camera
     //   fill (back, opposite side): -Z behind the board, slightly +Y elevated
-    const key = new THREE.DirectionalLight(0xfff5e6, 1.4);
-    key.position.set(0.30, 0.25, 0.20);
+    const key = new THREE.DirectionalLight(0xfff2d6, 4.0);
+    key.position.set(0.30, 0.55, 0.20);
     key.target.position.set(0.165, 0, 0.05);   // approx board center
     key.name = 'key_light';
     mvScene.add(key);
     mvScene.add(key.target);
 
-    const fill = new THREE.DirectionalLight(0xd6e6ff, 0.9);
+    const fill = new THREE.DirectionalLight(0xc7d8ff, 0.4);
     fill.position.set(0.10, 0.20, -0.15);
     fill.target.position.set(0.165, 0, 0.05);
     fill.name = 'fill_light';
