@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Daisy Studio — 3D Viewer</title>
 <script type="module" src="https://unpkg.com/@google/model-viewer@4.0.0/dist/model-viewer.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.163.0/build/three.module.js"
+  }
+}
+</script>
 <style>
   :root {
     --bg: #0e1014;
@@ -117,8 +124,10 @@
       alt="Daisy Studio PCB"
       camera-controls
       touch-action="pan-y"
-      shadow-intensity="0.6"
+      shadow-intensity="0.9"
+      shadow-softness="1"
       exposure="1.0"
+      tone-mapping="agx"
       environment-image="neutral"
       camera-orbit="35deg 60deg auto"
       min-camera-orbit="auto auto auto"
@@ -244,6 +253,7 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
 </div>
 
 <script type="module">
+  import * as THREE from 'three';
   // Named camera views.
   // model-viewer axis convention (KiCad GLB export):
   //   X = KiCad X (board long axis, mm)
@@ -391,12 +401,40 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
 
   let boardTextures = [];
   let mvScene = null;
+  let lightsAdded = false;
   function setupCalibration() {
     mvScene = findThreeScene();
     boardTextures = findBoardTextures();
     console.log('calibration: found', boardTextures.length, 'board textures',
       boardTextures.map(t => t.name), 'scene:', mvScene?.constructor?.name);
     applyCalibration();
+    if (!lightsAdded) addLights();
+  }
+
+  function addLights() {
+    if (!mvScene) return;
+    // Coordinates: glTF X = lengthwise, Y = up (board thickness), Z = widthwise.
+    // Default camera sits in the +Z hemisphere (theta=0 → looking down -Z),
+    // so:
+    //   key (front-right):  +X (right of camera), +Y above, +Z toward camera
+    //   fill (back, opposite side): -Z behind the board, slightly +Y elevated
+    const key = new THREE.DirectionalLight(0xfff5e6, 1.4);
+    key.position.set(0.30, 0.25, 0.20);
+    key.target.position.set(0.165, 0, 0.05);   // approx board center
+    key.name = 'key_light';
+    mvScene.add(key);
+    mvScene.add(key.target);
+
+    const fill = new THREE.DirectionalLight(0xd6e6ff, 0.9);
+    fill.position.set(0.10, 0.20, -0.15);
+    fill.target.position.set(0.165, 0, 0.05);
+    fill.name = 'fill_light';
+    mvScene.add(fill);
+    mvScene.add(fill.target);
+
+    lightsAdded = true;
+    if (mvScene.queueRender) mvScene.queueRender();
+    console.log('added directional lights: key + fill');
   }
 
   function forceRender() {

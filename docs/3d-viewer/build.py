@@ -74,6 +74,18 @@ MASK_ALPHA    = 215                 # 0..255 — translucency over copper
 SILK_RGB      = (235, 235, 225)     # off-white silkscreen
 EDGE_RGB      = (40, 25, 10)        # board edge (between top and bottom)
 
+# ----- PBR material per layer  -----------------------------------------------
+# glTF metallic-roughness texture:
+#   R = occlusion (we keep at 1.0 = no AO)
+#   G = roughness (0 = mirror, 255 = matte)
+#   B = metallic  (0 = dielectric, 255 = metal)
+ROUGH_SUBSTRATE = 230   # rough FR4 weave
+ROUGH_COPPER    =  20   # nearly mirror finish
+ROUGH_MASK      = 180   # matte-ish soldermask (was glossy)
+ROUGH_SILK      = 230   # matte ink
+METAL_COPPER    = 255   # full metal
+METAL_DIELEC    =   0
+
 
 def run(*cmd, **kw):
     """subprocess.run with stdout passthrough, fail loud on nonzero."""
@@ -227,8 +239,8 @@ def crop_board(arr: np.ndarray, px_per_mm: float) -> np.ndarray:
     return np.asarray(cropped, dtype=np.uint8)
 
 
-def composite_face(side: str, px_per_mm: float, mirror_x: bool = False) -> Image.Image:
-    """Build the top or bottom texture by stacking copper, mask, silk masks."""
+def composite_face(side: str, px_per_mm: float, mirror_x: bool = False) -> tuple[Image.Image, Image.Image]:
+    """Build the top or bottom face textures: returns (baseColor_RGBA, metallicRoughness_RGB)."""
     prefix = "F" if side == "top" else "B"
     print(f"[{side}] exporting layers...")
 
@@ -247,33 +259,60 @@ def composite_face(side: str, px_per_mm: float, mirror_x: bool = False) -> Image
 
     h, w = masks["cu"].shape
 
-    # Compose RGBA board face.
+    # ----- Base color -----
     img = np.zeros((h, w, 4), dtype=np.uint8)
     img[..., :3] = SUBSTRATE_RGB
     img[..., 3] = 255
 
-    # Copper
     cu = masks["cu"][..., None] / 255.0
     img[..., :3] = (img[..., :3] * (1 - cu) + np.array(COPPER_RGB) * cu).astype(np.uint8)
 
-    # Soldermask: covers everything inside the board EXCEPT mask openings (F.Mask).
-    # Mask layer ink = openings. Coverage = 1 - mask_ink.
+    # Soldermask: covers everything except where F.Mask has openings (ink).
     coverage = 1.0 - (masks["mask"][..., None] / 255.0)
     a = coverage * (MASK_ALPHA / 255.0)
-    img[..., :3] = (
-        img[..., :3] * (1 - a) + np.array(MASK_RGB) * a
-    ).astype(np.uint8)
+    img[..., :3] = (img[..., :3] * (1 - a) + np.array(MASK_RGB) * a).astype(np.uint8)
 
-    # Silkscreen: opaque white where ink.
     silk = masks["silk"][..., None] / 255.0
-    img[..., :3] = (
-        img[..., :3] * (1 - silk) + np.array(SILK_RGB) * silk
-    ).astype(np.uint8)
+    img[..., :3] = (img[..., :3] * (1 - silk) + np.array(SILK_RGB) * silk).astype(np.uint8)
 
-    pil = Image.fromarray(img, "RGBA")
+    # ----- Metallic / roughness -----
+    # Compute per-pixel material lookup. Order of precedence (front-to-back):
+    # silk on top, then mask coverage (where mask isn't opened), then copper
+    # under mask openings, then bare substrate.
+    cu_a    = masks["cu"]   / 255.0
+    mask_a  = (1.0 - masks["mask"] / 255.0)   # 1 = mask covers, 0 = opening
+    silk_a  = masks["silk"] / 255.0
+
+    rough = np.full((h, w), ROUGH_SUBSTRATE, dtype=np.float32)
+    metal = np.full((h, w), METAL_DIELEC,    dtype=np.float32)
+
+    # Copper showing through mask opening: under-mask = copper visible only
+    # where mask is opened. Bare-copper roughness/metallic.
+    cu_visible = cu_a * (1.0 - mask_a)  # copper not covered by mask
+    rough = rough * (1 - cu_visible) + ROUGH_COPPER * cu_visible
+    metal = metal * (1 - cu_visible) + METAL_COPPER * cu_visible
+
+    # Soldermask coverage (everywhere mask covers, regardless of underlying)
+    rough = rough * (1 - mask_a) + ROUGH_MASK * mask_a
+    # Mask is dielectric — metal stays at whatever's beneath; force to 0
+    # under mask coverage.
+    metal = metal * (1 - mask_a) + METAL_DIELEC * mask_a
+
+    # Silk on top of everything
+    rough = rough * (1 - silk_a) + ROUGH_SILK * silk_a
+    metal = metal * (1 - silk_a) + METAL_DIELEC * silk_a
+
+    mr = np.zeros((h, w, 3), dtype=np.uint8)
+    mr[..., 0] = 255                   # occlusion = 1.0 (no AO)
+    mr[..., 1] = rough.astype(np.uint8)  # G = roughness
+    mr[..., 2] = metal.astype(np.uint8)  # B = metallic
+
+    base = Image.fromarray(img, "RGBA")
+    mr_img = Image.fromarray(mr, "RGB")
     if mirror_x:
-        pil = pil.transpose(Image.FLIP_LEFT_RIGHT)
-    return pil
+        base = base.transpose(Image.FLIP_LEFT_RIGHT)
+        mr_img = mr_img.transpose(Image.FLIP_LEFT_RIGHT)
+    return base, mr_img
 
 
 def render_baked(side: str, w: int, h: int) -> Image.Image:
@@ -309,7 +348,12 @@ def export_components_glb(out_path: Path):
 
 # ----- mesh construction ------------------------------------------------------
 
-def build_board_mesh(top_tex: Image.Image, bottom_tex: Image.Image | None) -> trimesh.Scene:
+def build_board_mesh(
+    top_tex: Image.Image,
+    bottom_tex: Image.Image | None,
+    top_mr: Image.Image | None = None,
+    bottom_mr: Image.Image | None = None,
+) -> trimesh.Scene:
     """Build a glTF scene containing:
       - top face plane with top texture
       - bottom face plane with bottom texture (mirrored on X)
@@ -350,7 +394,16 @@ def build_board_mesh(top_tex: Image.Image, bottom_tex: Image.Image | None) -> tr
     # Winding NW → SW → SE gives normal (0, +Y, 0) — face normal points up.
     faces = np.array([[0, 3, 2], [0, 2, 1]])
     top = trimesh.Trimesh(vertices=vertices, faces=faces, process=False)
-    top.visual = trimesh.visual.TextureVisuals(uv=uvs, image=top_tex)
+    top.visual = trimesh.visual.TextureVisuals(
+        uv=uvs,
+        material=trimesh.visual.material.PBRMaterial(
+            name="board_top_pbr",
+            baseColorTexture=top_tex,
+            metallicRoughnessTexture=top_mr,
+            metallicFactor=1.0,
+            roughnessFactor=1.0,
+        ),
+    )
     scene.add_geometry(top, geom_name="board_top")
 
     # --- Bottom face ----------------------------------------------------------
@@ -373,7 +426,16 @@ def build_board_mesh(top_tex: Image.Image, bottom_tex: Image.Image | None) -> tr
         # Winding NW → NE → SE gives normal (0, -Y, 0) — face normal points down.
         faces_b = np.array([[0, 1, 2], [0, 2, 3]])
         bot = trimesh.Trimesh(vertices=vertices_b, faces=faces_b, process=False)
-        bot.visual = trimesh.visual.TextureVisuals(uv=uvs_b, image=bottom_tex)
+        bot.visual = trimesh.visual.TextureVisuals(
+            uv=uvs_b,
+            material=trimesh.visual.material.PBRMaterial(
+                name="board_bottom_pbr",
+                baseColorTexture=bottom_tex,
+                metallicRoughnessTexture=bottom_mr,
+                metallicFactor=1.0,
+                roughnessFactor=1.0,
+            ),
+        )
         scene.add_geometry(bot, geom_name="board_bottom")
 
     # --- Edge band ------------------------------------------------------------
@@ -441,27 +503,28 @@ def main():
     print(f"target texture: {target_w} x {target_h} ({px_per_mm:.2f} px/mm)")
 
     if args.mode == "composite":
-        top_tex = composite_face("top", px_per_mm, mirror_x=False)
+        top_tex, top_mr = composite_face("top", px_per_mm, mirror_x=False)
         top_tex.save(TEX_DIR / "top.png")
-        print(f"  saved {TEX_DIR / 'top.png'} ({(TEX_DIR / 'top.png').stat().st_size:,} bytes)")
+        top_mr.save(TEX_DIR / "top-mr.png")
+        print(f"  saved {TEX_DIR / 'top.png'} + top-mr.png")
 
-        bottom_tex = None
+        bottom_tex, bottom_mr = (None, None)
         if not args.no_bottom:
-            bottom_tex = composite_face("bottom", px_per_mm, mirror_x=True)
+            bottom_tex, bottom_mr = composite_face("bottom", px_per_mm, mirror_x=True)
             bottom_tex.save(TEX_DIR / "bottom.png")
-            print(f"  saved {TEX_DIR / 'bottom.png'}")
+            bottom_mr.save(TEX_DIR / "bottom-mr.png")
+            print(f"  saved {TEX_DIR / 'bottom.png'} + bottom-mr.png")
 
         components = TEX_DIR / "_components.glb"
         export_components_glb(components)
 
-        scene = build_board_mesh(top_tex, bottom_tex)
+        scene = build_board_mesh(top_tex, bottom_tex, top_mr, bottom_mr)
         scene = merge_scenes(scene, components)
     else:  # baked
         top_tex = render_baked("top", target_w, target_h)
         bottom_tex = None
         if not args.no_bottom:
             bottom_tex = render_baked("bottom", target_w, target_h)
-            # Bottom render from kicad-cli is already correctly oriented for "looking from below"
         scene = build_board_mesh(top_tex, bottom_tex)
 
     out = OUT_DIR / "model.glb"
