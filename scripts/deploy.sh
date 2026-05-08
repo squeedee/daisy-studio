@@ -23,16 +23,18 @@ if [ ! -f "$VIEWER_DIR/model.glb" ] || [ ! -f "$VIEWER_DIR/index.html" ]; then
   exit 1
 fi
 
-# Set up the worktree on the gh-pages branch.
-if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
-  git fetch --quiet origin "$BRANCH"
-  git worktree add -B "$BRANCH" "$TMP" "origin/$BRANCH" >/dev/null
-elif git show-ref --verify --quiet "refs/heads/$BRANCH"; then
-  git worktree add "$TMP" "$BRANCH" >/dev/null
-else
-  echo "  creating $BRANCH orphan branch (first deploy)"
-  git worktree add --orphan -b "$BRANCH" "$TMP" >/dev/null
+# Set up the worktree on the gh-pages branch. `git worktree add --orphan`
+# was added in git 2.42; build the empty initial commit via plumbing instead,
+# which works on any git.
+if ! git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+  echo "  bootstrapping empty $BRANCH on origin (first deploy)"
+  empty_tree=$(git mktree </dev/null)
+  init_commit=$(printf 'init %s\n' "$BRANCH" | git commit-tree "$empty_tree")
+  git push origin "$init_commit:refs/heads/$BRANCH"
 fi
+
+git fetch --quiet origin "$BRANCH"
+git worktree add -B "$BRANCH" "$TMP" "origin/$BRANCH" >/dev/null
 
 # Sync the built site into the worktree (delete anything stale).
 rsync -a --delete --exclude=.git "$VIEWER_DIR/" "$TMP/"
