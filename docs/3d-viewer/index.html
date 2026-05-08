@@ -717,28 +717,58 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
   // material's emissive bleeds into every other mesh. To highlight a single
   // ref cleanly we swap in a per-mesh CLONE while highlighted and swap the
   // original back when un-highlighted.
-  const HIGHLIGHT_COLOR_HEX = 0xff9933;
-  // Single shared highlight material — replaces the original entirely while
-  // hovered. Avoids edge cases where the source material lacks an emissive
-  // channel (MeshBasicMaterial, MeshLambertMaterial without emissive, etc.).
-  const HIGHLIGHT_MATERIAL = new THREE.MeshStandardMaterial({
-    color: HIGHLIGHT_COLOR_HEX,
-    emissive: HIGHLIGHT_COLOR_HEX,
-    emissiveIntensity: 0.6,
-    metalness: 0.1,
-    roughness: 0.6,
-    transparent: false,
-  });
+  const HIGHLIGHT_COLOR_HEX = 0xffb84d;     // amber
+  const HIGHLIGHT_GLOW_HEX  = 0xff8c1a;     // slightly more saturated for the emissive bump
+  // Cache EdgesGeometry per BufferGeometry — many sub-meshes of a single ref
+  // share geometry data, so we only build once.
+  const _edgesCache = new WeakMap();
+  function _getCachedEdges(geom) {
+    let e = _edgesCache.get(geom);
+    if (!e) { e = new THREE.EdgesGeometry(geom, 30); _edgesCache.set(geom, e); }
+    return e;
+  }
 
   function _setMeshHighlighted(obj, on) {
     if (on) {
-      if (obj.userData._origMaterial) return;
-      obj.userData._origMaterial = obj.material;
-      obj.material = HIGHLIGHT_MATERIAL;
+      if (obj.userData._highlight) return;
+
+      // 1. Clone the material(s) and add a soft emissive bump so the part
+      //    glows slightly without losing its native colour or texture.
+      const origMat = obj.material;
+      const bump = m => {
+        const c = m.clone();
+        if (c.emissive) {
+          c.emissive.setHex(HIGHLIGHT_GLOW_HEX);
+          c.emissiveIntensity = 0.45;
+        }
+        return c;
+      };
+      obj.material = Array.isArray(origMat) ? origMat.map(bump) : bump(origMat);
+
+      // 2. Add a crisp edge outline drawn last with depthTest off so it reads
+      //    cleanly even when the part is partly occluded.
+      const outlineMat = new THREE.LineBasicMaterial({
+        color: HIGHLIGHT_COLOR_HEX,
+        depthTest: false,
+        transparent: true,
+        opacity: 0.95,
+      });
+      const outline = new THREE.LineSegments(_getCachedEdges(obj.geometry), outlineMat);
+      outline.renderOrder = 999;
+      obj.add(outline);
+
+      obj.userData._highlight = { origMat, outline };
     } else {
-      if (!obj.userData._origMaterial) return;
-      obj.material = obj.userData._origMaterial;
-      delete obj.userData._origMaterial;
+      const h = obj.userData._highlight;
+      if (!h) return;
+      // Remove outline + dispose the per-highlight materials we created.
+      obj.remove(h.outline);
+      h.outline.material.dispose();
+      const cur = obj.material;
+      if (Array.isArray(cur)) cur.forEach(m => m.dispose && m.dispose());
+      else if (cur && cur.dispose) cur.dispose();
+      obj.material = h.origMat;
+      delete obj.userData._highlight;
     }
   }
 
