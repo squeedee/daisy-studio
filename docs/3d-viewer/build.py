@@ -24,6 +24,9 @@ Run from anywhere:
 
 import argparse
 import io
+import json
+import math
+import re
 import struct
 import subprocess
 from pathlib import Path
@@ -463,22 +466,119 @@ def build_board_mesh(
     return scene
 
 
-def merge_scenes(scene: trimesh.Scene, components_glb: Path) -> trimesh.Scene:
-    """Append every geometry from components_glb into scene with its world transform."""
+_REF_SAFE = re.compile(r"[^A-Za-z0-9]")
+# glTF / three.js GLTFLoader silently strips characters from node names —
+# notably "." (e.g. "P2.54mm" -> "P254mm"), spaces, and parens — so any name
+# we generate at build time must be sanitized the SAME way before we save it
+# to components.json, otherwise the runtime map keys won't match the loaded
+# Mesh.name values.
+_NAME_SAFE = re.compile(r"[^A-Za-z0-9_\-]")
+
+
+def sanitize_glb_name(name: str) -> str:
+    """Return name with characters that GLTFLoader strips removed."""
+    return _NAME_SAFE.sub("", name)
+
+
+def parse_footprints() -> list[dict]:
+    """Walk the .kicad_pcb file and pull out every footprint's reference,
+    value, lib_id, position, layer. Used to map glTF leaf meshes back to a
+    reference designator for hover highlighting."""
+    text = PCB.read_text()
+    out = []
+    # Footprint blocks live at indent level 1 (one tab); they close with `\n\t)\n`.
+    for m in re.finditer(r'\(footprint "([^"]+)"(.*?)\n\t\)\n', text, re.DOTALL):
+        lib_id = m.group(1)
+        block = m.group(2)
+        ref_m = re.search(r'\(property "Reference" "([^"]+)"', block)
+        val_m = re.search(r'\(property "Value" "([^"]+)"', block)
+        at_m = re.search(r'\(at\s+([\-\d.]+)\s+([\-\d.]+)(?:\s+([\-\d.]+))?\)', block)
+        layer_m = re.search(r'\(layer "([^"]+)"\)', block)
+        if not (ref_m and at_m):
+            continue
+        out.append({
+            "ref": ref_m.group(1),
+            "value": val_m.group(1) if val_m else "",
+            "lib_id": lib_id,
+            "pos": [float(at_m.group(1)), float(at_m.group(2))],
+            "layer": layer_m.group(1) if layer_m else "F.Cu",
+        })
+    print(f"parsed {len(out)} footprints from {PCB.name}")
+    return out
+
+
+def merge_scenes(
+    scene: trimesh.Scene,
+    components_glb: Path,
+    footprints: list[dict] | None = None,
+) -> tuple[trimesh.Scene, dict]:
+    """Append every geometry from components_glb into scene (with world transform).
+
+    If `footprints` is provided, each leaf is matched to its nearest footprint
+    (by 2D PCB-space distance to the leaf's centroid). The output mesh name
+    is rewritten to `comp_<REF>__<orig_name>` so the viewer can read the ref
+    directly from `Object3D.name`. A second return value is the per-ref index
+    used to write components.json (bbox + mesh names + value/lib_id/layer).
+    """
     print(f"merging {components_glb}...")
     comp = trimesh.load(str(components_glb))
-    if isinstance(comp, trimesh.Scene):
-        # Apply each node's world transform to its geometry, then add.
-        for node_name in comp.graph.nodes_geometry:
-            T, geom_name = comp.graph[node_name]
-            geom = comp.geometry[geom_name].copy()
-            geom.apply_transform(T)
-            # Make geom_name unique in dest
-            unique = f"{geom_name}_{node_name}"
-            scene.add_geometry(geom, geom_name=unique)
-    else:
+    index_by_ref: dict[str, dict] = {}
+
+    if not isinstance(comp, trimesh.Scene):
         scene.add_geometry(comp, geom_name="components")
-    return scene
+        return scene, index_by_ref
+
+    fp_by_ref = {f["ref"]: f for f in (footprints or [])}
+    parents = comp.graph.transforms.parents  # node_name -> parent_name dict
+
+    def parent_chain(node):
+        """Yield the parent chain of `node`, omitting `node` itself."""
+        cur = node
+        for _ in range(32):  # guard against cycles
+            p = parents.get(cur)
+            if not p or p == cur or p == "world":
+                return
+            yield p
+            cur = p
+
+    for node_name in comp.graph.nodes_geometry:
+        T, geom_name = comp.graph[node_name]
+        geom = comp.geometry[geom_name].copy()
+        geom.apply_transform(T)
+
+        # KiCad's GLB exporter writes each footprint as a parent node named
+        # after its reference designator (e.g. 'R24', 'U2'); the leaf meshes
+        # are children. Walk up the parent chain to find a name that matches
+        # a known footprint ref — way more reliable than position matching.
+        ref = None
+        for p in parent_chain(node_name):
+            if p in fp_by_ref:
+                ref = p
+                break
+        fp = fp_by_ref.get(ref) if ref else None
+
+        prefix = f"comp_{_REF_SAFE.sub('_', ref)}__" if ref else "comp_unknown__"
+        unique = f"{prefix}{geom_name[:32]}_{node_name[-10:]}"[:96]
+        unique = sanitize_glb_name(unique)
+        scene.add_geometry(geom, geom_name=unique)
+
+        if ref and fp:
+            entry = index_by_ref.setdefault(ref, {
+                "value": fp["value"],
+                "lib_id": fp["lib_id"],
+                "pos_pcb": fp["pos"],
+                "layer": fp["layer"],
+                "mesh_names": [],
+                "bbox_gltf": [list(geom.bounds[0]), list(geom.bounds[1])],
+            })
+            entry["mesh_names"].append(unique)
+            lo, hi = entry["bbox_gltf"]
+            entry["bbox_gltf"] = [
+                [min(lo[i], geom.bounds[0][i]) for i in range(3)],
+                [max(hi[i], geom.bounds[1][i]) for i in range(3)],
+            ]
+
+    return scene, index_by_ref
 
 
 # ----- main -------------------------------------------------------------------
@@ -518,8 +618,13 @@ def main():
         components = TEX_DIR / "_components.glb"
         export_components_glb(components)
 
+        footprints = parse_footprints()
         scene = build_board_mesh(top_tex, bottom_tex, top_mr, bottom_mr)
-        scene = merge_scenes(scene, components)
+        scene, index = merge_scenes(scene, components, footprints)
+        # Drop a per-ref hover index next to model.glb. Keys: ref designator;
+        # values: { value, lib_id, pos_pcb, layer, mesh_names, bbox_gltf }.
+        (OUT_DIR / "components.json").write_text(json.dumps(index, indent=2))
+        print(f"  wrote components.json ({len(index)} refs)")
     else:  # baked
         top_tex = render_baked("top", target_w, target_h)
         bottom_tex = None

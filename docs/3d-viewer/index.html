@@ -106,6 +106,20 @@
   .view-btn:hover { background: var(--accent); color: var(--accent-ink); }
   .view-btn::before { content: "◎"; font-size: 11px; }
 
+  .comp-link {
+    background: rgba(108, 196, 255, 0.10);
+    border-bottom: 1px dotted rgba(108, 196, 255, 0.35);
+    padding: 0 2px;
+    border-radius: 2px;
+    cursor: help;
+    transition: background 0.08s, color 0.08s;
+  }
+  .comp-link.hot, .comp-link:hover {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-bottom-color: transparent;
+  }
+
   .quickbar { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
 
   .toast {
@@ -392,10 +406,13 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
 
   // Live HUD update
   mv.addEventListener('camera-change', refreshHud);
-  mv.addEventListener('load', () => {
+  mv.addEventListener('load', async () => {
     refreshHud();
     applyHash();
     setupCalibration();
+    await loadComponentIndex();
+    autoLinkDocs();
+    setupHoverHighlight();
   });
 
   window.addEventListener('hashchange', applyHash);
@@ -552,6 +569,279 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
     }
 
     forceRender();
+  }
+
+  // ---- Component hover highlight ------------------------------------------
+  // components.json: { ref: { value, lib_id, pos_pcb, layer, mesh_names, bbox_gltf } }
+  let componentIndex = null;
+  let refToInfo = null;       // 'R5' -> info
+  let valueToRefs = null;     // 'THAT1246' -> ['U4','U5']
+  let meshNameToRef = null;   // 'comp_R5__...' -> 'R5'
+  let compMeshes = [];        // [{ obj, ref }]
+  const ESC_HTML = c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]);
+  const esc = s => s.replace(/[&<>'"]/g, ESC_HTML);
+  const reEscape = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  async function loadComponentIndex() {
+    try {
+      componentIndex = await fetch('components.json').then(r => r.json());
+    } catch (e) {
+      console.warn('components.json not loadable; hover highlights disabled', e);
+      return;
+    }
+    refToInfo = new Map();
+    valueToRefs = new Map();
+    meshNameToRef = new Map();
+    for (const [ref, info] of Object.entries(componentIndex)) {
+      refToInfo.set(ref, info);
+      if (info.value) {
+        if (!valueToRefs.has(info.value)) valueToRefs.set(info.value, []);
+        valueToRefs.get(info.value).push(ref);
+      }
+      for (const meshName of info.mesh_names) {
+        meshNameToRef.set(meshName, ref);
+      }
+    }
+    console.log(`components.json: ${refToInfo.size} refs, ${valueToRefs.size} unique values, ${meshNameToRef.size} mesh names`);
+  }
+
+  function autoLinkDocs() {
+    if (!refToInfo) return;
+    // Refs: only those known to exist in components.json
+    const refRegex = new RegExp(
+      '\\b(' + Array.from(refToInfo.keys())
+        .sort((a, b) => b.length - a.length)
+        .map(reEscape).join('|') + ')\\b', 'g',
+    );
+    // Values: only ones with at most 5 instances and length >= 3
+    // (skips generic values like '100n', '10k' present on many caps/resistors).
+    const linkableValues = Array.from(valueToRefs.entries())
+      .filter(([v, refs]) => refs.length <= 5 && v.length >= 3)
+      .map(([v]) => v);
+    const valueRegex = linkableValues.length
+      ? new RegExp('\\b(' + linkableValues.map(reEscape).join('|') + ')\\b', 'g')
+      : null;
+
+    const docsEl = document.querySelector('.docs');
+    const walker = document.createTreeWalker(docsEl, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    for (const node of nodes) {
+      // Skip text inside our own UI (buttons, view links, code links)
+      if (node.parentElement?.closest('.comp-link, button, .view-btn')) continue;
+      const text = node.textContent;
+      const matches = [];
+      let mm;
+      refRegex.lastIndex = 0;
+      while ((mm = refRegex.exec(text))) matches.push({ s: mm.index, e: mm.index + mm[0].length, v: mm[0], type: 'ref' });
+      if (valueRegex) {
+        valueRegex.lastIndex = 0;
+        while ((mm = valueRegex.exec(text))) matches.push({ s: mm.index, e: mm.index + mm[0].length, v: mm[0], type: 'value' });
+      }
+      matches.sort((a, b) => a.s - b.s);
+      // Drop overlapping matches; first wins.
+      const filtered = [];
+      for (const x of matches) {
+        if (!filtered.length || x.s >= filtered.at(-1).e) filtered.push(x);
+      }
+      if (!filtered.length) continue;
+      let html = '';
+      let cur = 0;
+      for (const x of filtered) {
+        html += esc(text.slice(cur, x.s));
+        const attr = x.type === 'ref' ? `data-ref="${x.v}"` : `data-value="${esc(x.v)}"`;
+        const tip = x.type === 'ref'
+          ? `${x.v}${refToInfo.get(x.v)?.value ? ' — ' + refToInfo.get(x.v).value : ''}`
+          : `${x.v} (${valueToRefs.get(x.v).join(', ')})`;
+        html += `<span class="comp-link" ${attr} title="${esc(tip)}">${esc(x.v)}</span>`;
+        cur = x.e;
+      }
+      html += esc(text.slice(cur));
+      const wrap = document.createElement('span');
+      wrap.innerHTML = html;
+      node.parentNode.replaceChild(wrap, node);
+    }
+    const refCount = document.querySelectorAll('.comp-link[data-ref]').length;
+    const valCount = document.querySelectorAll('.comp-link[data-value]').length;
+    console.log(`auto-linked ${refCount} refs and ${valCount} values in docs`);
+  }
+
+  // Cache the THREE.Mesh objects keyed to refs after the model loads.
+  function indexCompMeshes() {
+    compMeshes = [];
+    if (!mvScene || !meshNameToRef) return;
+    // Walk the scene once. For each Mesh, look up its name AND walk its
+    // ancestor names — three.js's GLTFLoader sometimes lifts the leaf-mesh
+    // name onto a parent Object3D when consolidating primitives, so the ref
+    // we encoded in the leaf name shows up on a parent.
+    const allMeshes = [];
+    mvScene.traverse(obj => {
+      if (obj.isMesh) allMeshes.push(obj);
+    });
+    let hits = 0, misses = 0;
+    for (const obj of allMeshes) {
+      let ref = meshNameToRef.get(obj.name);
+      if (!ref) {
+        // Walk ancestors looking for a name we recognise.
+        for (let p = obj.parent; p; p = p.parent) {
+          ref = meshNameToRef.get(p.name);
+          if (ref) break;
+        }
+      }
+      if (ref) {
+        compMeshes.push({ obj, ref });
+        hits++;
+      } else {
+        misses++;
+      }
+    }
+    // Per-ref count, so we can see which refs are missing all their meshes.
+    const counts = new Map();
+    for (const { ref } of compMeshes) counts.set(ref, (counts.get(ref) || 0) + 1);
+    const empty = [];
+    const lowCount = [];
+    for (const [ref, info] of refToInfo.entries()) {
+      const n = counts.get(ref) || 0;
+      if (n === 0) empty.push(ref);
+      else if (n < info.mesh_names.length / 5) lowCount.push(`${ref}(${n}/${info.mesh_names.length})`);
+    }
+    console.log(`indexed ${hits} component meshes (${misses} misses)`);
+    if (empty.length) console.warn('refs with NO meshes in scene:', empty);
+    if (lowCount.length) console.warn('refs with very few meshes:', lowCount);
+  }
+
+  // ---- Highlight state ----------------------------------------------------
+  // Materials in glTF are SHARED across meshes that use the same footprint
+  // (every 0805 resistor uses one MeshStandardMaterial), so mutating the
+  // material's emissive bleeds into every other mesh. To highlight a single
+  // ref cleanly we swap in a per-mesh CLONE while highlighted and swap the
+  // original back when un-highlighted.
+  const HIGHLIGHT_COLOR_HEX = 0xff9933;
+  // Single shared highlight material — replaces the original entirely while
+  // hovered. Avoids edge cases where the source material lacks an emissive
+  // channel (MeshBasicMaterial, MeshLambertMaterial without emissive, etc.).
+  const HIGHLIGHT_MATERIAL = new THREE.MeshStandardMaterial({
+    color: HIGHLIGHT_COLOR_HEX,
+    emissive: HIGHLIGHT_COLOR_HEX,
+    emissiveIntensity: 0.6,
+    metalness: 0.1,
+    roughness: 0.6,
+    transparent: false,
+  });
+
+  function _setMeshHighlighted(obj, on) {
+    if (on) {
+      if (obj.userData._origMaterial) return;
+      obj.userData._origMaterial = obj.material;
+      obj.material = HIGHLIGHT_MATERIAL;
+    } else {
+      if (!obj.userData._origMaterial) return;
+      obj.material = obj.userData._origMaterial;
+      delete obj.userData._origMaterial;
+    }
+  }
+
+  function highlightMeshesForRefs(refs, on) {
+    const set = new Set(refs);
+    for (const { obj, ref } of compMeshes) {
+      if (!set.has(ref)) continue;
+      _setMeshHighlighted(obj, on);
+    }
+    if (mvScene?.queueRender) mvScene.queueRender();
+  }
+
+  function highlightTextForRefs(refs, on) {
+    const set = new Set(refs);
+    document.querySelectorAll('.comp-link[data-ref]').forEach(el => {
+      el.classList.toggle('hot', on && set.has(el.dataset.ref));
+    });
+    document.querySelectorAll('.comp-link[data-value]').forEach(el => {
+      const valRefs = valueToRefs?.get(el.dataset.value) || [];
+      el.classList.toggle('hot', on && valRefs.some(r => set.has(r)));
+    });
+  }
+
+  function refsFromElement(el) {
+    if (el.dataset.ref) return [el.dataset.ref];
+    if (el.dataset.value) return valueToRefs?.get(el.dataset.value) || [];
+    return [];
+  }
+
+  function setupHoverHighlight() {
+    indexCompMeshes();
+
+    // Text → 3D
+    const docsEl = document.querySelector('.docs');
+    docsEl.addEventListener('mouseover', e => {
+      const link = e.target.closest('.comp-link');
+      if (!link) return;
+      const refs = refsFromElement(link);
+      if (!refs.length) return;
+      highlightMeshesForRefs(refs, true);
+      highlightTextForRefs(refs, true);
+    });
+    docsEl.addEventListener('mouseout', e => {
+      const link = e.target.closest('.comp-link');
+      if (!link) return;
+      const refs = refsFromElement(link);
+      if (!refs.length) return;
+      highlightMeshesForRefs(refs, false);
+      highlightTextForRefs(refs, false);
+    });
+
+    // 3D → Text  (raycast on pointermove)
+    if (!mvScene) return;
+    const camera = mvScene.getCamera ? mvScene.getCamera() : mvScene.camera;
+    if (!camera) {
+      console.warn('no camera on mvScene; 3D->text highlight disabled');
+      return;
+    }
+    const raycaster = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    let lastHoveredRef = null;
+
+    const onMove = e => {
+      const rect = mv.getBoundingClientRect();
+      ndc.set(
+        ((e.clientX - rect.left) / rect.width) * 2 - 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1,
+      );
+      raycaster.setFromCamera(ndc, camera);
+      // Only test against indexed comp meshes — much fewer than the full scene.
+      const objs = compMeshes.map(c => c.obj);
+      const hits = raycaster.intersectObjects(objs, false);
+      const hitObj = hits[0]?.object;
+      const ref = hitObj ? meshNameToRef.get(hitObj.name) : null;
+      if (window.DEBUG_HOVER && hitObj) {
+        console.log('hit:', hitObj.name, '→ ref:', ref);
+      }
+      if (ref === lastHoveredRef) return;
+      if (lastHoveredRef) {
+        highlightMeshesForRefs([lastHoveredRef], false);
+        highlightTextForRefs([lastHoveredRef], false);
+      }
+      if (ref) {
+        highlightMeshesForRefs([ref], true);
+        highlightTextForRefs([ref], true);
+      }
+      lastHoveredRef = ref;
+    };
+
+    // Throttle to ~30 Hz to keep interaction snappy.
+    let pending = false;
+    mv.addEventListener('pointermove', e => {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(() => { pending = false; onMove(e); });
+    });
+    mv.addEventListener('pointerleave', () => {
+      if (lastHoveredRef) {
+        highlightMeshesForRefs([lastHoveredRef], false);
+        highlightTextForRefs([lastHoveredRef], false);
+        lastHoveredRef = null;
+      }
+    });
   }
 
   for (const id of ['ox', 'oz', 'sx', 'sz']) {
