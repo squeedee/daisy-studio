@@ -1,4 +1,4 @@
-# Daisy Studio REV-2b
+# Daisy Studio (Rev2b)
 
 [[view:overview|Front View]] and [[view:back|Back View]]
 
