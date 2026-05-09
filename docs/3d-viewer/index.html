@@ -26,7 +26,7 @@
     --rule: #232838;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font: 17px/1.55 "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font: 18px/1.55 "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; }
   a { color: var(--accent); }
   code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
   pre { background: #0a0c11; border: 1px solid var(--rule); padding: 12px; overflow-x: auto; font-size: 13px; line-height: 1.45; }
@@ -43,7 +43,13 @@
     display: flex; flex-direction: column;
   }
   @media (max-width: 900px) {
-    .viewer { position: relative; height: 50vh; border-right: 0; border-bottom: 1px solid var(--rule); }
+    .viewer {
+      position: sticky; top: 0; z-index: 1;
+      height: 50vh;
+      border-right: 0; border-bottom: 1px solid var(--rule);
+    }
+    /* Docs scrolls naturally; the viewer stays pinned above it. */
+    .docs { overflow-y: visible; }
   }
 
   model-viewer {
@@ -113,17 +119,16 @@
   .view-btn::before { content: "◎"; font-size: 11px; }
 
   .comp-link {
-    background: rgba(108, 196, 255, 0.10);
-    border-bottom: 1px dotted rgba(108, 196, 255, 0.35);
-    padding: 0 2px;
-    border-radius: 2px;
+    background: transparent;
+    border-bottom: 2px dashed var(--accent);
+    padding: 0 1px;
     cursor: help;
-    transition: background 0.08s, color 0.08s;
+    transition: background 0.08s, color 0.08s, border-bottom-style 0.08s;
   }
   .comp-link.hot, .comp-link:hover {
     background: var(--accent);
     color: var(--accent-ink);
-    border-bottom-color: transparent;
+    border-bottom-style: solid;
   }
 
   .quickbar { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
@@ -644,8 +649,12 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
     );
     // Values: only ones with at most 5 instances and length >= 3
     // (skips generic values like '100n', '10k' present on many caps/resistors).
+    // Auto-link values that look like part numbers: ≤5 instances, length ≥3,
+    // and contain at least one digit. The digit requirement filters out
+    // English-word `Value` fields like SW1's "Power" without us needing a
+    // hand-curated stoplist.
     const linkableValues = Array.from(valueToRefs.entries())
-      .filter(([v, refs]) => refs.length <= 5 && v.length >= 3)
+      .filter(([v, refs]) => refs.length <= 5 && v.length >= 3 && /\d/.test(v))
       .map(([v]) => v);
     const valueRegex = linkableValues.length
       ? new RegExp('\\b(' + linkableValues.map(reEscape).join('|') + ')\\b', 'g')
