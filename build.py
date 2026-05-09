@@ -9,6 +9,8 @@
 #   "scipy",
 #   "numpy",
 #   "markdown",
+#   "shapely",
+#   "mapbox-earcut",
 # ]
 # ///
 """
@@ -394,54 +396,91 @@ def export_components_glb(out_path: Path):
 
 # ----- mesh construction ------------------------------------------------------
 
+DRILL_SEGMENTS = 16   # circle approximation per hole — 16 segments looks smooth enough at viewer zoom
+
+
 def build_board_mesh(
     top_tex: Image.Image,
     bottom_tex: Image.Image | None,
     top_mr: Image.Image | None = None,
     bottom_mr: Image.Image | None = None,
+    drills: list[tuple[float, float, float]] | None = None,
 ) -> trimesh.Scene:
-    """Build a glTF scene containing:
-      - top face plane with top texture
-      - bottom face plane with bottom texture (mirrored on X)
-      - thin extrusion for board edge thickness
-    Coordinates: same as KiCad GLB export — X = PCB X (m), Y = up (m),
-    Z = PCB Y (m). The board occupies Y ∈ [-t/2, +t/2]."""
-    # Convert mm → m for glTF.
-    # KiCad's GLB export places the board substrate from Y=0 (bottom copper)
-    # to Y=+thickness (top copper), with SMD component bases sitting on the
-    # top surface. Match that so components don't float above the texture.
-    x0, x1 = BOARD_X0 / 1000.0, BOARD_X1 / 1000.0
-    z0, z1 = BOARD_Y0 / 1000.0, BOARD_Y1 / 1000.0
+    """Build a glTF scene containing the textured PCB substrate with drill
+    holes cut through it.
+
+    Coordinates: X = PCB X (m), Y = up (m), Z = PCB Y (m). Board substrate
+    from Y=0 (bottom copper) to Y=+thickness (top copper); SMD component
+    bases sit at Y=thickness so they appear on the surface in KiCad's GLB.
+
+    drills: optional list of (x_mm, y_mm, diameter_mm) — pad/mounting-hole
+    drills only (vias deliberately excluded). When provided, the substrate
+    polygon is cut and the hole walls are added to the edge band so you can
+    see through.
+    """
+    import shapely.geometry as sg
+    from shapely.geometry.polygon import orient
+    from shapely.ops import unary_union
+    import mapbox_earcut as earcut
+
     yt = BOARD_THICKNESS_MM / 1000.0
     yb = 0.0
-
     scene = trimesh.Scene()
 
-    # --- Top face -------------------------------------------------------------
-    # CCW winding viewed from above (+Y normal). For glTF: standard right-hand
-    # rule, fingers curl in vertex order, thumb = normal.
-    vertices = np.array([
-        [x0, yt, z0],   # 0: NW
-        [x1, yt, z0],   # 1: NE
-        [x1, yt, z1],   # 2: SE
-        [x0, yt, z1],   # 3: SW
-    ])
-    # UVs: PNG origin is top-left. SVG plotted with KiCad Y down, so KiCad Y+ → V+.
-    # We want top-left of texture to align with NW corner (X0, Y0 in PCB).
-    # V flipped: trimesh/glTF effectively places texture row 0 at V=1 in our
-    # build (verified empirically — UVs that "should" map small-PCB-Y to V=0
-    # render with widthwise axis reversed). So V=1 at small Z, V=0 at large Z.
-    uvs = np.array([
-        [0.0, 1.0],  # NW (small PCB-Y) → texture top
-        [1.0, 1.0],  # NE
-        [1.0, 0.0],  # SE (large PCB-Y) → texture bottom
-        [0.0, 0.0],  # SW
-    ])
-    # Winding NW → SW → SE gives normal (0, +Y, 0) — face normal points up.
-    faces = np.array([[0, 3, 2], [0, 2, 1]])
-    top = trimesh.Trimesh(vertices=vertices, faces=faces, process=False)
+    # --- Build the 2D substrate polygon (PCB mm) -----------------------------
+    outline = sg.box(BOARD_X0, BOARD_Y0, BOARD_X1, BOARD_Y1)
+    if drills:
+        circles = [sg.Point(x, y).buffer(d / 2, quad_segs=DRILL_SEGMENTS // 4)
+                   for x, y, d in drills]
+        substrate = outline.difference(unary_union(circles))
+    else:
+        substrate = outline
+    if isinstance(substrate, sg.MultiPolygon):
+        # If holes split the board into pieces, keep the largest.
+        substrate = max(substrate.geoms, key=lambda p: p.area)
+    substrate = orient(substrate, sign=1.0)   # exterior CCW, holes CW
+
+    exterior = list(substrate.exterior.coords)[:-1]   # drop closing repeat
+    interiors = [list(r.coords)[:-1] for r in substrate.interiors]
+
+    # Flatten ring coords + record where each ring ENDS (cumulative).
+    # mapbox_earcut expects ring_end_indices: last entry = total vertex count.
+    rings = [exterior, *interiors]
+    flat_2d = np.array([pt for ring in rings for pt in ring], dtype=np.float64)
+    ring_ends: list[int] = []
+    cursor = 0
+    for ring in rings:
+        cursor += len(ring)
+        ring_ends.append(cursor)
+
+    tris = earcut.triangulate_float64(
+        flat_2d, np.array(ring_ends, dtype=np.uint32),
+    ).reshape(-1, 3)
+    if not len(tris):
+        raise RuntimeError("polygon triangulation produced no triangles")
+
+    # 3D vertex positions for the top + bottom faces (shared X/Z, only Y differs).
+    n_verts = len(flat_2d)
+    pos_x = flat_2d[:, 0] / 1000.0
+    pos_z = flat_2d[:, 1] / 1000.0
+    top_pos = np.column_stack([pos_x, np.full(n_verts, yt), pos_z])
+    bot_pos = np.column_stack([pos_x, np.full(n_verts, yb), pos_z])
+
+    # UVs — match the rectangular case's V-flip / X-mirror conventions exactly
+    # so the existing tuned textures (CAL_*) keep aligning correctly.
+    u_top = (flat_2d[:, 0] - BOARD_X0) / BOARD_W
+    v_axis = 1.0 - (flat_2d[:, 1] - BOARD_Y0) / BOARD_H
+    top_uvs = np.column_stack([u_top, v_axis])
+    bot_uvs = np.column_stack([1.0 - u_top, v_axis])
+
+    # Winding: 2D-CCW earcut output maps (under our X→X, Y→Z mapping) to a 3D
+    # triangle whose normal points -Y. Bottom face wants -Y; flip for top.
+    top_faces = tris[:, [0, 2, 1]]
+    bot_faces = tris
+
+    top = trimesh.Trimesh(vertices=top_pos, faces=top_faces, process=False)
     top.visual = trimesh.visual.TextureVisuals(
-        uv=uvs,
+        uv=top_uvs,
         material=trimesh.visual.material.PBRMaterial(
             name="board_top_pbr",
             baseColorTexture=top_tex,
@@ -452,28 +491,10 @@ def build_board_mesh(
     )
     scene.add_geometry(top, geom_name="board_top")
 
-    # --- Bottom face ----------------------------------------------------------
     if bottom_tex is not None:
-        vertices_b = np.array([
-            [x0, yb, z0],   # 0: NW
-            [x1, yb, z0],   # 1: NE
-            [x1, yb, z1],   # 2: SE
-            [x0, yb, z1],   # 3: SW
-        ])
-        # Bottom view is mirrored on X (looking up from below, KiCad's B.* plot
-        # is "as seen from above looking through the board", so X needs to flip).
-        # Same V-flip as top face (see comment on top-face UVs).
-        uvs_b = np.array([
-            [1.0, 1.0],  # NW (small PCB-Y) → texture top-right (X mirrored for back layer)
-            [0.0, 1.0],  # NE
-            [0.0, 0.0],  # SE (large PCB-Y) → texture bottom-left
-            [1.0, 0.0],  # SW
-        ])
-        # Winding NW → NE → SE gives normal (0, -Y, 0) — face normal points down.
-        faces_b = np.array([[0, 1, 2], [0, 2, 3]])
-        bot = trimesh.Trimesh(vertices=vertices_b, faces=faces_b, process=False)
+        bot = trimesh.Trimesh(vertices=bot_pos, faces=bot_faces, process=False)
         bot.visual = trimesh.visual.TextureVisuals(
-            uv=uvs_b,
+            uv=bot_uvs,
             material=trimesh.visual.material.PBRMaterial(
                 name="board_bottom_pbr",
                 baseColorTexture=bottom_tex,
@@ -484,25 +505,33 @@ def build_board_mesh(
         )
         scene.add_geometry(bot, geom_name="board_bottom")
 
-    # --- Edge band ------------------------------------------------------------
-    # Side ribbon connecting top and bottom — solid color, no texture.
-    # Each side: 4 vertices ordered CCW when viewed from OUTSIDE the board, so
-    # the outward normal comes out of the (a→b) × (b→c) cross product.
-    edge_v = np.array([
-        # NORTH (z=z0, outward normal -Z)
-        [x0, yt, z0], [x1, yt, z0], [x1, yb, z0], [x0, yb, z0],
-        # SOUTH (z=z1, outward normal +Z)
-        [x1, yt, z1], [x0, yt, z1], [x0, yb, z1], [x1, yb, z1],
-        # WEST  (x=x0, outward normal -X)
-        [x0, yt, z1], [x0, yt, z0], [x0, yb, z0], [x0, yb, z1],
-        # EAST  (x=x1, outward normal +X)
-        [x1, yt, z0], [x1, yt, z1], [x1, yb, z1], [x1, yb, z0],
-    ])
-    edge_f = []
-    for i in range(0, 16, 4):
-        edge_f.extend([[i, i + 1, i + 2], [i, i + 2, i + 3]])
-    edge_f = np.array(edge_f)
-    edge = trimesh.Trimesh(vertices=edge_v, faces=edge_f, process=False)
+    # --- Edge band: outer perimeter + each hole's inner wall ------------------
+    # For each ring, build N quads (top→bottom strip). Triangle (top_i, top_i1,
+    # bot_i1) gives outward normal "right of travel direction". With shapely's
+    # standard orientation (CCW exterior, CW interiors), this yields outward-
+    # facing normals for both the board edge AND each hole wall.
+    edge_v: list[list[float]] = []
+    edge_f: list[list[int]] = []
+    for ring in rings:
+        n_pts = len(ring)
+        base = len(edge_v)
+        for x, y in ring:
+            edge_v.append([x / 1000.0, yt, y / 1000.0])
+        for x, y in ring:
+            edge_v.append([x / 1000.0, yb, y / 1000.0])
+        for i in range(n_pts):
+            ti = base + i
+            ti1 = base + (i + 1) % n_pts
+            bi = base + n_pts + i
+            bi1 = base + n_pts + (i + 1) % n_pts
+            edge_f.append([ti, ti1, bi1])
+            edge_f.append([ti, bi1, bi])
+
+    edge = trimesh.Trimesh(
+        vertices=np.array(edge_v, dtype=np.float64),
+        faces=np.array(edge_f, dtype=np.int64),
+        process=False,
+    )
     edge.visual.face_colors = list(EDGE_RGB) + [255]
     scene.add_geometry(edge, geom_name="board_edge")
 
@@ -521,6 +550,42 @@ _NAME_SAFE = re.compile(r"[^A-Za-z0-9_\-]")
 def sanitize_glb_name(name: str) -> str:
     """Return name with characters that GLTFLoader strips removed."""
     return _NAME_SAFE.sub("", name)
+
+
+def parse_drills() -> list[tuple[float, float, float]]:
+    """Walk the .kicad_pcb for THT pad drills and NPTH (mounting hole) drills.
+    Returns [(x_mm, y_mm, diameter_mm), …] in PCB coords. Vias are NOT included
+    — they're top-level (via …) blocks, not inside footprints, so the
+    footprint-only walk skips them naturally."""
+    text = PCB.read_text()
+    drills: list[tuple[float, float, float]] = []
+    for fp_m in re.finditer(r'\(footprint "([^"]+)"(.*?)\n\t\)\n', text, re.DOTALL):
+        block = fp_m.group(2)
+        fp_at = re.search(r'\(at\s+([\-\d.]+)\s+([\-\d.]+)(?:\s+([\-\d.]+))?\)', block)
+        if not fp_at:
+            continue
+        fpx, fpy = float(fp_at.group(1)), float(fp_at.group(2))
+        fp_rot = math.radians(float(fp_at.group(3) or 0))
+        cos_r, sin_r = math.cos(fp_rot), math.sin(fp_rot)
+
+        # Pad blocks close with `\n\t\t)\n`. Each pad's first three tokens are
+        # name, type, shape — we don't filter on those; the drill clause is
+        # what matters.
+        for pad_m in re.finditer(r'\(pad\s+"[^"]*"[^()]*?(?=\()(.*?)\n\t\t\)\n', block, re.DOTALL):
+            pad_block = pad_m.group(1)
+            drill_m = re.search(r'\(drill\s+(?:oval\s+)?([\d.]+)', pad_block)
+            if not drill_m:
+                continue
+            diameter = float(drill_m.group(1))
+            pad_at = re.search(r'\(at\s+([\-\d.]+)\s+([\-\d.]+)', pad_block)
+            if not pad_at:
+                continue
+            px, py = float(pad_at.group(1)), float(pad_at.group(2))
+            x = fpx + px * cos_r - py * sin_r
+            y = fpy + px * sin_r + py * cos_r
+            drills.append((x, y, diameter))
+    print(f"parsed {len(drills)} pad drills from {PCB.name}")
+    return drills
 
 
 def parse_footprints() -> list[dict]:
@@ -667,7 +732,8 @@ def main():
         export_components_glb(components)
 
         footprints = parse_footprints()
-        scene = build_board_mesh(top_tex, bottom_tex, top_mr, bottom_mr)
+        drills = parse_drills()
+        scene = build_board_mesh(top_tex, bottom_tex, top_mr, bottom_mr, drills=drills)
         scene, index = merge_scenes(scene, components, footprints)
         # Drop a per-ref hover index next to model.glb. Keys: ref designator;
         # values: { value, lib_id, pos_pcb, layer, mesh_names, bbox_gltf }.
