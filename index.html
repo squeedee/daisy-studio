@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Daisy Studio — 3D Viewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script type="module" src="https://unpkg.com/@google/model-viewer@4.0.0/dist/model-viewer.min.js"></script>
 <script type="importmap">
 {
@@ -23,7 +26,7 @@
     --rule: #232838;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font: 18px/1.55 "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; }
   a { color: var(--accent); }
   code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
   pre { background: #0a0c11; border: 1px solid var(--rule); padding: 12px; overflow-x: auto; font-size: 13px; line-height: 1.45; }
@@ -72,6 +75,9 @@
   body.admin .calibration { display: flex; }
   .admin-only { display: none !important; }
   body.admin .admin-only { display: inline-flex !important; }
+  /* The orbit/target/fov + camera-buttons strip is a full-width flex bar; it
+     needs `flex`, not `inline-flex`, when shown. */
+  body.admin .hud.admin-only { display: flex !important; }
   .cal-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; flex: 1; min-width: 280px;
   }
@@ -155,7 +161,7 @@
       max-field-of-view="35deg"
       interaction-prompt="none">
     </model-viewer>
-    <div class="hud">
+    <div class="hud admin-only">
       <div class="field"><b>orbit</b> <code id="orbit">—</code></div>
       <div class="field"><b>target</b> <code id="target">—</code></div>
       <div class="field"><b>fov</b> <code id="fov">—</code></div>
@@ -638,8 +644,12 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
     );
     // Values: only ones with at most 5 instances and length >= 3
     // (skips generic values like '100n', '10k' present on many caps/resistors).
+    // Auto-link values that look like part numbers: ≤5 instances, length ≥3,
+    // and contain at least one digit. The digit requirement filters out
+    // English-word `Value` fields like SW1's "Power" without us needing a
+    // hand-curated stoplist.
     const linkableValues = Array.from(valueToRefs.entries())
-      .filter(([v, refs]) => refs.length <= 5 && v.length >= 3)
+      .filter(([v, refs]) => refs.length <= 5 && v.length >= 3 && /\d/.test(v))
       .map(([v]) => v);
     const valueRegex = linkableValues.length
       ? new RegExp('\\b(' + linkableValues.map(reEscape).join('|') + ')\\b', 'g')
