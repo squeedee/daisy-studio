@@ -1,12 +1,13 @@
-<h1>Daisy Studio</h1>
+<h1>Daisy Studio REV-2b</h1>
 <p><button class="view-btn" data-view="overview">Front View</button> and <button class="view-btn" data-view="back">Back View</button></p>
 <p>Development board for the Electrosmith Daisy Seed that brings a slew of features</p>
 <h2>Clean Power <button class="view-btn" data-view="power">Power</button></h2>
 <ul>
-<li>5v for the seed and your UX with the TPS54302.</li>
-<li>An RS3-1212D provides clean <strong>±12V dual</strong> rails for analog input/output. </li>
-<li>Overvoltage protection on all rails via SMBJ15CA.</li>
-<li>Reverse polarity protection with the DMP3056L-13.</li>
+<li>5V for the Seed and your UX via the TPS54302 buck (U10).</li>
+<li>Clean <strong>±12V dual</strong> rails for the analog stages from an RS3-1212D isolated DC/DC.</li>
+<li>Overvoltage protection on every rail via SMBJ15CA TVS, which also capture backfeed from voltage sources on the outputs
+  when power is not applied.</li>
+<li>Reverse-polarity protection with a DMP3056L-13 P-FET.</li>
 <li>Optional power switch header at SW1 (can be jumpered).</li>
 </ul>
 <h2>Power Headers <button class="view-btn" data-view="power-header">Power Headers</button></h2>
@@ -16,32 +17,33 @@
 </ul>
 <h2>Balanced Audio In <button class="view-btn" data-view="audio-input">Balanced Input</button></h2>
 <ul>
-<li>Studio level (+24 dBu peak), balanced input on Neutrik Combo Jacks (J4, J6) via THAT1246 differential receivers (U4, U5).</li>
+<li>Studio level (+24 dBu peak), balanced input on Neutrik Combo Jacks (J4, J6) via THAT1246 differential receivers.</li>
 <li>Gain control and clip indicators for perfect gain staging.</li>
-<li>Trim control so the clip LED lights <em>before</em> the protection clamp engages.</li>
-<li>BJT clamp (2N3904/2N3906 pairs) protects the Seed's PCM3060 ADC from overdrive — sharp transistor knee, no diode-clamp distortion bleeding into your signal.</li>
-<li>C0G anti-alias cap on each Seed input pin attenuates out-of-band noise before the codec's sigma-delta ADC sees it.</li>
+<li>Clip-threshold trim (RV7, RV8) so the clip LED lights <em>before</em> the protection clamp engages.</li>
+<li>BJT clamp (2N3904 + 2N3906 pairs at Q1, Q4 / Q2, Q3) protects the Seed's PCM3060 ADC from overdrive — sharp transistor
+  knee, no diode-clamp distortion bleeding into your signal.</li>
+<li>C0G anti-alias cap (C16, C24) on each Seed input pin attenuates out-of-band noise before the codec's sigma-delta ADC
+  sees it.</li>
 </ul>
 <h2>Balanced Audio Out <button class="view-btn" data-view="audio-output">Balanced Output</button></h2>
 <ul>
 <li>Studio level (+24 dBu peak) on Neutrik Combo Jacks (J1, J2) via THAT1646 line drivers.</li>
 <li>Per-channel volume pots on the daughterboard so each output trims independently.</li>
-<li>Output gain trimmed once at calibration with a 25-turn cermet on the OPA1656 gain stage.</li>
-<li>Phantom-power-safe: SM4004 diode clamps to the ±12V rails on every XLR pin.</li>
-<li>Rail TVS (SMBJ15CA) catches phantom back-feed when the gear is powered off.</li>
+<li>Output gain trimmed once at calibration with 25-turn cermet pots (RV2, RV4) on the OPA1656 gain stage (U3).</li>
+<li>Phantom-power-safe: SM4004 diode clamps (D1–D8) to the ±12V rails on every XLR pin.</li>
 </ul>
 <h2>5-Pin MIDI <button class="view-btn" data-view="midi">MIDI</button></h2>
 <ul>
-<li>IN, OUT, and THRU on three DIN-5 jacks (J7, J9, J10).</li>
+<li>IN (J10), OUT (J9), and THRU (J7) on DIN-5 jacks.</li>
 <li>Galvanically isolated input via the H11L1SM Schmitt-trigger optocoupler (U8) — clean UART edges to the Seed.</li>
-<li>THRU echoes the optoisolated input through a second pair of 33 Ω resistors, no buffer needed.</li>
-<li>Standard MIDI 1.0 electrical spec: 5 mA current loop at 31.25 kbaud.</li>
+<li>Standard MIDI 1.0 electrical spec.</li>
 </ul>
 <h2>Seed <button class="view-btn" data-view="seed">Seed</button></h2>
 <ul>
 <li>Socketed Daisy Seed Rev 7 at U9.</li>
-<li>Every Seed GPIO not committed to onboard audio, MIDI, or USB is on the <strong>2×14 GPIO breakout</strong> at J11, plus +5V, +3V3D and DGND for your circuits.</li>
-<li>MicroSD slot (J14) wired to the Seed's SD interface.</li>
+<li>Every Seed GPIO not committed to onboard audio, MIDI, or USB is on the <strong>2×14 GPIO breakout</strong> at J11, plus +5V, +3V3D
+  and DGND for your circuits.</li>
+<li>MicroSD slot (J14, underside of board) wired to the Seed's SD interface.</li>
 <li>USB and audio I/O routed straight through, no muxing.</li>
 </ul>
 <h2>Daughter Board <button class="view-btn" data-view="daughter-header">Daughter Board</button></h2>
