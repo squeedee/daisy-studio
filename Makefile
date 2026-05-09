@@ -7,7 +7,7 @@
 
 UV         ?= uv
 PORT       ?= 8765
-RES        ?= 4096
+RES        ?= 8192
 VIEWER_DIR := docs/3d-viewer
 BUILD      := $(UV) run $(VIEWER_DIR)/build.py
 
@@ -41,9 +41,10 @@ baked:
 serve:
 	cd $(VIEWER_DIR) && python3 -m http.server $(PORT) --bind 127.0.0.1
 
-## deploy: rebuild then push docs/3d-viewer/ to the gh-pages branch.
+## deploy: rebuild at 8192 then push docs/3d-viewer/ to the gh-pages branch.
 ##         GitHub Pages serves from there. Local build IS the deploy.
-deploy: build
+deploy:
+	$(MAKE) build
 	./scripts/deploy.sh
 
 ## clean: remove generated GLB / textures / docs.html

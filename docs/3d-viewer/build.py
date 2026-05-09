@@ -565,7 +565,12 @@ def parse_drills() -> list[tuple[float, float, float]]:
         if not fp_at:
             continue
         fpx, fpy = float(fp_at.group(1)), float(fp_at.group(2))
-        fp_rot = math.radians(float(fp_at.group(3) or 0))
+        # KiCad's stored footprint rotation has the opposite sign from a
+        # math-convention CCW rotation in the (PCB-X, PCB-Y) plane (verified
+        # empirically by comparing computed drill positions to KiCad's own
+        # 3D model placement). Negate before plugging into the standard
+        # rotation matrix below.
+        fp_rot = -math.radians(float(fp_at.group(3) or 0))
         cos_r, sin_r = math.cos(fp_rot), math.sin(fp_rot)
 
         # Pad blocks close with `\n\t\t)\n`. Each pad's first three tokens are
