@@ -365,7 +365,7 @@ Seed UART TX ── MIDI_TX ── 33R + 10R ── DIN-5 OUT</pre>
   async function loadDocs() {
     const slot = document.getElementById('docs');
     try {
-      const html = await fetch('docs.html').then(r => {
+      const html = await fetch(`docs.html?v=${Date.now()}`, { cache: 'no-store' }).then(r => {
         if (!r.ok) throw new Error('docs.html missing');
         return r.text();
       });
