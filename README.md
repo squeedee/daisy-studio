@@ -1,4 +1,4 @@
-# Daisy Studio
+# Daisy Studio - [Website](https://squeedee.github.io/daisy-studio/)
 
 | Front | Back |
 |-------|------|
