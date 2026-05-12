@@ -27,6 +27,7 @@ Goal: all three rails (+5 V, ±12 V) up and clean before any signal-path
 silicon is at risk.
 
 ### Populate:
+
 - Barrel jack, DMP3056L reverse-polarity FET, SMBJ15CA input TVS,
   100 µF / 25 V bulk on +12V_RAW. Leave SW1 unjumpered initially —
   see 1.2; we're not stocking the JST switch header for this run, so
@@ -64,15 +65,15 @@ at 12 V — comfortably above the expected ~100–200 mA stage-1 draw
 (dummy loads + DC/DC quiescent + buck efficiency loss) and tight
 enough to fold back on a short before damage.
 
-- [ ] **1.1 Ground continuity (power off).** With JP1 bridged
+- [x] **1.1 Ground continuity (power off).** With JP1 bridged
   (default), DMM continuity from AGND through to each chassis
   mounting hole and to the ground shell of every Neutrik combo
   jack. Catches missing CHASSIS bonds and unstitched ground pours
   before any rail comes up.
-  - *Optional isolation check (one board only):* cut JP1, confirm
-    AGND/DGND no longer reads continuous to CHASSIS while the
-    chassis-to-Neutrik-shell continuity remains. Re-bridge JP1
-    with solder before continuing.
+    - *Optional isolation check (one board only):* cut JP1, confirm
+      AGND/DGND no longer reads continuous to CHASSIS while the
+      chassis-to-Neutrik-shell continuity remains. Re-bridge JP1
+      with solder before continuing.
 - [ ] **1.2 SW1-open safety pass (board still powered down).** With
   SW1 unjumpered, set PSU to 12 V / 300 mA limit, leads connected to
   the barrel jack with correct polarity. DMM on +12V_RAW — should
@@ -81,19 +82,19 @@ enough to fold back on a short before damage.
   rest of the board and that nothing bypasses it. Then **bridge
   SW1** with a short wire link soldered across its two pads (the
   panel-switch JST hardware isn't stocked for this build).
-- [ ] **1.3 +12V_RAW present.** PSU at 12 V, correct polarity, ramp
+- [x] **1.3 +12V_RAW present.** PSU at 12 V, correct polarity, ramp
   from 0 V watching current. DMM on +12V_RAW downstream of the bulk
   cap reaches 11.7–11.9 V (small Vds drop across DMP3056L). Steady-
   state PSU current matches the preload + quiescent budget; nothing
-  unexpected.
+  unexpected. **FAILED** ground not connected
 - [ ] **1.4 Reverse-polarity blocks (FET).** Power down, reverse the
   PSU leads, ramp back up. DMP3056L blocks; +12V_RAW stays at 0 V,
   PSU current limited only by leakage (≪ 1 mA). Power down, restore
-  polarity, confirm rails recover.
+  polarity, confirm rails recover. **FAILED** Reverse S and D on mosfet
 - [ ] **1.5 +5 V rail.** DMM on +5 V should read 5.05–5.15 V (FB
   divider 100 k / 13.3 k → 0.6 V × 8.52). AC-coupled scope at the
   same node — ripple well under 50 mV pp at the 500 kHz switching
-  frequency.
+  frequency. **REVISIT** after everything is fitted.
 - [ ] **1.6 ±12 V rails (under preload).** DMM at the +12VA / −12VA
   test points: ±11.76 to ±12.24 V (RS3-1212D ±2%). Scope ripple at
   the same nodes after the ferrites — target < 10 mVpp in the audio
@@ -104,6 +105,7 @@ enough to fold back on a short before damage.
 ## Stage 2 — Daisy Seed + MIDI
 
 ### Populate:
+
 - Daisy Seed module (**Rev 7 — required for Stage 3.4's PCM3060
   noise test**).
 - H11L1SM optoisolator.
@@ -113,23 +115,25 @@ enough to fold back on a short before damage.
 - Micro SD socket.
 
 ### Verify:
-- [ ] **2.1 Seed boots.** Power up. Boot LED on; USB enumerate when
+
+- [x] **2.1 Seed boots.** Power up. Boot LED on; USB enumerate when
   plugged into a host (DFU / serial device).
 - [ ] **2.2 +3V3D from Seed.** DMM at the +3V3D pin on the GPIO
   breakout header.
-- [ ] **2.3 MIDI THRU passthrough.** External MIDI source (synth or
+- [x] **2.3 MIDI THRU passthrough.** External MIDI source (synth or
   USB-MIDI interface) into DIN-5 IN, monitor DIN-5 THRU with an
   external MIDI sink. Send a stream of note-ons; THRU should emit
   the same messages, byte-for-byte, with no Seed firmware involved
   — this exercises the H11L1SM forward path + 33 Ω THRU buffer
   resistors only.
-- [ ] **2.4 MIDI IN + OUT (digital thru on the Seed).** Load a Seed
+- [x] **2.4 MIDI IN + OUT (digital thru on the Seed).** Load a Seed
   program that echoes every received MIDI byte straight back out
   (RX → TX, a software MIDI thru). External source → DIN-5 IN; sink
   on DIN-5 OUT. Notes sent in should reappear at OUT, exercising
   the full IN-side optoisolation path *and* the OUT-side driver in
-  a single loop. 
-- [ ] **2.5 SD card.** Mount + read a card from a test program.
+  a single loop.
+    - See daisy-midi-test repo.
+- [ ] **2.5 SD card.** Mount + read a card from a test program. **NOT RUN** I'm not in the mood to solder that thing :P
 
 ## Stage 3 — Audio output stage
 
@@ -137,6 +141,7 @@ Lower clamp risk than the input — build it first so the codec
 spectral check (3.4) runs without depending on input-side silicon.
 
 ### Populate:
+
 - OPA1656 (output sheet) + R_in (2.2 kΩ) + R_fb_fixed (15 kΩ) +
   R_fb_trim (10 kΩ Bourns 3296W-1-103) + C_fb (100 pF C0G).
 - OPA1656 supply decoupling (100 nF + 1 nF per rail).
@@ -148,56 +153,58 @@ spectral check (3.4) runs without depending on input-side silicon.
   build mode).
 
 ### Calibrate:
+
 - [ ] **3.1 Output gain trim, channel L.**
-  1. Set the L output level pot fully clockwise on the
-     daughterboard.
-  2. Play a digital full-scale 1 kHz sine from the Seed.
-  3. Scope differential XLR output.
-  4. Adjust R_fb_trim until output reads +24 dBu peak (12.28 V p-p
-     differential).
-  5. Lock the trim with nail polish / trim paint.
+    1. Set the L output level pot fully clockwise on the
+       daughterboard.
+    2. Play a digital full-scale 1 kHz sine from the Seed.
+    3. Scope differential XLR output.
+    4. Adjust R_fb_trim until output reads +24 dBu peak (12.28 V p-p
+       differential).
+    5. Lock the trim with nail polish / trim paint.
 - [ ] **3.2 Output gain trim, channel R.** Same procedure on R.
   L/R within ~0.2 dB after both trims locked.
 
 ### Verify:
+
 - [ ] **3.3 Phantom-power survival (bench-PSU simulated +48 V).**
   Daisy Studio fully powered down throughout this test (no supply
   on the barrel jack). A separate bench PSU plus two resistors
   emulates the phantom feed network of a real preamp.
-  1. Build the phantom feed: 2× **6.81 kΩ, ¼ W** resistors, in
-     parallel between the bench PSU's positive output and the two
-     hot pins (XLR pin 2 + pin 3) of one Daisy Studio output. PSU
-     − returns to Daisy Studio AGND or chassis.
-  2. Scope on +12 V at the RS3-1212D output / an OPA1656 supply
-     pin, DC-coupled.
-  3. Set the bench PSU to **48 V, current limit ≈ 50 mA**. If the
-     supply caps below 48 V, stack two channels in series; a 30 V
-     test exercises the same path but won't push +12 V high enough
-     to engage the TVS, so it isn't a complete check.
-  4. Ramp from 0 → 48 V watching scope and PSU current. Expected:
-     ~5 mA per pin, ~10 mA total into +12 V via the SM4004 forward
-     clamps. SMBJ15CA on +12 V → AGND clamps at **16–24 V** — the
-     +12 V rail should rise to that band and stop, no runaway
-     above.
-  5. Power down phantom PSU, swap to the other XLR output, repeat.
-  6. Disconnect the phantom rig, restore Daisy Studio power,
-     confirm op-amp + THAT1646 still pass signal cleanly (no
-     SM4004 / TVS damage).
+    1. Build the phantom feed: 2× **6.81 kΩ, ¼ W** resistors, in
+       parallel between the bench PSU's positive output and the two
+       hot pins (XLR pin 2 + pin 3) of one Daisy Studio output. PSU
+       − returns to Daisy Studio AGND or chassis.
+    2. Scope on +12 V at the RS3-1212D output / an OPA1656 supply
+       pin, DC-coupled.
+    3. Set the bench PSU to **48 V, current limit ≈ 50 mA**. If the
+       supply caps below 48 V, stack two channels in series; a 30 V
+       test exercises the same path but won't push +12 V high enough
+       to engage the TVS, so it isn't a complete check.
+    4. Ramp from 0 → 48 V watching scope and PSU current. Expected:
+       ~5 mA per pin, ~10 mA total into +12 V via the SM4004 forward
+       clamps. SMBJ15CA on +12 V → AGND clamps at **16–24 V** — the
+       +12 V rail should rise to that band and stop, no runaway
+       above.
+    5. Power down phantom PSU, swap to the other XLR output, repeat.
+    6. Disconnect the phantom rig, restore Daisy Studio power,
+       confirm op-amp + THAT1646 still pass signal cleanly (no
+       SM4004 / TVS damage).
 - [ ] **3.4 Reconstruction-LPF spectral check (Seed Rev 7 only).**
-  - 3.4a XLR diff noise floor with C_fb **un**populated, Seed playing
-    digital silence.
-  - 3.4b Repeat with C_fb = 100 pF populated.
-  - 3.4c Compare broadband floor + spectral content above 40 kHz.
-    AD2 spectrum analyzer at 1 MS/s sample rate covers this — the
-    relative delta in the >40 kHz region is what matters; AD2 self-
-    noise is ~40 dB above the codec's audio-band floor so this is
-    *not* an audio-band measurement. (For audio-band confirmation
-    you'd need an audio-grade interface — see Equipment.)
-  - 3.4d **Escalation gate.** If 1-pole @ 80 kHz looks insufficient
-    against the codec's actual spectrum → escalate to a 2-pole
-    Sallen-Key post-gain-stage (board-revision-scale change). Do
-    **not** increase C_fb — it kills the audio top octave. Pause
-    further population on remaining boards until decided.
+    - 3.4a XLR diff noise floor with C_fb **un**populated, Seed playing
+      digital silence.
+    - 3.4b Repeat with C_fb = 100 pF populated.
+    - 3.4c Compare broadband floor + spectral content above 40 kHz.
+      AD2 spectrum analyzer at 1 MS/s sample rate covers this — the
+      relative delta in the >40 kHz region is what matters; AD2 self-
+      noise is ~40 dB above the codec's audio-band floor so this is
+      *not* an audio-band measurement. (For audio-band confirmation
+      you'd need an audio-grade interface — see Equipment.)
+    - 3.4d **Escalation gate.** If 1-pole @ 80 kHz looks insufficient
+      against the codec's actual spectrum → escalate to a 2-pole
+      Sallen-Key post-gain-stage (board-revision-scale change). Do
+      **not** increase C_fb — it kills the audio top octave. Pause
+      further population on remaining boards until decided.
 
 ## Stage 4 — Audio input stage (highest-risk block)
 
@@ -218,6 +225,7 @@ This stage is where Rev 2's novel circuitry gets bench-confirmed.
 - 2× Neutrik NCJ6FA-H-0 input combo jacks.
 
 ### Verify:
+
 - [ ] **4.1 Reference rails.** DMM at +VCLAMP_L, +VCLAMP_R, −VCLAMP_L,
   −VCLAMP_R: each ±1.51 to ±1.62 V (nominal 1.565 V, ±1 % R + ±2 %
   rail). Confirm per-channel independence — driving overdrive on one
@@ -242,12 +250,14 @@ This stage is where Rev 2's novel circuitry gets bench-confirmed.
   the full clean-signal range (0 V to 1.565 V threshold).
 
 **Later with more boards:**
+
 - [ ] **4.7 codec_max across boards.** Repeat 4.3 on all five.
   Single-board codec_max is not representative; tolerance corner
   validation needs the population. Want every board ≤ 4.8 V with
   ≥ 100 mV margin.
 
 **Open noise-floor item:**
+
 - [ ] **4.8 Audio-band noise floor.** Input shorted at the XLR.
   Compare to sim's 1.4 µV rms output-noise estimate. Requires an
   audio-grade interface (MOTU M2/M4, RME Babyface, Cosmos APU) —
@@ -258,6 +268,7 @@ This stage is where Rev 2's novel circuitry gets bench-confirmed.
 ## Stage 5 — Daughterboard + integration
 
 **Populate (daughterboard fab — separate PCB):**
+
 - 2× 10 kΩ log audio pots (input level, L + R).
 - 2× 10 kΩ log audio pots (output level, L + R).
 - 2× 10 kΩ trim pots (clip threshold, L + R).
@@ -265,6 +276,7 @@ This stage is where Rev 2's novel circuitry gets bench-confirmed.
 - Mating header (IDC ribbon socket or Samtec stack-mount socket).
 
 **Verify:**
+
 - [ ] **5.1 Pot rotation matches level change.** L and R separately,
   both stages.
 - [ ] **5.2 Mute leg works.** CCW = silence, no leakage with full
