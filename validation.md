@@ -132,7 +132,7 @@ enough to fold back on a short before damage.
   on DIN-5 OUT. Notes sent in should reappear at OUT, exercising
   the full IN-side optoisolation path *and* the OUT-side driver in
   a single loop.
-    - See daisy-midi-test repo.
+    - Firmware: `firmware/projects/test-midi/`.
 - [ ] **2.5 SD card.** Mount + read a card from a test program. **NOT RUN** I'm not in the mood to solder that thing :P
 
 ## Stage 3 — Audio output stage
@@ -154,16 +154,20 @@ spectral check (3.4) runs without depending on input-side silicon.
 
 ### Calibrate:
 
-- [ ] **3.1 Output gain trim, channel L.**
+- [x] **3.1 Output gain trim, channel L.**
     1. Set the L output level pot fully clockwise on the
        daughterboard.
     2. Play a digital full-scale 1 kHz sine from the Seed.
     3. Scope differential XLR output.
-    4. Adjust R_fb_trim until output reads +24 dBu peak (12.28 V p-p
-       differential).
+    4. Adjust R_fb_trim until the differential output reads +24 dBu
+       (12.28 Vrms = 34.73 V p-p on the scope math channel A−B, or
+       17.36 V p-p per leg single-ended assuming balanced output).
     5. Lock the trim with nail polish / trim paint.
-- [ ] **3.2 Output gain trim, channel R.** Same procedure on R.
-  L/R within ~0.2 dB after both trims locked.
+- [x] **3.2 Output gain trim, channel R.** Same procedure on R.
+  L/R within ~0.2 dB after both trims locked. See F1 in findings.
+  **Done (Board 1, post-F1 R_fb swap):** both channels calibrated to
+  +24 dBu at full gain; L/R match set by ear — scope p-p reading
+  jittered in the mV range so a numeric delta wasn't recorded.
 
 ### Verify:
 
@@ -287,6 +291,75 @@ This stage is where Rev 2's novel circuitry gets bench-confirmed.
   output, both channels, levelled to taste.
 - [ ] **5.5 Soak / listen test.** Real audio source for 30+ min —
   hum, hiss, intermittents, thermal drift.
+
+## Findings
+
+### F1 — Output gain stage clips at R_fb = 15 kΩ on ±12 V rails
+
+**Symptom (Board 1, Stage 3.1):** With R_fb_fixed = 15 kΩ + 10 kΩ
+trim, the trim had to be dialled fully CCW (R_fb_total = 15 kΩ,
+gain 6.82×) to get an undistorted output. Any rotation above the
+end stop clipped at 0 dBFS.
+
+**Bench measurements:**
+
+- Codec output, single-ended on the codec side of R5/R6, at 0 dBFS
+  1 kHz sine (sent via `firmware/projects/calibrate-output/`):
+  **3.43 V p-p = 1.213 Vrms = +3.89 dBu**.
+- ±12 V rails under signal load: **±12.12 V**, no sag.
+
+**Analysis:** OPA1656 on ±12.12 V swings to ~±11.6 V peak under
+the THAT1646 + 10 kΩ pot load — ~8.2 Vrms = **+20.5 dBu SE** =
+**+26.5 dBu differential** at the rail limit. At gain 6.82× the
+target OPA output is 1.213 × 6.82 = 8.27 Vrms = +20.6 dBu SE,
+which is 0.1 dB into clipping. Matches the bench.
+
+The Rev 2 design memo's "+21 to +25.6 dBu peak" headroom estimate
+assumed ~1.5 dB more rail clearance than the OPA1656 actually
+delivers on ±12 V. The 15 kΩ fixed value was set under that
+optimistic ceiling.
+
+**Resolution:** Swap R_fb_fixed (R2, R7) from 15 kΩ to **6.8 kΩ**
+(or closest E12 from stock — 5.6 kΩ also workable). Keep the
+10 kΩ Bourns trim. New range 6.8–16.8 kΩ → gain 3.09× to 7.64× →
+peak differential output +19.7 to +27.6 dBu (OPA clip ceiling
++26.5 dBu).
+
+- **+24 dBu calibration target lands at trim ≈ 44 % rotation** —
+  near mid-pot, best resolution per turn and best tolerance margin
+  between L and R during 3.2 channel-match.
+- Top of trim travel sits ~1.1 dB past OPA clip — provides margin
+  for component tolerance and lets the calibration procedure verify
+  headroom by dialling up to clip and backing off.
+- Minimum gain 3.09× = +19.7 dBu diff does *not* reach the +18 dBu
+  consumer level. Acceptable — user can attenuate at the output
+  level pot on the daughterboard if a lower nominal is needed.
+
+**Action:** Swap R2 and R7 to 6.8 kΩ (or in-stock equivalent) on
+all populated boards; update the Stage 3 Populate parts list before
+the next build. Re-run 3.1 / 3.2 after the swap.
+
+### F2 — GPIO header collides with Seed USB during programming
+
+**Symptom (Board 1):** The GPIO breakout header on the main PCB sits
+close enough to the Daisy Seed's USB connector that a USB cable
+plugged in for programming/DFU fouls the header (or anything mated
+into it). Programming the Seed in-circuit while the daughterboard
+ribbon is connected is awkward at best.
+
+**Resolution:** TBD — two candidate directions:
+
+- **PCB-side fix (Rev 3):** Move the GPIO header further from the
+  Seed USB cutout so a standard USB-micro plug + boot has clearance.
+  Cheaper if we're already respinning for other reasons.
+- **BOM-side fix (could apply to remaining Rev 2 boards):** Swap
+  the GPIO header for a low-profile variant (e.g. surface-mount or
+  shrouded low-stack), so its mating connector clears the USB plug.
+  Constrains the daughterboard cable choice — needs cross-check
+  against the existing mating part.
+
+**Action:** Defer to Rev 3 issue triage. Don't change the Rev 2
+schematic / PCB / BOM mid-validation.
 
 ## Equipment
 

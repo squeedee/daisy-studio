@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>MIDI Through Tester</title>
+<style>
+  :root {
+    --bg: #14171a;
+    --panel: #1d2226;
+    --line: #2c333a;
+    --text: #e8edf2;
+    --muted: #8a96a3;
+    --accent: #4ec9b0;
+    --warn: #e8a33d;
+    --err: #e85f5f;
+    --ok: #4ec9b0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin-bottom: 24px; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .row + .row { margin-top: 10px; }
+  label { color: var(--muted); min-width: 70px; }
+  select, button, input[type="number"] {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font: inherit;
+  }
+  select { min-width: 240px; }
+  button {
+    cursor: pointer;
+    transition: background .1s;
+  }
+  button:hover:not(:disabled) { background: var(--line); }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  button.primary { background: var(--accent); color: #000; border-color: var(--accent); }
+  button.primary:hover:not(:disabled) { filter: brightness(1.1); }
+  .indicator {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #333; transition: background .05s, box-shadow .05s;
+    display: inline-block;
+  }
+  .indicator.on {
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .indicator.tx.on { background: var(--warn); box-shadow: 0 0 12px var(--warn); }
+  .stat { color: var(--muted); font-size: 12px; }
+  .stat b { color: var(--text); }
+  #log {
+    height: 320px;
+    overflow-y: auto;
+    font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 8px 10px;
+  }
+  .log-row { white-space: pre; }
+  .log-row.tx { color: var(--warn); }
+  .log-row.rx { color: var(--ok); }
+  .log-row.info { color: var(--muted); }
+  .log-row.err { color: var(--err); }
+  .pulse {
+    display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--muted);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .pulse.tx { background: var(--warn); }
+  .pulse.rx { background: var(--ok); }
+</style>
+</head>
+<body>
+  <h1>MIDI Through Tester</h1>
+  <div class="sub">Sends MIDI to the selected output and listens on the selected input. Pick the same physical link in both directions to verify your thru path (real DIN thru, or the Daisy Seed echo firmware).</div>
+
+  <div class="panel">
+    <div class="row">
+      <label for="inSel">Input</label>
+      <select id="inSel"></select>
+      <span class="indicator" id="rxLed" title="Last RX"></span>
+      <span class="stat">RX <b id="rxCount">0</b></span>
+    </div>
+    <div class="row">
+      <label for="outSel">Output</label>
+      <select id="outSel"></select>
+      <span class="indicator tx" id="txLed" title="Last TX"></span>
+      <span class="stat">TX <b id="txCount">0</b></span>
+    </div>
+    <div class="row">
+      <button id="refreshBtn">Rescan ports</button>
+      <span class="stat" id="status">Initializing…</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <button id="noteBtn" class="primary">Send test note</button>
+      <label for="noteNum" style="min-width:auto;">note</label>
+      <input id="noteNum" type="number" min="0" max="127" value="60" style="width:72px;">
+      <label for="noteCh" style="min-width:auto;">ch</label>
+      <input id="noteCh" type="number" min="1" max="16" value="1" style="width:56px;">
+      <button id="ccBtn">Send CC 7=64</button>
+      <button id="sysexBtn">Send SysEx (mfr 0x7D)</button>
+    </div>
+    <div class="row">
+      <button id="rtBtn" class="primary">Round-trip test ×8</button>
+      <span class="stat" id="rtStat">—</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="row" style="justify-content: space-between;">
+      <strong>Activity log</strong>
+      <button id="clearBtn">Clear</button>
+    </div>
+    <div id="log" style="margin-top:10px;"></div>
+  </div>
+
+<script>
+"use strict";
+
+const $ = (id) => document.getElementById(id);
+const inSel = $("inSel"), outSel = $("outSel");
+const rxLed = $("rxLed"), txLed = $("txLed");
+const rxCountEl = $("rxCount"), txCountEl = $("txCount");
+const logEl = $("log");
+const statusEl = $("status");
+const rtStat = $("rtStat");
+
+let midi = null;
+let currentIn = null, currentOut = null;
+let rxCount = 0, txCount = 0;
+
+function log(kind, text) {
+  const row = document.createElement("div");
+  row.className = "log-row " + kind;
+  const t = new Date();
+  const ts = t.toLocaleTimeString([], { hour12: false }) + "." + String(t.getMilliseconds()).padStart(3, "0");
+  row.textContent = `${ts}  ${kind.padEnd(4)}  ${text}`;
+  logEl.appendChild(row);
+  while (logEl.children.length > 500) logEl.removeChild(logEl.firstChild);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function flash(led) {
+  led.classList.add("on");
+  setTimeout(() => led.classList.remove("on"), 90);
+}
+
+function toHex(bytes) {
+  return Array.from(bytes, b => b.toString(16).padStart(2, "0").toUpperCase()).join(" ");
+}
+
+function describe(bytes) {
+  if (bytes.length === 0) return "(empty)";
+  const s = bytes[0];
+  if (s === 0xF0) {
+    const inner = bytes.slice(1, bytes[bytes.length-1] === 0xF7 ? -1 : undefined);
+    let mfr, payload;
+    if (inner[0] === 0x00 && inner.length >= 3) {
+      mfr = `00 ${inner[1].toString(16).padStart(2,"0").toUpperCase()} ${inner[2].toString(16).padStart(2,"0").toUpperCase()}`;
+      payload = inner.slice(3);
+    } else {
+      mfr = inner[0]?.toString(16).padStart(2,"0").toUpperCase();
+      payload = inner.slice(1);
+    }
+    return `SysEx mfr=${mfr} payload=[${toHex(payload)}] len=${bytes.length}`;
+  }
+  if (s >= 0xF8) {
+    const rt = { 0xF8:"TimingClock", 0xFA:"Start", 0xFB:"Continue", 0xFC:"Stop", 0xFE:"ActiveSensing", 0xFF:"Reset" }[s] || "RT?";
+    return `${rt}`;
+  }
+  const type = s & 0xF0, ch = (s & 0x0F) + 1;
+  switch (type) {
+    case 0x80: return `NoteOff ch${ch} n=${bytes[1]} v=${bytes[2]}`;
+    case 0x90: return `${bytes[2]===0?"NoteOff":"NoteOn"} ch${ch} n=${bytes[1]} v=${bytes[2]}`;
+    case 0xA0: return `PolyAT ch${ch} n=${bytes[1]} p=${bytes[2]}`;
+    case 0xB0: return `CC ch${ch} c=${bytes[1]} v=${bytes[2]}`;
+    case 0xC0: return `PC ch${ch} p=${bytes[1]}`;
+    case 0xD0: return `ChAT ch${ch} p=${bytes[1]}`;
+    case 0xE0: return `PitchBend ch${ch} v=${(bytes[2]<<7)|bytes[1]}`;
+    default:   return `[${toHex(bytes)}]`;
+  }
+}
+
+function populatePorts() {
+  if (!midi) return;
+  const remember = (sel) => sel.value;
+  const fill = (sel, ports) => {
+    const prev = remember(sel);
+    sel.innerHTML = "";
+    const none = document.createElement("option");
+    none.value = ""; none.textContent = "— none —";
+    sel.appendChild(none);
+    for (const port of ports) {
+      const opt = document.createElement("option");
+      opt.value = port.id;
+      opt.textContent = `${port.name}${port.manufacturer ? ` (${port.manufacturer})` : ""}`;
+      sel.appendChild(opt);
+    }
+    if (prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+  };
+  fill(inSel, [...midi.inputs.values()]);
+  fill(outSel, [...midi.outputs.values()]);
+  applySelection();
+}
+
+function applySelection() {
+  if (currentIn) { currentIn.onmidimessage = null; currentIn = null; }
+  const inId = inSel.value;
+  if (inId && midi.inputs.has(inId)) {
+    currentIn = midi.inputs.get(inId);
+    currentIn.onmidimessage = onMidi;
+  }
+  currentOut = outSel.value && midi.outputs.has(outSel.value) ? midi.outputs.get(outSel.value) : null;
+  statusEl.textContent = `In: ${currentIn?.name ?? "—"}  ·  Out: ${currentOut?.name ?? "—"}`;
+}
+
+// Round-trip tracker: map from message-key → tx timestamp.
+const pending = new Map();
+function keyFor(bytes) { return Array.from(bytes).join(","); }
+
+function onMidi(e) {
+  rxCount++; rxCountEl.textContent = rxCount;
+  flash(rxLed);
+  const b = e.data;
+  const k = keyFor(b);
+  const now = performance.now();
+  if (pending.has(k)) {
+    const dt = now - pending.get(k);
+    pending.delete(k);
+    replyTimes.set(k, now);
+    log("rx", `${describe(b)}    ⤴ ${dt.toFixed(1)} ms`);
+  } else {
+    log("rx", describe(b));
+  }
+}
+
+function send(bytes, { trackRoundtrip = false } = {}) {
+  if (!currentOut) { log("err", "no output port selected"); return false; }
+  try {
+    currentOut.send(bytes);
+  } catch (err) {
+    log("err", `send failed: ${err.message}`);
+    return false;
+  }
+  txCount++; txCountEl.textContent = txCount;
+  flash(txLed);
+  log("tx", describe(bytes));
+  if (trackRoundtrip) {
+    const k = keyFor(bytes);
+    pending.set(k, performance.now());
+    setTimeout(() => pending.delete(k), 1500);
+  }
+  return true;
+}
+
+// --- Control wiring ---
+
+$("noteBtn").addEventListener("click", () => {
+  const note = Math.max(0, Math.min(127, parseInt($("noteNum").value, 10) || 60));
+  const ch   = Math.max(1, Math.min(16,  parseInt($("noteCh").value, 10) || 1)) - 1;
+  if (!send([0x90 | ch, note, 100], { trackRoundtrip: true })) return;
+  setTimeout(() => send([0x80 | ch, note, 0], { trackRoundtrip: true }), 120);
+});
+
+$("ccBtn").addEventListener("click", () => {
+  const ch = Math.max(1, Math.min(16, parseInt($("noteCh").value, 10) || 1)) - 1;
+  send([0xB0 | ch, 7, 64], { trackRoundtrip: true });
+});
+
+$("sysexBtn").addEventListener("click", () => {
+  // 0x7D is the "non-commercial / educational" manufacturer ID
+  send([0xF0, 0x7D, 0x01, 0x02, 0x03, 0x04, 0xF7], { trackRoundtrip: false });
+  log("info", "expect echo: F0 7D <len-lsb> <len-msb> F7  (from Daisy firmware)");
+});
+
+$("rtBtn").addEventListener("click", async () => {
+  if (!currentIn)  { rtStat.textContent = "no input port";  return; }
+  if (!currentOut) { rtStat.textContent = "no output port"; return; }
+
+  rtStat.textContent = "running…";
+  const samples = [];
+  let miss = 0;
+  const ch = 0;
+
+  for (let i = 0; i < 8; i++) {
+    const note  = 60 + i;
+    const bytes = [0x90 | ch, note, 100];
+    const t0    = performance.now();
+    if (!send(bytes, { trackRoundtrip: true })) { rtStat.textContent = "aborted"; return; }
+    const rxTime = await waitForKey(keyFor(bytes), 400);
+    if (rxTime != null) samples.push(rxTime - t0); else miss++;
+    send([0x80 | ch, note, 0]);
+    await sleep(120);
+  }
+
+  if (samples.length) {
+    const avg = samples.reduce((a, b) => a + b, 0) / samples.length;
+    rtStat.textContent = `${samples.length}/${samples.length + miss} ok · min ${Math.min(...samples).toFixed(1)} avg ${avg.toFixed(1)} max ${Math.max(...samples).toFixed(1)} ms`;
+  } else {
+    rtStat.textContent = `0/${miss} returned — check the thru path`;
+  }
+});
+
+function waitForKey(key, timeoutMs) {
+  return new Promise(resolve => {
+    const start = performance.now();
+    const tick = () => {
+      const v = replyTimes.get(key);
+      if (v != null) { replyTimes.delete(key); resolve(v); return; }
+      if (performance.now() - start > timeoutMs) { resolve(null); return; }
+      requestAnimationFrame(tick);
+    };
+    tick();
+  });
+}
+
+// `replyTimes` is populated by onMidi for any key currently in `pending`,
+// so both the live single-shot path and the round-trip loop share one mechanism.
+const replyTimes = new Map();
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+$("inSel").addEventListener("change", applySelection);
+$("outSel").addEventListener("change", applySelection);
+$("refreshBtn").addEventListener("click", populatePorts);
+$("clearBtn").addEventListener("click", () => { logEl.innerHTML = ""; });
+
+// --- Init ---
+
+(async function init() {
+  if (!navigator.requestMIDIAccess) {
+    statusEl.textContent = "Web MIDI not supported in this browser (try Chrome/Edge).";
+    log("err", "navigator.requestMIDIAccess unavailable");
+    return;
+  }
+  try {
+    midi = await navigator.requestMIDIAccess({ sysex: true });
+  } catch (err) {
+    statusEl.textContent = "MIDI access denied or unavailable.";
+    log("err", `requestMIDIAccess: ${err.message}`);
+    return;
+  }
+  midi.onstatechange = (e) => {
+    log("info", `port ${e.port.state}: ${e.port.type} "${e.port.name}"`);
+    populatePorts();
+  };
+  populatePorts();
+  log("info", `MIDI ready — ${midi.inputs.size} input(s), ${midi.outputs.size} output(s)`);
+})();
+</script>
+</body>
+</html>
