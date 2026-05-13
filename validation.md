@@ -231,17 +231,27 @@ This stage is where Rev 2's novel circuitry gets bench-confirmed.
 ### Verify:
 
 - [ ] **4.1 Reference rails.** DMM at +VCLAMP_L, +VCLAMP_R, −VCLAMP_L,
-  −VCLAMP_R: each ±1.51 to ±1.62 V (nominal 1.565 V, ±1 % R + ±2 %
-  rail). Confirm per-channel independence — driving overdrive on one
-  channel must not move the other channel's reference.
+  −VCLAMP_R. **Note: asymmetric per F5** (clip-threshold pot loading
+  the + dividers):
+    - −VCLAMP_L/R: **−1.51 to −1.62 V** (nominal −1.565 V, R ±1 % +
+      rail ±2 %).
+    - +VCLAMP_L/R: **+1.34 to +1.45 V** (nominal +1.40 V, R ±1 % +
+      pot ±5 % end-to-end + rail ±2 %).
+    - Confirm per-channel independence — driving overdrive on one
+      channel must not move the other channel's reference.
 - [ ] **4.2 Clean-signal gain sweep.** Inject +4 / +14 dBu balanced
   at the THAT1246. Scope the Seed input pin across pot travel.
   Scaling matches the README Performance table — clean at +4 dBu,
   OPA output ~3.3 V peak at +14 dBu, no clamp conduction.
 - [ ] **4.3 Pathological overdrive — codec_max.** +24 dBu balanced
   in, input level pot fully clockwise (worst case). Scope the Seed
-  input pin: peak ≤ 4.8 V. Sim says 4.49–4.64 V across tolerance
-  corners; want ≥ 100 mV margin to 4.8 V.
+  input pin: **p-p ≤ 4.8 V** (set by the Seed's input-pin ESD clamp
+  diodes — the codec itself is AC-coupled and re-biased to mid-rail
+  internally). Sim says **4.49–4.64 V p-p** across tolerance
+  corners (assumed symmetric ±1.565 V VCLAMP); want ≥ 100 mV
+  margin to 4.8 V p-p. Per F5, the actual clamp is asymmetric —
+  expect ~+2.08 V on positive peaks, ~−2.27 V on negative peaks
+  (≈ 4.35 V p-p) on the bench.
 - [ ] **4.4 Op-amp recovery.** Drop input back to +4 dBu after the
   +24 dBu overdrive — signal returns clean within < 100 µs, no
   latch-up, no rail-stick.
@@ -257,8 +267,8 @@ This stage is where Rev 2's novel circuitry gets bench-confirmed.
 
 - [ ] **4.7 codec_max across boards.** Repeat 4.3 on all five.
   Single-board codec_max is not representative; tolerance corner
-  validation needs the population. Want every board ≤ 4.8 V with
-  ≥ 100 mV margin.
+  validation needs the population. Want every board ≤ 4.8 V p-p
+  with ≥ 100 mV margin.
 
 **Open noise-floor item:**
 
@@ -360,6 +370,137 @@ ribbon is connected is awkward at best.
 
 **Action:** Defer to Rev 3 issue triage. Don't change the Rev 2
 schematic / PCB / BOM mid-validation.
+
+### F3 — H11L1SM optoisolator pads still under-sized
+
+**Symptom (Board 1, pre-build inspection / hand-soldering):** The Rev 2
+H11L1SM footprint pads are *just* wide enough to capture the package
+leads — soldering is workable but there's almost no land beyond the
+lead edges for fillet or for visual inspection. Better than Rev 1
+(where the footprint was outright wrong, flagged in pre-build sanity)
+but still under IPC-recommended land allowance.
+
+**Resolution:** Rev 3 — extend the pad lengths outward (away from the
+package body) so each lead sits on a land with normal toe/heel fillet
+allowance. No change to the pitch or pad width (which appear to match
+the package).
+
+**Action:** Defer to Rev 3 issue triage. No change to Rev 2 PCB or
+schematic. Pre-build sanity item ("H11L1SM footprint matches the
+populated package") should be updated for Rev 3 to confirm the new
+land geometry.
+
+### F4 — BJT clamp symbol/footprint pin mismatch (E↔B swapped)
+
+**Symptom (Board 1, Stage 4.1):** All four VCLAMP reference nodes
+read ±0.65 V at idle instead of the expected ±1.565 V:
+
+| Node | Expected | Measured |
+|---|---|---|
+| VCLAMP_R+ | +1.565 V | +0.652 V |
+| VCLAMP_R− | −1.565 V | −0.649 V |
+| VCLAMP_L+ | +1.565 V | +0.677 V |
+| VCLAMP_L− | −1.565 V | −0.622 V |
+
+All four sit at ~±V_BE — a forward-biased BJT base-emitter junction
+is clamping each reference to one diode drop from the signal node
+(which idles near 0 V).
+
+**Root cause:** The schematic symbol for the BJTs uses the TO-92
+pin convention **1=E, 2=B, 3=C** but the assigned footprint is
+**SOT-23 SMD** (MMBT3904 / MMBT3906), whose JEDEC standard pinout
+is **1=B, 2=E, 3=C**. When the SOT-23 parts are populated correctly
+per their package markings, physical Base and physical Emitter end
+up swapped relative to schematic intent (Collector matches).
+
+Q1 (NPN) PCB pad assignment, as a representative example:
+
+| Pad | Schematic pinfunction | Net | Physical SOT-23 pin |
+|---|---|---|---|
+| 1 | E | AUDIO_IN_L (signal) | **Base** |
+| 2 | B | −VCLAMP_L | **Emitter** |
+| 3 | C | GND | Collector ✓ |
+
+At idle (V_B ≈ 0 V on signal, divider tries to pull V_E to −1.565 V),
+V_BE = 0 − (−1.565) = +1.565 V → BE forward-biased hard → BJT
+conducts continuously → base-emitter clamps the −VCLAMP_L node up
+to V_B − 0.65 V = −0.65 V. ✓ Matches bench measurement.
+
+Same mechanism mirror-polarity for the PNPs on +VCLAMP.
+
+**Consequences:**
+
+- All four BJT clamps are non-functional as designed.
+- Clean-signal gain sweep (4.2) is unaffected — BJTs only matter
+  on overdrive.
+- **Codec_max test (4.3) is unsafe to run with stock Rev 2 boards:**
+  without functional clamps, the OPA1656 will rail-clip on +24 dBu
+  overdrive rather than being soft-clamped to ≤4.8 V at the Seed
+  pin. Could exceed the Seed's input rating.
+
+**Resolution:** Rev 3 — fix the symbol/footprint pairing. Either
+update the symbol's pin assignment to JEDEC SOT-23 (1=B, 2=E, 3=C),
+or assign a footprint whose pad numbering matches the existing
+symbol. The Sim.Pins property on the symbol must agree with the
+footprint mapping after the fix.
+
+**Action (Board 1, this validation pass):** Dead-bug rework — lift
+Q1–Q4, swap pins 1↔2 with magnet wire, then continue Stage 4.
+Remaining four boards depend on whether dead-bug rework is worth
+the time vs. waiting for Rev 3.
+
+### F5 — +VCLAMP loaded by clip-threshold trim pot (asymmetric clamps)
+
+**Symptom (Board 1, Stage 4.1, post-F4 dead-bug rework):**
+
+| Node | Stage 4.1 "expected" | Measured |
+|---|---|---|
+| −VCLAMP_L/R | −1.565 V | **−1.57 V** ✓ |
+| +VCLAMP_L/R | +1.565 V | **+1.38 V** ✗ |
+
+Both polarities behave consistently across L and R. With rails at
+±12.1 V (no sag) and the BJTs correctly oriented after rework, the
++VCLAMP nodes still sit ~12 % low.
+
+**Root cause:** The clip-threshold trim pots (RV7 channel L, RV8
+channel R — both 10 kΩ) are wired as 3-terminal dividers from
++VCLAMP_x to GND, wiper feeding the LM2903 comparator's IN_THRESH_x
+input. The wiper draws no current (comparator input is high-Z), so
+each pot acts as a constant **10 kΩ resistor from +VCLAMP to GND** —
+permanently in parallel with the 1.5 kΩ bottom resistor of the
++VCLAMP divider.
+
+| Side | Bottom-to-GND eff. | Divider @ ±12.1 V | Measured |
+|---|---|---|---|
+| − | 1.5k (no pot) | 12.1 × 1.5 / 11.5 = **−1.578 V** | −1.57 V ✓ |
+| + | 1.5k ∥ 10k = **1.304k** | 12.1 × 1.304 / 11.304 = **+1.396 V** | +1.38 V ✓ |
+
+Both sides match the divider math to DMM precision.
+
+**Consequences:**
+
+- **Stage 4.1 +VCLAMP spec is wrong** — the original "±1.51 to ±1.62 V"
+  expected window assumed no pot loading. Real +VCLAMP nominal is
+  **~+1.40 V** with the trim pot population. Realistic tolerance
+  window: ~+1.34 to +1.45 V (R ±1 %, pot ±5 % end-to-end,
+  rail ±2 %).
+- **BJT clamp thresholds become asymmetric:** positive overdrive
+  clamps signal at ~+2.03 V (= +1.38 + V_BE); negative overdrive
+  clamps at ~−2.22 V (= −1.57 − V_BE). ~9 % earlier clamping on
+  positives.
+- **Stage 4.3 (codec_max) impact:** the asymmetric clamp lowers
+  the positive-peak Seed pin voltage relative to the sim, which
+  used a symmetric ±1.565 V reference. Bench will confirm; needs
+  measurement before settling the new spec.
+
+**Resolution (Rev 3):** Either swap RV7/RV8 to a higher-value trim
+(47 kΩ or 100 kΩ — loading on +VCLAMP drops to <3 %, reaching
+symmetric ±1.565 V again), or move the clip-threshold derivation to
+its own divider off +12 V so it doesn't load +VCLAMP at all.
+
+**Action (Rev 2):** No hardware change. Update Stage 4.1's +VCLAMP
+tolerance inline; accept the asymmetric clamp behaviour as the
+Rev 2 reality and measure Stage 4.3 against it.
 
 ## Equipment
 
