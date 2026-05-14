@@ -502,6 +502,142 @@ its own divider off +12 V so it doesn't load +VCLAMP at all.
 tolerance inline; accept the asymmetric clamp behaviour as the
 Rev 2 reality and measure Stage 4.3 against it.
 
+### F6 — Input stage rails on small input; THAT1246 SENSE topology is fragile
+
+**Symptom (Board 1, Stage 4 input signal sweep):** With 200 mV peak
+on each AD2 WaveGen channel, 180° phased (= 400 mV peak differential
+= −8.7 dBu), R16 pad 1 (right-channel THAT1246 output) **and** the
+OPA1656 output (IN_OPA_R) both sit at ~20 V p-p, essentially a square
+wave following the input zero-crossings. Both stages railing at the
+±12 V supply. Same behaviour on the left channel. Expected OPA output
+for that input is ~240 mV peak (≈ −0.6× chain gain at −8.7 dBu in).
+
+**Root cause:** Rev 2 wires the THAT1246 SENSE pin (U4 pin 5,
+U5 pin 5) to the OPA1656's −IN summing junction — i.e., the OPA's
+virtual ground node, on the **OPA-side** of R8 / R16. This makes a
+*nested* feedback topology: THAT1246's internal output amplifier
+has **no local self-feedback**, and depends on the downstream
+OPA1656 loop (R9 feedback) to close the loop through R16. The
+intent is "active ground sensing" — the OPA's virtual ground
+becomes the THAT1246's output reference.
+
+That topology is fragile in practice. The THAT1246's internal amp
+is open-loop unless the OPA's loop is closed and stable; any
+startup glitch, marginal phase margin, or upstream-induced
+transient can latch the system at the rails. Both stages then
+mutually saturate each other (THAT railed → R16 drives OPA −IN
+hard → OPA rails → no recovery). Both channels exhibit the failure
+identically because the topology is mirrored.
+
+User also identified that on the physical PCB, the SENSE trace
+visually appears to be routed to the OUTPUT side of R8 / R16 rather
+than to the OPA −IN side per the schematic netlist — possible
+layout error compounding the topology fragility.
+
+**Consequences:**
+
+- Stage 4 input path is non-functional on Rev 2 boards as built.
+- Stage 4.1 (±VCLAMP) unaffected — measured with no audio drive.
+- Stages 4.2–4.6 cannot run on stock Rev 2 boards without rework.
+
+**Resolution (Rev 3):** Drop the active-ground-sense topology and
+adopt the THAT1246 datasheet textbook application — tie SENSE
+directly to OUTPUT (or to the destination ground at the load
+side), and let the OPA1656 act as a conventional downstream
+inverting gain stage with its own self-contained R9 / R16
+feedback. Two independently stable stages, no nested loop. REF /
+pin 1 stays at AGND. Update both the schematic and PCB.
+
+**Action (Board 1, this validation pass):** Rework on each
+THAT1246 — cut the SENSE trace from its current destination, and
+short-jumper **U4 pin 5 → U4 pin 6** and **U5 pin 5 → U5 pin 6**
+(SENSE tied directly to OUTPUT at the chip). The OPA −IN node is
+left fed only by R16 (input) and R9 (feedback) as a normal
+inverting amp. Sanity check: −8.7 dBu diff input should give a
+clean ~240 mV-peak sine at the OPA output, not a railed square.
+
+### F7 — Input-stage THD floor on Board 1 limited by AD2 measurement rig
+
+**Symptom (Board 1, post-F6 rework, daughterboard disconnected):**
+Spectrum-based THD measurement on AD2 at the OPA1656 output
+(IN_OPA_R), 997 Hz balanced test tone via WaveGen (5 V amplitude
+per leg, 180° phased), 32-average RMS, Flat Top window.
+
+| Drive level (per leg) | Diff input | THD measured |
+|---|---|---|
+| Shorted (no signal) | — | **−62.0268 dBc** |
+| 2 V p-p (≈ +5 dBu) | 4 V p-p | **−62.0268 dBc** |
+| 18 V p-p (≈ +23 dBu) | 36 V p-p | −56.77 dBc |
+| 19 V p-p (≈ +24 dBu) | 38 V p-p | **−57.43 dBc** |
+| 20 V p-p (≈ +25 dBu) | 40 V p-p | −57.20 dBc |
+
+**Analysis:**
+
+- The shorted-input reading (−62.0268 dBc) is bit-identical to the
+  +5 dBu reading. That confirms the THD measurement is hitting an
+  instrument-side noise floor at exactly **−62 dBc**, not measuring
+  the chain's actual harmonic content at low drive.
+- The 18–20 V readings sit ~5 dB above the floor and *do* track
+  with input level, so the ~−57 dBc figure represents real
+  soft-clip distortion, though the absolute value may be 1–3 dB
+  understated by floor contribution.
+- Soft-clip onset around **18–19 V p-p per leg (≈ +23–24 dBu
+  balanced)** — consistent with OPA1656 rail behaviour on ±12 V
+  under light load. Above 20 V the OPA enters fully developed
+  soft-clip; THD plateaus rather than climbing further because the
+  chip rail-pins symmetrically.
+- The original "3–9 kHz bump" observed on the scope FFT when
+  stepping 19 → 20 V is the 3rd / 5th / 7th / 9th odd harmonics of
+  997 Hz — exactly the spectral signature of symmetric soft-clip.
+
+**Consequences:**
+
+- **Input section's small-signal THD is below the −62 dBc AD2
+  measurement floor.** Datasheet-consistent estimate is
+  ~−95 to −100 dBc at +5 dBu, but un-measurable on this rig.
+- For Stage 4.2 (clean-signal gain sweep at +4 / +14 dBu) the
+  chain is qualitatively confirmed clean — no audible or
+  measurable distortion until soft-clip onset above +20 dBu.
+- For Stage 4.3 (codec_max at +24 dBu) the OPA is already at the
+  edge of soft-clip, and the BJT clamps downstream of the pot will
+  dominate the final waveform at the Seed pin (per F4 / F5
+  analysis).
+
+**Resolution:** No hardware change needed; this is a measurement-
+rig limitation, not a DUT issue. For any future spec-sheet-grade
+THD numbers (e.g., Rev 3 marketing claims), characterize with a
+real audio analyzer — Cosmos APU, RME ADI-2 Pro, MOTU M2/M4 +
+loopback, or Audio Precision. Typical floors ~−110 to −130 dBc,
+plenty of headroom to resolve the chain's actual distortion.
+
+**Action:** None on Rev 2. Document the AD2 measurement floor as a
+known limitation of this validation pass. When a better audio
+analyzer becomes available, re-run +5 dBu and +14 dBu THD to fill
+in the dynamic range and confirm the chain's actual clean-signal
+floor.
+
+### F8 — RV7 / RV8 clip-threshold trim pots placed on swapped sides
+
+**Symptom (Board 1, Stage 4.6 trim prep):** The clip-threshold
+trim pots **RV7 (channel L)** and **RV8 (channel R)** are
+positioned on the PCB on the opposite physical sides from their
+respective channel sections — i.e., RV7 sits on the right-channel
+side of the board layout and RV8 on the left side, mirrored
+relative to the channel groupings of the rest of the input stage.
+
+**Consequences:** No electrical issue — just an ergonomic /
+build-error trap. During trim it's easy to adjust the wrong
+channel without realizing it, and during board population it
+invites mis-stuffing. Compounds with F2 (GPIO header position)
+as a class of layout-usability fixes due in Rev 3.
+
+**Resolution (Rev 3):** Re-place RV7 and RV8 in the PCB layout so
+each sits adjacent to its respective channel's BJT clamp / op-amp
+group. No schematic change required.
+
+**Action:** None on Rev 2 boards. Mark the silkscreen with hand
+labels if doing further trim work; deferred to Rev 3 issue triage.
+
 ## Equipment
 
 - **Digilent Analog Discovery 2** — scope + spectrum analyzer + arb

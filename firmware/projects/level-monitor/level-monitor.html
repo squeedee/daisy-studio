@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Daisy Level Monitor</title>
+<style>
+  :root {
+    --bg: #14171a;
+    --panel: #1d2226;
+    --line: #2c333a;
+    --text: #e8edf2;
+    --muted: #8a96a3;
+    --accent: #4ec9b0;
+    --warn: #e8a33d;
+    --err: #e85f5f;
+    --ok: #4ec9b0;
+    --bar-rms: #4ec9b0;
+    --bar-peak: #6dd9c4;
+    --bar-hold: #ffffff;
+    --bar-clip: #e85f5f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin-bottom: 20px; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  button {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 8px 14px;
+    font: inherit;
+    cursor: pointer;
+  }
+  button:hover:not(:disabled) { background: var(--line); }
+  button.primary { background: var(--accent); color: #000; border-color: var(--accent); }
+  button.primary:hover:not(:disabled) { filter: brightness(1.1); }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  .stat { color: var(--muted); font-size: 12px; }
+  .stat b { color: var(--text); }
+  .meters {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: stretch;
+    padding: 16px 8px 24px;
+  }
+  .meter-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .meter-label {
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 0.05em;
+  }
+  .meter-wrap {
+    position: relative;
+    width: 56px;
+    height: 320px;
+    display: flex;
+  }
+  .scale {
+    position: absolute;
+    left: -42px;
+    top: 0;
+    bottom: 0;
+    width: 38px;
+    font: 10px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: var(--muted);
+  }
+  .scale .tick {
+    position: absolute;
+    right: 0;
+    transform: translateY(-50%);
+    text-align: right;
+    padding-right: 4px;
+    border-right: 1px solid var(--line);
+    width: 100%;
+  }
+  .meter {
+    position: relative;
+    flex: 1;
+    background: #0b0d0f;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: height 60ms linear;
+  }
+  .bar.rms { background: var(--bar-rms); opacity: 0.95; }
+  .bar.peak {
+    background: var(--bar-peak);
+    opacity: 0.35;
+  }
+  .hold-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--bar-hold);
+    box-shadow: 0 0 4px var(--bar-hold);
+    transition: bottom 80ms linear;
+  }
+  .clip-zone {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 8.33%;
+    background: linear-gradient(to bottom, rgba(232,95,95,0.18), transparent);
+    pointer-events: none;
+  }
+  .grid-line {
+    position: absolute;
+    left: 0; right: 0;
+    border-top: 1px dashed rgba(255,255,255,0.08);
+    pointer-events: none;
+  }
+  .readout {
+    font: 11px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: var(--muted);
+    text-align: center;
+    min-width: 110px;
+  }
+  .readout b { color: var(--text); }
+  .readout .clip { color: var(--err); }
+  .legend {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+  .legend .swatch {
+    display: inline-block;
+    width: 10px; height: 10px;
+    margin-right: 4px;
+    vertical-align: middle;
+    border-radius: 2px;
+  }
+  .swatch.rms { background: var(--bar-rms); }
+  .swatch.peak { background: var(--bar-peak); opacity: 0.5; }
+  .swatch.hold { background: var(--bar-hold); }
+</style>
+</head>
+<body>
+  <h1>Daisy Level Monitor</h1>
+  <div class="sub">
+    Reads the Daisy Seed's USB-CDC stream from <code>firmware/projects/level-monitor</code>
+    and displays per-channel L/R levels. Requires Web Serial (Chrome / Edge / Arc).
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <button id="connect" class="primary">Connect</button>
+      <button id="disconnect" disabled>Disconnect</button>
+      <button id="reset">Reset peak-hold</button>
+      <span class="stat">Status: <b id="status">disconnected</b></span>
+      <span class="stat">Rate: <b id="rate">— Hz</b></span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="legend">
+      <span><span class="swatch rms"></span>RMS</span>
+      <span><span class="swatch peak"></span>Peak</span>
+      <span><span class="swatch hold"></span>Peak-hold</span>
+    </div>
+    <div class="meters">
+      <div class="meter-block">
+        <div class="meter-label">L</div>
+        <div class="meter-wrap">
+          <div class="scale" id="scaleL"></div>
+          <div class="meter">
+            <div class="clip-zone"></div>
+            <div class="bar peak" id="barPeakL"></div>
+            <div class="bar rms" id="barRmsL"></div>
+            <div class="hold-line" id="holdL"></div>
+          </div>
+        </div>
+        <div class="readout" id="readoutL">
+          peak <b>–∞</b> dBFS<br>
+          rms <b>–∞</b> dBFS<br>
+          hold <b>–∞</b> dBFS
+        </div>
+      </div>
+      <div class="meter-block">
+        <div class="meter-label">R</div>
+        <div class="meter-wrap">
+          <div class="scale"></div>
+          <div class="meter">
+            <div class="clip-zone"></div>
+            <div class="bar peak" id="barPeakR"></div>
+            <div class="bar rms" id="barRmsR"></div>
+            <div class="hold-line" id="holdR"></div>
+          </div>
+        </div>
+        <div class="readout" id="readoutR">
+          peak <b>–∞</b> dBFS<br>
+          rms <b>–∞</b> dBFS<br>
+          hold <b>–∞</b> dBFS
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const SCALE_TOP_DB = 0;
+const SCALE_BOT_DB = -60;
+const SCALE_TICKS_DB = [0, -6, -12, -18, -24, -36, -48, -60];
+
+function linToDb(x) {
+  if (x <= 0) return -Infinity;
+  return 20 * Math.log10(x);
+}
+
+function dbToPct(db) {
+  if (db <= SCALE_BOT_DB || !isFinite(db)) return 0;
+  if (db >= SCALE_TOP_DB) return 100;
+  return ((db - SCALE_BOT_DB) / (SCALE_TOP_DB - SCALE_BOT_DB)) * 100;
+}
+
+function fmtDb(db) {
+  if (!isFinite(db)) return '–∞';
+  return db.toFixed(1);
+}
+
+function buildScales() {
+  const scales = document.querySelectorAll('.scale');
+  scales.forEach(scale => {
+    scale.innerHTML = '';
+    for (const db of SCALE_TICKS_DB) {
+      const pct = dbToPct(db);
+      const tick = document.createElement('div');
+      tick.className = 'tick';
+      tick.style.bottom = pct + '%';
+      tick.textContent = db.toString();
+      scale.appendChild(tick);
+    }
+  });
+  // Grid lines inside each meter
+  document.querySelectorAll('.meter').forEach(meter => {
+    SCALE_TICKS_DB.forEach(db => {
+      if (db === SCALE_TOP_DB || db === SCALE_BOT_DB) return;
+      const pct = dbToPct(db);
+      const line = document.createElement('div');
+      line.className = 'grid-line';
+      line.style.bottom = pct + '%';
+      meter.appendChild(line);
+    });
+  });
+}
+buildScales();
+
+const els = {
+  connect: document.getElementById('connect'),
+  disconnect: document.getElementById('disconnect'),
+  reset: document.getElementById('reset'),
+  status: document.getElementById('status'),
+  rate: document.getElementById('rate'),
+  barRmsL: document.getElementById('barRmsL'),
+  barPeakL: document.getElementById('barPeakL'),
+  holdL: document.getElementById('holdL'),
+  readoutL: document.getElementById('readoutL'),
+  barRmsR: document.getElementById('barRmsR'),
+  barPeakR: document.getElementById('barPeakR'),
+  holdR: document.getElementById('holdR'),
+  readoutR: document.getElementById('readoutR'),
+};
+
+let port = null;
+let reader = null;
+let abortCtrl = null;
+let frameCount = 0;
+let lastRateUpdate = performance.now();
+let holdResetTime = 0;
+
+function setStatus(text) { els.status.textContent = text; }
+
+function renderMeter(side, peak, rms, hold) {
+  const peakDb = linToDb(peak);
+  const rmsDb  = linToDb(rms);
+  const holdDb = linToDb(hold);
+
+  const peakPct = dbToPct(peakDb);
+  const rmsPct  = dbToPct(rmsDb);
+  const holdPct = dbToPct(holdDb);
+
+  const barRms  = side === 'L' ? els.barRmsL  : els.barRmsR;
+  const barPeak = side === 'L' ? els.barPeakL : els.barPeakR;
+  const holdEl  = side === 'L' ? els.holdL    : els.holdR;
+  const readout = side === 'L' ? els.readoutL : els.readoutR;
+
+  barRms.style.height  = rmsPct + '%';
+  barPeak.style.height = peakPct + '%';
+  holdEl.style.bottom  = holdPct + '%';
+
+  const clipCls = peak >= 0.999 ? ' class="clip"' : '';
+  readout.innerHTML =
+    `peak <b${clipCls}>${fmtDb(peakDb)}</b> dBFS<br>` +
+    `rms <b>${fmtDb(rmsDb)}</b> dBFS<br>` +
+    `hold <b>${fmtDb(holdDb)}</b> dBFS`;
+}
+
+function handleLine(line) {
+  const parts = line.trim().split(/\s+/);
+  if (parts.length !== 6) return;
+  const [pl, rl, hl, pr, rr, hr] = parts.map(parseFloat);
+  if ([pl, rl, hl, pr, rr, hr].some(v => Number.isNaN(v))) return;
+
+  let effHL = hl, effHR = hr;
+  if (holdResetTime > 0 && performance.now() - holdResetTime < 200) {
+    effHL = pl;
+    effHR = pr;
+  }
+
+  renderMeter('L', pl, rl, effHL);
+  renderMeter('R', pr, rr, effHR);
+
+  frameCount++;
+  const now = performance.now();
+  if (now - lastRateUpdate > 500) {
+    const hz = (frameCount * 1000) / (now - lastRateUpdate);
+    els.rate.textContent = hz.toFixed(0) + ' Hz';
+    frameCount = 0;
+    lastRateUpdate = now;
+  }
+}
+
+async function readLoop(signal) {
+  const decoder = new TextDecoderStream();
+  port.readable.pipeTo(decoder.writable, { signal }).catch(() => {});
+  reader = decoder.readable.getReader();
+  let buf = '';
+  try {
+    while(true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += value;
+      let idx;
+      while ((idx = buf.indexOf('\n')) >= 0) {
+        const line = buf.slice(0, idx);
+        buf = buf.slice(idx + 1);
+        handleLine(line);
+      }
+    }
+  } catch(e) {
+    // expected on abort
+  }
+}
+
+async function connect() {
+  if (!('serial' in navigator)) {
+    setStatus('Web Serial unsupported — use Chrome / Edge / Arc');
+    return;
+  }
+  try {
+    port = await navigator.serial.requestPort();
+    await port.open({ baudRate: 115200 });
+    setStatus('connected');
+    els.connect.disabled = true;
+    els.disconnect.disabled = false;
+    abortCtrl = new AbortController();
+    readLoop(abortCtrl.signal);
+  } catch (e) {
+    setStatus('error: ' + e.message);
+  }
+}
+
+async function disconnect() {
+  try {
+    if (abortCtrl) abortCtrl.abort();
+    if (reader) {
+      try { await reader.cancel(); } catch(e) {}
+    }
+    if (port) await port.close();
+  } catch(e) {}
+  port = null;
+  reader = null;
+  abortCtrl = null;
+  setStatus('disconnected');
+  els.rate.textContent = '— Hz';
+  els.connect.disabled = false;
+  els.disconnect.disabled = true;
+}
+
+els.connect.addEventListener('click', connect);
+els.disconnect.addEventListener('click', disconnect);
+els.reset.addEventListener('click', () => { holdResetTime = performance.now(); });
+</script>
+</body>
+</html>
