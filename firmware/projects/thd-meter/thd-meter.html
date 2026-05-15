@@ -159,6 +159,88 @@
     border: 1px solid var(--line);
     border-radius: 4px;
   }
+
+  /* Results panel split: left = numbers/table/spark, right = vertical level meter */
+  .results-wrap {
+    display: flex;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .results-left { flex: 1; min-width: 0; }
+  .level-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .level-col .lvl-label {
+    font: 600 11px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .level-meter-wrap {
+    position: relative;
+    width: 44px;
+    height: 360px;
+    display: flex;
+  }
+  .level-scale {
+    position: absolute;
+    left: -36px;
+    top: 0;
+    bottom: 0;
+    width: 32px;
+    font: 10px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: var(--muted);
+  }
+  .level-scale .tick {
+    position: absolute;
+    right: 0;
+    transform: translateY(-50%);
+    text-align: right;
+    padding-right: 4px;
+    border-right: 1px solid var(--line);
+    width: 100%;
+  }
+  .level-meter {
+    position: relative;
+    flex: 1;
+    background: #0b0d0f;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .level-bar {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    background: var(--bar);
+    transition: height 80ms linear;
+  }
+  .level-hold {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: #fff;
+    box-shadow: 0 0 4px #fff;
+    transition: bottom 120ms linear;
+  }
+  .level-clip {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 8.33%; /* ~ -5 dBFS marker zone */
+    background: linear-gradient(to bottom, rgba(232,95,95,0.18), transparent);
+    pointer-events: none;
+  }
+  .level-readout {
+    font: 11px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: var(--muted);
+    text-align: center;
+    min-width: 80px;
+  }
+  .level-readout b { color: var(--text); }
+  .level-readout .clip { color: var(--err); }
 </style>
 </head>
 <body>
@@ -211,33 +293,53 @@
 
   <div class="panel">
     <h2>Results</h2>
-    <div class="results">
-      <div class="result-card">
-        <div class="lbl">Fundamental</div>
-        <div class="big" id="fundVal">— dBFS</div>
-        <div class="bigsub" id="fundSub">—</div>
+    <div class="results-wrap">
+      <div class="results-left">
+        <div class="results">
+          <div class="result-card">
+            <div class="lbl">Fundamental</div>
+            <div class="big" id="fundVal">— dBFS</div>
+            <div class="bigsub" id="fundSub">—</div>
+          </div>
+          <div class="result-card">
+            <div class="lbl">THD</div>
+            <div class="big" id="thdVal">— dB</div>
+            <div class="bigsub" id="thdSub">— %</div>
+          </div>
+          <div class="result-card">
+            <div class="lbl">THD + N</div>
+            <div class="big" id="thdnVal">— dB</div>
+            <div class="bigsub" id="thdnSub">noise floor: — dBFS</div>
+          </div>
+        </div>
+
+        <table class="harm-table">
+          <thead>
+            <tr><th>Harmonic</th><th>dB ↓ fund</th><th class="bar-cell">visual</th></tr>
+          </thead>
+          <tbody id="harmRows"></tbody>
+        </table>
+
+        <h2 style="margin-top:18px;">THD history (last ~60 frames)</h2>
+        <canvas class="sparkline" id="spark" width="800" height="60"></canvas>
       </div>
-      <div class="result-card">
-        <div class="lbl">THD</div>
-        <div class="big" id="thdVal">— dB</div>
-        <div class="bigsub" id="thdSub">— %</div>
-      </div>
-      <div class="result-card">
-        <div class="lbl">THD + N</div>
-        <div class="big" id="thdnVal">— dB</div>
-        <div class="bigsub" id="thdnSub">noise floor: — dBFS</div>
+
+      <div class="level-col">
+        <div class="lvl-label">PEAK</div>
+        <div class="level-meter-wrap">
+          <div class="level-scale" id="lvlScale"></div>
+          <div class="level-meter">
+            <div class="level-clip"></div>
+            <div class="level-bar" id="lvlBar" style="height:0"></div>
+            <div class="level-hold" id="lvlHold" style="bottom:0"></div>
+          </div>
+        </div>
+        <div class="level-readout" id="lvlReadout">
+          <b>–∞</b> dBFS<br>
+          <span style="font-size:10px">hold <b id="lvlHoldVal">–∞</b></span>
+        </div>
       </div>
     </div>
-
-    <table class="harm-table">
-      <thead>
-        <tr><th>Harmonic</th><th>dB ↓ fund</th><th class="bar-cell">visual</th></tr>
-      </thead>
-      <tbody id="harmRows"></tbody>
-    </table>
-
-    <h2 style="margin-top:18px;">THD history (last ~60 frames)</h2>
-    <canvas class="sparkline" id="spark" width="800" height="60"></canvas>
   </div>
 
   <div class="panel siggen">
@@ -277,7 +379,60 @@ const els = {
   siggenBody: document.getElementById('siggenBody'),
   log: document.getElementById('log'),
   spark: document.getElementById('spark'),
+  lvlScale: document.getElementById('lvlScale'),
+  lvlBar: document.getElementById('lvlBar'),
+  lvlHold: document.getElementById('lvlHold'),
+  lvlReadout: document.getElementById('lvlReadout'),
+  lvlHoldVal: document.getElementById('lvlHoldVal'),
 };
+
+// ----- level meter -----
+const LVL_TOP_DB = 0;
+const LVL_BOT_DB = -100;
+const LVL_TICKS_DB = [0, -6, -12, -20, -30, -40, -60, -80, -100];
+
+function dbToLvlPct(db) {
+  if (!isFinite(db) || db <= LVL_BOT_DB) return 0;
+  if (db >= LVL_TOP_DB) return 100;
+  return ((db - LVL_BOT_DB) / (LVL_TOP_DB - LVL_BOT_DB)) * 100;
+}
+
+function buildLvlScale() {
+  els.lvlScale.innerHTML = '';
+  for (const db of LVL_TICKS_DB) {
+    const tick = document.createElement('div');
+    tick.className = 'tick';
+    tick.style.bottom = dbToLvlPct(db) + '%';
+    tick.textContent = db;
+    els.lvlScale.appendChild(tick);
+  }
+}
+buildLvlScale();
+
+let lvlPeakHoldDb = -Infinity;
+let lvlPeakHoldTs = 0;
+const LVL_HOLD_DECAY_DB_PER_S = 12;       // peak-hold decay rate
+const LVL_HOLD_DWELL_MS       = 1500;     // dwell before decaying
+
+function updateLevelMeter(fundDb) {
+  const now = performance.now();
+  // Peak-hold: rise instantly, dwell, then decay
+  if (fundDb > lvlPeakHoldDb) {
+    lvlPeakHoldDb = fundDb;
+    lvlPeakHoldTs = now;
+  } else if (now - lvlPeakHoldTs > LVL_HOLD_DWELL_MS) {
+    const dtSec = (now - lvlPeakHoldTs - LVL_HOLD_DWELL_MS) / 1000;
+    lvlPeakHoldDb = fundDb;
+    // Push the hold back down toward fund over time
+    lvlPeakHoldDb = Math.max(fundDb, lvlPeakHoldDb - LVL_HOLD_DECAY_DB_PER_S * dtSec);
+  }
+  els.lvlBar.style.height  = dbToLvlPct(fundDb) + '%';
+  els.lvlHold.style.bottom = dbToLvlPct(lvlPeakHoldDb) + '%';
+  const clipCls = fundDb >= -0.5 ? ' class="clip"' : '';
+  els.lvlReadout.innerHTML =
+    `<b${clipCls}>${isFinite(fundDb) ? fundDb.toFixed(1) : '–∞'}</b> dBFS<br>` +
+    `<span style="font-size:10px">hold <b>${isFinite(lvlPeakHoldDb) ? lvlPeakHoldDb.toFixed(1) : '–∞'}</b></span>`;
+}
 
 // ----- harmonic table -----
 const HARM_N = 8; // 2..9
@@ -295,6 +450,9 @@ function buildHarmRows() {
 buildHarmRows();
 
 // ----- spark line -----
+// Each entry is { thd: dB, h: [h2..h9 dB] }. We render THD as a strong line
+// and overlay each harmonic order at progressively lower opacity so 2nd is
+// most visible, 9th faintest.
 const sparkData = [];
 function drawSpark() {
   const c = els.spark;
@@ -302,20 +460,12 @@ function drawSpark() {
   const w = c.width, h = c.height;
   ctx.clearRect(0, 0, w, h);
   if (sparkData.length < 2) return;
-  // map dB range -100..0 to y
+  // map dB range -120..-20 to y
   const ymin = -120, ymax = -20;
   const xstep = w / 60;
-  ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--accent');
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  sparkData.forEach((v, i) => {
-    const x = i * xstep;
-    const clamped = Math.max(ymin, Math.min(ymax, v));
-    const y = h - ((clamped - ymin) / (ymax - ymin)) * h;
-    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  });
-  ctx.stroke();
-  // grid lines at -60, -80, -100
+  const accent = getComputedStyle(document.body).getPropertyValue('--accent').trim();
+
+  // Grid lines at -60, -80, -100 (drawn first, behind traces)
   ctx.strokeStyle = 'rgba(255,255,255,0.08)';
   ctx.setLineDash([2, 3]);
   [-60, -80, -100].forEach(g => {
@@ -323,6 +473,37 @@ function drawSpark() {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
   });
   ctx.setLineDash([]);
+
+  const dbToY = db => {
+    const c = Math.max(ymin, Math.min(ymax, db));
+    return h - ((c - ymin) / (ymax - ymin)) * h;
+  };
+
+  const drawTrace = (extract, alpha, width) => {
+    ctx.strokeStyle = accent;
+    ctx.globalAlpha = alpha;
+    ctx.lineWidth   = width;
+    ctx.beginPath();
+    let started = false;
+    sparkData.forEach((s, i) => {
+      const v = extract(s);
+      if (!isFinite(v)) { started = false; return; }
+      const x = i * xstep;
+      const y = dbToY(v);
+      if (!started) { ctx.moveTo(x, y); started = true; }
+      else          { ctx.lineTo(x, y); }
+    });
+    ctx.stroke();
+  };
+
+  // Harmonics first, faintest → most visible, then THD on top
+  // h2..h9 → indices 0..7. Alpha gradient: h2 = 0.75, h9 = 0.12.
+  for (let k = 7; k >= 0; --k) {
+    const alpha = 0.75 - k * (0.63 / 7); // 0.75 → 0.12
+    drawTrace(s => s.h[k], alpha, 1.0);
+  }
+  drawTrace(s => s.thd, 1.0, 1.8);
+  ctx.globalAlpha = 1.0;
 }
 
 // ----- segmented control wiring -----
@@ -506,7 +687,7 @@ function handleThd(parts) {
     }
   }
 
-  sparkData.push(tdb);
+  sparkData.push({ thd: tdb, h: h.slice() });
   while (sparkData.length > 60) sparkData.shift();
   drawSpark();
 
@@ -527,6 +708,10 @@ function handleLine(line) {
   const parts = t.split(/\s+/);
   if (parts[0] === 'STATE') applyStateLine(parts);
   else if (parts[0] === 'THD') handleThd(parts);
+  else if (parts[0] === 'LVL') {
+    const db = parseFloat(parts[1]);
+    if (isFinite(db)) updateLevelMeter(db);
+  }
 }
 
 async function readLoop(signal) {

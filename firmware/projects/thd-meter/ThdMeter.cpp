@@ -32,10 +32,14 @@ float DSY_SDRAM_BSS g_fft_out[kFftSize];
 float DSY_SDRAM_BSS g_mag[kNumBins];
 float DSY_SDRAM_BSS g_hann[kFftSize];
 
-static volatile uint8_t g_active_idx  = 0;
-static volatile size_t  g_fill_pos    = 0;
-static volatile uint8_t g_ready_idx   = 0;
-static volatile bool    g_frame_ready = false;
+static volatile uint8_t  g_active_idx  = 0;
+static volatile size_t   g_fill_pos    = 0;
+static volatile uint8_t  g_ready_idx   = 0;
+static volatile bool     g_frame_ready = false;
+
+// Broadband peak tracking (cleared each LVL report).
+static volatile float    g_peak       = 0.0f;
+static volatile uint32_t g_peak_count = 0;
 
 static arm_rfft_fast_instance_f32 g_rfft;
 
@@ -72,21 +76,28 @@ static void AudioCallback(AudioHandle::InterleavingInputBuffer  in,
                           AudioHandle::InterleavingOutputBuffer out,
                           size_t                                size)
 {
-    uint8_t mode   = g_mode;
-    uint8_t ch     = g_channel;
-    float   amp    = g_drive_amp;
-    float   phase  = g_phase;
-    float   pinc   = g_phase_inc;
-    uint8_t active = g_active_idx;
-    size_t  pos    = g_fill_pos;
+    uint8_t  mode   = g_mode;
+    uint8_t  ch     = g_channel;
+    float    amp    = g_drive_amp;
+    float    phase  = g_phase;
+    float    pinc   = g_phase_inc;
+    uint8_t  active = g_active_idx;
+    size_t   pos    = g_fill_pos;
+    float    pk     = g_peak;
+    uint32_t pkcnt  = g_peak_count;
 
     for(size_t i = 0; i < size; i += 2)
     {
         float sl = in[i];
         float sr = in[i + 1];
 
+        float s = (ch == THD_CH_L) ? sl : sr;
+        float a = fabsf(s);
+        if(a > pk) pk = a;
+        ++pkcnt;
+
         if(pos < kFftSize)
-            g_cap_buf[active][pos++] = (ch == THD_CH_L) ? sl : sr;
+            g_cap_buf[active][pos++] = s;
         if(pos >= kFftSize)
         {
             g_ready_idx   = active;
@@ -109,6 +120,8 @@ static void AudioCallback(AudioHandle::InterleavingInputBuffer  in,
     g_active_idx = active;
     g_fill_pos   = pos;
     g_phase      = phase;
+    g_peak       = pk;
+    g_peak_count = pkcnt;
 }
 
 static void BuildHannLUT()
@@ -326,6 +339,7 @@ int main(void)
     size_t cmd_len = 0;
 
     uint32_t next_led = System::GetNow() + 500;
+    uint32_t next_lvl = System::GetNow() + 33;
     bool     led      = false;
 
     while(1)
@@ -356,6 +370,21 @@ int main(void)
         }
 
         uint32_t now = System::GetNow();
+        if(now >= next_lvl)
+        {
+            __disable_irq();
+            float    pk = g_peak;
+            uint32_t pc = g_peak_count;
+            g_peak       = 0.0f;
+            g_peak_count = 0;
+            __enable_irq();
+            if(pc > 0)
+            {
+                float db = (pk > 1e-20f) ? 20.0f * log10f(pk) : -200.0f;
+                hw.PrintLine("LVL %.3f", db);
+            }
+            next_lvl = now + 33;
+        }
         if(now >= next_led)
         {
             led = !led;
