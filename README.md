@@ -9,6 +9,9 @@ DSP module, providing professional studio-grade balanced line input and output.
 
 Schematic PDF: [docs/Daisy Studio Rev2.pdf](docs/Daisy%20Studio%20Rev2.pdf)
 
+THD measurement report (Board 1, loopback, post-F9 retrim — ≤ −88 dB / ≤ 0.004 % @ 1 kHz):
+[docs/Daisy THD Meter.pdf](docs/Daisy%20THD%20Meter.pdf)
+
 The board is designed as a **flexible development board** to prototype designs
 for:
 

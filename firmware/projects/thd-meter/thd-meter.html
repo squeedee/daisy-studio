@@ -241,6 +241,134 @@
   }
   .level-readout b { color: var(--text); }
   .level-readout .clip { color: var(--err); }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    width: min(520px, 92vw);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .modal-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-header h2 {
+    margin: 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .modal-close {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 4px;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-body { padding: 18px; }
+  .modal-body textarea {
+    width: 100%;
+    min-height: 180px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    resize: vertical;
+  }
+  .modal-footer {
+    padding: 12px 18px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  /* Printable report — hidden on screen, shown on print */
+  .print-view { display: none; }
+
+  @media print {
+    body > *:not(.print-view) { display: none !important; }
+    .print-view {
+      display: block;
+      color: #000;
+      background: #fff;
+      padding: 18px;
+      font: 11pt/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+    .print-view header { margin-bottom: 12pt; }
+    .print-view h1 { font-size: 18pt; margin: 0 0 2pt; }
+    .print-view .meta { color: #555; font-size: 10pt; }
+    .print-view h2 {
+      font-size: 12pt;
+      margin: 14pt 0 6pt;
+      border-bottom: 1px solid #999;
+      padding-bottom: 2pt;
+    }
+    .print-view table { border-collapse: collapse; width: 100%; }
+    .print-view th, .print-view td {
+      text-align: left;
+      padding: 3pt 6pt;
+      border-bottom: 1px solid #ddd;
+      vertical-align: top;
+    }
+    .print-view th { font-weight: 600; width: 38%; }
+    .print-view dl {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      gap: 3pt 18pt;
+      margin: 0;
+    }
+    .print-view dt { font-weight: 600; }
+    .print-view dd {
+      margin: 0;
+      font: 11pt ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .print-view .rpt-harm-bar {
+      display: inline-block;
+      height: 6pt;
+      background: #444;
+      vertical-align: middle;
+      margin-left: 6pt;
+    }
+    .print-view .rpt-spark img {
+      width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+    }
+    .print-view .rpt-notes pre {
+      white-space: pre-wrap;
+      font: 10pt ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: #f6f6f6;
+      padding: 8pt;
+      border: 1px solid #ddd;
+      margin: 0;
+    }
+    .print-view section { page-break-inside: avoid; }
+    @page { margin: 14mm; }
+  }
 </style>
 </head>
 <body>
@@ -255,6 +383,7 @@
     <div class="row">
       <button id="connect" class="primary">Connect</button>
       <button id="disconnect" disabled>Disconnect</button>
+      <button id="reportBtn">Generate report</button>
       <span class="stat">Status: <b id="status">disconnected</b></span>
       <span class="stat">Frame rate: <b id="rate">— Hz</b></span>
     </div>
@@ -350,6 +479,80 @@
   <div class="panel">
     <h2>Serial log</h2>
     <div class="log" id="log"></div>
+  </div>
+
+  <!-- Generate-report modal -->
+  <div class="modal-backdrop" id="reportModal" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="reportModalTitle">Generate report</h2>
+        <button class="modal-close" id="reportClose" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="field" style="display:block;">
+          <b style="display:block;margin-bottom:6px;">Notes</b>
+          <textarea id="reportNotes" placeholder="e.g. Board 1, post-F6 rework, +5 dBu coherent, 1007.8125 Hz, channel L"></textarea>
+        </label>
+        <div class="stat" style="margin-top:8px;">
+          Snapshot uses the live values at the moment you press Generate. You'll get two artifacts:
+          a <b>thd-report_&lt;timestamp&gt;.log</b> text file (settings + snapshot + last 60 frames) is downloaded,
+          and the browser print dialog opens for a PDF copy of the analysis — pick <b>Save as PDF</b> in the dialog.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="reportCancel">Cancel</button>
+        <button id="reportGenerate" class="primary">Generate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable report (screen-hidden, shown via @media print) -->
+  <div class="print-view" aria-hidden="true">
+    <header>
+      <h1>Daisy THD Meter Report</h1>
+      <div class="meta"><span id="rpt-time">—</span></div>
+    </header>
+
+    <section class="rpt-settings">
+      <h2>Settings</h2>
+      <table>
+        <tr><th>Mode</th><td id="rpt-mode">—</td></tr>
+        <tr><th>Channel</th><td id="rpt-channel">—</td></tr>
+        <tr><th>Window</th><td id="rpt-window">—</td></tr>
+        <tr><th>Test frequency</th><td id="rpt-freq">—</td></tr>
+        <tr><th>FFT size / fs</th><td>4096 / 48 kHz (bin width 11.71875 Hz)</td></tr>
+        <tr><th>Drive amplitude</th><td id="rpt-drive">—</td></tr>
+      </table>
+    </section>
+
+    <section class="rpt-numbers">
+      <h2>Measurement</h2>
+      <dl>
+        <dt>Fundamental</dt><dd id="rpt-fund">—</dd>
+        <dt>THD</dt><dd id="rpt-thd">—</dd>
+        <dt>THD + N</dt><dd id="rpt-thdn">—</dd>
+        <dt>Peak</dt><dd id="rpt-peak">—</dd>
+        <dt>Noise floor</dt><dd id="rpt-noise">—</dd>
+      </dl>
+    </section>
+
+    <section class="rpt-harmonics">
+      <h2>Harmonics (dB below fundamental)</h2>
+      <table id="rpt-harm-table">
+        <thead><tr><th style="width:20%;">Order</th><th style="width:25%;">dB</th><th>Visual</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="rpt-spark">
+      <h2>THD history (snapshot)</h2>
+      <img id="rpt-spark-img" alt="THD history sparkline">
+    </section>
+
+    <section class="rpt-notes">
+      <h2>Notes</h2>
+      <pre id="rpt-notes">—</pre>
+    </section>
   </div>
 
 <script>
@@ -775,6 +978,177 @@ async function disconnect() {
 
 els.connect.addEventListener('click', connect);
 els.disconnect.addEventListener('click', disconnect);
+
+// ----- Generate-report modal -----
+const reportEls = {
+  btn:      document.getElementById('reportBtn'),
+  modal:    document.getElementById('reportModal'),
+  close:    document.getElementById('reportClose'),
+  cancel:   document.getElementById('reportCancel'),
+  generate: document.getElementById('reportGenerate'),
+  notes:    document.getElementById('reportNotes'),
+  // Print-view fields
+  pTime:    document.getElementById('rpt-time'),
+  pMode:    document.getElementById('rpt-mode'),
+  pChannel: document.getElementById('rpt-channel'),
+  pWindow:  document.getElementById('rpt-window'),
+  pFreq:    document.getElementById('rpt-freq'),
+  pDrive:   document.getElementById('rpt-drive'),
+  pFund:    document.getElementById('rpt-fund'),
+  pThd:     document.getElementById('rpt-thd'),
+  pThdn:    document.getElementById('rpt-thdn'),
+  pPeak:    document.getElementById('rpt-peak'),
+  pNoise:   document.getElementById('rpt-noise'),
+  pHarmBody:document.querySelector('#rpt-harm-table tbody'),
+  pSparkImg:document.getElementById('rpt-spark-img'),
+  pNotes:   document.getElementById('rpt-notes'),
+};
+
+function openReportModal() {
+  reportEls.modal.classList.add('open');
+  setTimeout(() => reportEls.notes.focus(), 0);
+}
+function closeReportModal() {
+  reportEls.modal.classList.remove('open');
+}
+
+function snapshotReport() {
+  const now = new Date();
+  reportEls.pTime.textContent = now.toLocaleString();
+
+  reportEls.pMode.textContent    = state.mode === 0 ? 'Input' : 'Loopback';
+  reportEls.pChannel.textContent = state.channel.toUpperCase();
+  reportEls.pWindow.textContent  = state.window === 0 ? 'Coherent (no window)' : 'Hann';
+  reportEls.pFreq.textContent    = `${state.locked.toFixed(4)} Hz (bin ${state.bin})`;
+  reportEls.pDrive.textContent   = state.mode === 1 ? state.drive.toFixed(4) : '— (input mode)';
+
+  reportEls.pFund.textContent  = els.fundVal.textContent;
+  // THD card shows dB on top, % below — reproduce both
+  reportEls.pThd.textContent   = `${els.thdVal.textContent}  (${els.thdSub.textContent})`;
+  reportEls.pThdn.textContent  = els.thdnVal.textContent;
+  // Peak from level meter readout (strip HTML to plain text)
+  reportEls.pPeak.textContent  = (els.lvlReadout.textContent || '—').replace(/\s+/g, ' ').trim();
+  // Noise floor comes from THD+N card's subline ("noise floor: -X dBFS")
+  const noiseMatch = (els.thdnSub.textContent || '').match(/noise floor:\s*([-\d.]+)\s*dBFS/);
+  reportEls.pNoise.textContent = noiseMatch ? `${noiseMatch[1]} dBFS` : '—';
+
+  // Harmonics: read from the live table for consistent formatting
+  reportEls.pHarmBody.innerHTML = '';
+  for (let i = 0; i < HARM_N; i++) {
+    const dbCell = document.getElementById('hVal' + i);
+    const fill   = document.getElementById('hFill' + i);
+    const db     = dbCell ? dbCell.textContent.trim() : '—';
+    const pct    = fill ? (parseFloat(fill.style.width) || 0) : 0;
+    const tr = document.createElement('tr');
+    const n = i + 2;
+    const ord = n === 2 ? 'nd' : (n === 3 ? 'rd' : 'th');
+    tr.innerHTML =
+      `<td>${n}<sup>${ord}</sup></td>` +
+      `<td>${db}</td>` +
+      `<td><span class="rpt-harm-bar" style="width:${Math.max(0, Math.min(100, pct)).toFixed(1)}%;"></span></td>`;
+    reportEls.pHarmBody.appendChild(tr);
+  }
+
+  // Sparkline → frozen image. Re-render once to ensure latest data is in the canvas, then snapshot.
+  drawSpark();
+  try {
+    reportEls.pSparkImg.src = els.spark.toDataURL('image/png');
+  } catch (e) {
+    reportEls.pSparkImg.removeAttribute('src');
+  }
+
+  reportEls.pNotes.textContent = (reportEls.notes.value || '').trim() || '—';
+}
+
+function buildReportLog() {
+  const now = new Date();
+  const lines = [];
+  const pad = (s, w) => String(s).padStart(w, ' ');
+
+  lines.push(`Daisy THD Meter Report — ${now.toLocaleString()}`);
+  lines.push(`ISO timestamp: ${now.toISOString()}`);
+  lines.push('');
+  lines.push('Settings:');
+  lines.push(`  Mode:            ${state.mode === 0 ? 'Input' : 'Loopback'}`);
+  lines.push(`  Channel:         ${state.channel.toUpperCase()}`);
+  lines.push(`  Window:          ${state.window === 0 ? 'Coherent (no window)' : 'Hann'}`);
+  lines.push(`  Test frequency:  ${state.locked.toFixed(4)} Hz (bin ${state.bin})`);
+  lines.push(`  FFT size:        4096`);
+  lines.push(`  Sample rate:     48000 Hz`);
+  lines.push(`  Bin width:       11.71875 Hz`);
+  lines.push(`  Drive amp:       ${state.mode === 1 ? state.drive.toFixed(4) : '— (input mode)'}`);
+  lines.push('');
+  lines.push('Latest measurement (snapshot):');
+  lines.push(`  Fundamental:     ${els.fundVal.textContent}`);
+  lines.push(`  THD:             ${els.thdVal.textContent}  (${els.thdSub.textContent})`);
+  lines.push(`  THD + N:         ${els.thdnVal.textContent}`);
+  lines.push(`  Peak (level):    ${(els.lvlReadout.textContent || '—').replace(/\s+/g, ' ').trim()}`);
+  const noiseMatch = (els.thdnSub.textContent || '').match(/noise floor:\s*([-\d.]+)\s*dBFS/);
+  lines.push(`  Noise floor:     ${noiseMatch ? noiseMatch[1] + ' dBFS' : '—'}`);
+  lines.push('');
+  lines.push('Latest harmonics (dB below fundamental):');
+  for (let i = 0; i < HARM_N; i++) {
+    const dbCell = document.getElementById('hVal' + i);
+    const db = dbCell ? dbCell.textContent.trim() : '—';
+    lines.push(`  H${i + 2}:              ${db}`);
+  }
+  lines.push('');
+  lines.push('Notes:');
+  const notes = (reportEls.notes.value || '').trim();
+  if (notes.length === 0) {
+    lines.push('  (none)');
+  } else {
+    for (const ln of notes.split('\n')) lines.push('  ' + ln);
+  }
+  lines.push('');
+  lines.push(`Last ${sparkData.length} frames (oldest → newest), all values dB:`);
+  lines.push('  idx       THD        h2        h3        h4        h5        h6        h7        h8        h9');
+  sparkData.forEach((s, i) => {
+    const cells = [
+      pad(i, 5),
+      pad(isFinite(s.thd) ? s.thd.toFixed(2) : '—', 9),
+      ...s.h.map(v => pad(isFinite(v) ? v.toFixed(2) : '—', 9)),
+    ];
+    lines.push('  ' + cells.join(' '));
+  });
+  lines.push('');
+  return lines.join('\n');
+}
+
+function downloadReportLog() {
+  const text = buildReportLog();
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const ts   = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `thd-report_${ts}.log`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function generateReport() {
+  snapshotReport();
+  downloadReportLog();
+  closeReportModal();
+  // Defer to next tick so the modal close paints before the print dialog
+  setTimeout(() => window.print(), 50);
+}
+
+reportEls.btn.addEventListener('click', openReportModal);
+reportEls.close.addEventListener('click', closeReportModal);
+reportEls.cancel.addEventListener('click', closeReportModal);
+reportEls.generate.addEventListener('click', generateReport);
+reportEls.modal.addEventListener('click', (e) => {
+  if (e.target === reportEls.modal) closeReportModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && reportEls.modal.classList.contains('open')) {
+    closeReportModal();
+  }
+});
 </script>
 </body>
 </html>

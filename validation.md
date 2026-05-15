@@ -154,20 +154,52 @@ spectral check (3.4) runs without depending on input-side silicon.
 
 ### Calibrate:
 
-- [x] **3.1 Output gain trim, channel L.**
+**Preferred method — loopback THD analyzer.** The
+`firmware/projects/thd-meter` build + `thd-meter.html` Web Serial UI in
+**Loopback mode** is the gold-standard trim aid here, far more sensitive
+than scope p-p readings. The harmonic table shows H2..H9 in dB below the
+fundamental; a clean output stage leaves H4..H9 sitting in the codec
+noise floor (~−115 dB and below). The instant the output stage (or
+input clamp graze) begins to distort, the **broadband H4..H9 fanout
+lifts off the noise floor by 10–30 dB** while the scalar THD number
+barely changes. That fanout is the most sensitive single indicator we
+have of "clean ceiling crossed" — visible long before THD or scope
+shape moves. See F9 below for the method's full story.
+
+- [x] **3.1 Output gain trim, channel L (RV2).**
     1. Set the L output level pot fully clockwise on the
        daughterboard.
-    2. Play a digital full-scale 1 kHz sine from the Seed.
-    3. Scope differential XLR output.
-    4. Adjust R_fb_trim until the differential output reads +24 dBu
-       (12.28 Vrms = 34.73 V p-p on the scope math channel A−B, or
-       17.36 V p-p per leg single-ended assuming balanced output).
+    2. Flash `thd-meter`, open `thd-meter.html`, set Mode = Loopback,
+       Channel = L (capture), Drive = 1.0 (digital full scale), Window
+       = Coherent. Connect L XLR OUT to L XLR IN with a known-good
+       cable.
+    3. Trim **RV2** until the harmonic table shows H4..H9 dropping
+       into the noise floor (≤ −115 dB below fundamental). Around the
+       transition you'll see a 0.1 dB rotation pop H4..H9 up 15–25 dB
+       — back off the trim until they re-merge with the floor, then
+       give yourself a small additional CCW margin (~0.5 dB at the
+       codec input level) so component-tolerance drift can't drift
+       the chain back into the graze.
+    4. Note the codec input level at the locked trim (typically
+       −4 to −5 dBFS at digital scale 1.0). Calibrated full-scale
+       output is now somewhat below +24 dBu — quote the actual figure
+       in the calibration sticker.
     5. Lock the trim with nail polish / trim paint.
-- [x] **3.2 Output gain trim, channel R.** Same procedure on R.
-  L/R within ~0.2 dB after both trims locked. See F1 in findings.
-  **Done (Board 1, post-F1 R_fb swap):** both channels calibrated to
-  +24 dBu at full gain; L/R match set by ear — scope p-p reading
-  jittered in the mV range so a numeric delta wasn't recorded.
+- [x] **3.2 Output gain trim, channel R (RV4).** Same procedure on R,
+  trimming **RV4**. Match L's locked codec input level within
+  ~0.1 dB. See F1 and F9 in findings.
+  **Done (Board 1, post-F1 R_fb swap, post-F9 procedure update):** both
+  channels re-trimmed using the loopback-THD method. Earlier scope-only
+  trim landed both channels at the BJT-clamp graze threshold (per F5)
+  with R about 0.8 dB hotter than L — produced a clear H4..H9 fanout on
+  R at digital full scale. After re-trim, fanout merged into the noise
+  floor on both channels.
+
+**Reference designator note:** **RV2 = L feedback trim**, **RV4 = R
+feedback trim** (audio_output.kicad_sch). RV2 sits in the top half of
+the sheet near `AUDIO_OUT_L`; RV4 in the bottom near `AUDIO_OUT_R`.
+Worth a hand-label on the silkscreen — same class of L/R-identification
+trap as F8.
 
 ### Verify:
 
@@ -311,9 +343,25 @@ expect positive peaks to clamp ~9% earlier.
   overdrive, scope +VCLAMP_* and −VCLAMP_* — should shift < 50 mV
   (sim says 18 mV). This is the BJT clamp's headline behaviour over
   passive diode alternatives.
-- [ ] **4.6 Clip-LED behaviour.** Threshold trim mid-travel — LED
-  off below threshold, proportional glow above. Trim range covers
-  the full clean-signal range (0 V to 1.565 V threshold).
+- [ ] **4.6 Clip-LED threshold trim (RV7 channel L, RV8 channel R —
+  see F8 note on swapped sides).** Set the trip point at the actual
+  input-clamp engagement, using the loopback-THD method as the
+  reference, *not* an arbitrary mid-travel position:
+    1. Mode = Loopback, Channel = side under trim, Drive = 1.0,
+       Window = Coherent. Output level pot full CW.
+    2. Slowly raise the output level pot (or equivalently the
+       feedback trim) until the **H4..H9 fanout** just begins to lift
+       off the noise floor — this is the BJT clamp graze threshold
+       per F5.
+    3. Adjust the clip-LED trim (RV7/RV8) so the LED transitions from
+       dark to first visible glow at exactly that signal level.
+    4. Verify: back off the output pot slightly → LED returns to dark
+       and H4..H9 return to floor. Drive a bit harder → LED brightens
+       proportionally and H4..H9 lift further. The LED should fire
+       just before the THD analyzer detects audible distortion onset.
+    5. Per F5, the +VCLAMP asymmetry means the positive-peak clamp
+       engages first; this naturally aligns the LED with the worst-
+       side limit, which is the conservative choice.
 
 **Later with more boards:**
 
@@ -668,6 +716,21 @@ analyzer becomes available, re-run +5 dBu and +14 dBu THD to fill
 in the dynamic range and confirm the chain's actual clean-signal
 floor.
 
+**RESOLVED (post-F9 procedure, Board 1 loopback at digital full scale,
+1007.8125 Hz coherent FFT via `firmware/projects/thd-meter`):**
+**THD ≤ −88 dB (≤ 0.004 %)** on both channels after the loopback-THD
+re-trim. That's 34 dB cleaner than the AD2's −62 dBc ceiling that
+originally flagged this finding, and within ~5–10 dB of the PCM3060
+codec's own datasheet floor — the practical ceiling for this analog
+chain. Measurement covers the full round trip
+(OPA1656 out + THAT1646 + balanced loopback + THAT1246 + OPA1656 in
++ BJT clamp + codec ADC); the dominant remaining contribution is the
+input/output OPA at high swing plus the codec itself. Result is well
+below any plausible audibility threshold for music material; at normal
+operating level (~−20 dBFS) the chain should land another 10–15 dB
+lower until the noise floor dominates. **Finding closed.** Re-run on
+other boards as they're populated, alongside the F9-spec retrim.
+
 ### F8 — RV7 / RV8 clip-threshold trim pots placed on swapped sides
 
 **Symptom (Board 1, Stage 4.6 trim prep):** The clip-threshold
@@ -689,6 +752,75 @@ group. No schematic change required.
 
 **Action:** None on Rev 2 boards. Mark the silkscreen with hand
 labels if doing further trim work; deferred to Rev 3 issue triage.
+
+### F9 — Broadband H4..H9 fanout is the most sensitive distortion indicator; calibrate output trims via loopback-THD, not scope p-p
+
+**Symptom (Board 1, Stage 3.1/3.2 post-trim, Stage 4 loopback investigation):**
+The "by-ear" scope p-p trim landed both output channels at the BJT
+clamp graze threshold (per F5's depressed +VCLAMP), with R sitting
+~0.8 dB hotter than L. At digital full-scale loopback drive, R
+produced a clear H4–H9 fanout in the on-Seed FFT (15–35 dB above
+noise floor), while L stayed clean. Reducing the R feedback trim
+0.1 dB at a time showed the transition is a **hard threshold** — fanout
+either fully off (H4–H9 in noise floor) or fully on. Pushing L by the
+same 0.1 dB across its threshold produced an identical fanout on L.
+
+**Analysis:** Two compounding facts make the broadband-fanout view
+uniquely useful:
+
+1. **The clamp engagement is a hard knee.** The BJT clamp is not a
+   smooth limiter — once a peak crosses +VCLAMP + V_BE the BJT
+   conducts and pins that peak. The result is a sharp transfer-curve
+   kink that generates broadband mid-to-high-order harmonics (H4..H9)
+   without proportional growth in H2/H3. Below threshold the chain is
+   smooth; above, it's sharply clipping. Sub-1 dB of trim flips the
+   chain between regimes.
+2. **Scalar THD barely moves.** Because H2/H3 dominate the THD sum and
+   they stay roughly constant across the threshold, the THD figure
+   shifts only ~1–2 dB. H4..H9 individually shift 15–35 dB. Looking at
+   THD alone you'd think nothing happened; looking at the harmonic
+   spectrum you see the regime change immediately.
+
+Scope p-p trim was insufficient even at +24 dBu calibration:
+
+- Scope p-p reading jittered in the mV range → can't distinguish
+  ±0.5 dB by eye.
+- Scope shape inspection at the XLR output showed no flat-tops or
+  visible distortion — because the distortion source (BJT clamp
+  graze) is downstream of the XLR output, at the codec input pin.
+
+**Procedure that worked (now adopted in 3.1/3.2 and 4.6):**
+
+1. Loopback mode, drive 1.0 (digital full scale), coherent FFT
+   at 1007.8125 Hz.
+2. Watch H4..H9 in the harmonic table (and the lighter overlay traces
+   on the THD-history sparkline — H4..H9 ride at the noise floor when
+   clean, lift above when distorting).
+3. Trim the channel until H4..H9 just return to the noise floor.
+4. Back off ~0.5 dB for tolerance margin.
+5. Repeat for the other channel, matching the codec-input level at
+   the final lock within ~0.1 dB.
+
+**Consequences:**
+
+- Stage 3.1/3.2 procedures updated to use the loopback-THD method as
+  the preferred path. Scope p-p stays in the procedure as a sanity
+  cross-check (gives the "what's my actual +dBu number" answer).
+- Stage 4.6 (clip-LED trim) updated to set the LED firing point at
+  the same threshold the THD analyzer identifies — the clip LED
+  becomes a direct visual indicator of "you're about to make broadband
+  distortion".
+- Calibrated full-scale output drops from +24 dBu (which was at the
+  clamp edge with zero margin) to roughly +22 to +23 dBu, depending on
+  margin choice. Worth quoting the actual measured number on the
+  calibration sticker rather than the spec target.
+
+**Resolution:** Procedural improvement, no schematic change. Captured
+in 3.1/3.2/4.6 above.
+
+**Action:** Re-trim all five boards using the new procedure once
+populated. Record locked codec-input-level value per channel for QA
+records.
 
 ## Equipment
 
