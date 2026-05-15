@@ -228,6 +228,58 @@ This stage is where Rev 2's novel circuitry gets bench-confirmed.
 - LM2903 dual comparator + 1 kΩ LED limit + decoupling.
 - 2× Neutrik NCJ6FA-H-0 input combo jacks.
 
+### Signal-level reference (sim)
+
+Source: `sim/input/measure.asc` — 1 kHz sine, `.tran` with `.step amp` ×
+`.step pk`. All values **V p-p**.
+
+**Per-stage levels** (independent of pot position):
+
+| Input level | Balanced (each leg) | THAT1246 out |       OPA1656 out |
+|-------------|--------------------:|-------------:|------------------:|
+| +4 dBu      |                1.74 |         1.74 |              2.08 |
+| +18 dBu     |                8.70 |         8.70 |             10.45 |
+| +24 dBu     |               17.36 | 17.36(17.23) | 20.83(20.6/20.72) |
+
+Each leg p-p ≡ differential p-p / 2. THAT1246 has −6 dB ⇒ single-ended
+output p-p numerically matches each-leg p-p. OPA1656 fixed gain ×1.2;
+stays inside ±11 V rails at +24 dBu — no opamp clip.
+
+**Pot sweep — +4 dBu in** (OPA out = 2.08 V p-p):
+
+| Pot rotation |             Wiper |           Seed_In | measured without seed |
+|-------------:|------------------:|------------------:|-----------------------|
+|           0% |           ~0(0/0) |           ~0(0/0) | 0/0                   |
+|          20% |              0.38 |              0.30 |                       |
+|          50% | 0.91(1.049/1.025) | 0.73(0.485/0.479) | 1.039/1.019           |
+|          70% |              1.29 |              1.04 |                       |
+|         100% |   2.08(2.10/2.12) | 1.67(1.046/1.046) | 2.06/2.05             |
+
+**Pot sweep — +18 dBu in** (OPA out = 10.45 V p-p):
+
+| Pot rotation | Wiper |                            Seed_In | opa out |
+|-------------:|------:|-----------------------------------:|--------:|
+|           0% |    ~0 |                                 ~0 |   10.36 |
+|          20% |  1.90 |                               1.53 |   10.36 | 
+|          50% |  4.54 |                   3.64 (2.35/2.27) |   10.36 |
+|          70% |  6.27 |              4.63 ⚠ clamp engaging |   10.37 |
+|         100% | 10.45 | 4.79 ⚠ clamp asymptote (4.17/4.15) |   10.37 |
+
+**Pot sweep — +24 dBu in** (OPA out = 20.83 V p-p):
+
+| Pot rotation |               Wiper |                           Seed_In |
+|-------------:|--------------------:|----------------------------------:|
+|           0% |                  ~0 |                                ~0 |
+|          20% |                3.80 |             3.04 ⚠ clamp engaging |
+|          50% |    7.96 (9.63/9.48) | 4.73 ⚠ clamp asymptote(4.14/4.12) |
+|          70% |               10.78 |                              4.80 |
+|         100% | 20.83 (20.75/20.62) |                  4.92 (4.26/4.24) |
+
+Clamp asymptote at Seed_In is **~4.8–4.9 V p-p** (≈ ±2.45 V peaks)
+regardless of how hard the wiper is driven — symmetric ±1.565 V
+reference assumed. Per F5 the actual bench reference is asymmetric, so
+expect positive peaks to clamp ~9% earlier.
+
 ### Verify:
 
 - [ ] **4.1 Reference rails.** DMM at +VCLAMP_L, +VCLAMP_R, −VCLAMP_L,
@@ -395,8 +447,8 @@ land geometry.
 **Symptom (Board 1, Stage 4.1):** All four VCLAMP reference nodes
 read ±0.65 V at idle instead of the expected ±1.565 V:
 
-| Node | Expected | Measured |
-|---|---|---|
+| Node      | Expected | Measured |
+|-----------|----------|----------|
 | VCLAMP_R+ | +1.565 V | +0.652 V |
 | VCLAMP_R− | −1.565 V | −0.649 V |
 | VCLAMP_L+ | +1.565 V | +0.677 V |
@@ -415,11 +467,11 @@ up swapped relative to schematic intent (Collector matches).
 
 Q1 (NPN) PCB pad assignment, as a representative example:
 
-| Pad | Schematic pinfunction | Net | Physical SOT-23 pin |
-|---|---|---|---|
-| 1 | E | AUDIO_IN_L (signal) | **Base** |
-| 2 | B | −VCLAMP_L | **Emitter** |
-| 3 | C | GND | Collector ✓ |
+| Pad | Schematic pinfunction | Net                 | Physical SOT-23 pin |
+|-----|-----------------------|---------------------|---------------------|
+| 1   | E                     | AUDIO_IN_L (signal) | **Base**            |
+| 2   | B                     | −VCLAMP_L           | **Emitter**         |
+| 3   | C                     | GND                 | Collector ✓         |
 
 At idle (V_B ≈ 0 V on signal, divider tries to pull V_E to −1.565 V),
 V_BE = 0 − (−1.565) = +1.565 V → BE forward-biased hard → BJT
@@ -453,10 +505,10 @@ the time vs. waiting for Rev 3.
 
 **Symptom (Board 1, Stage 4.1, post-F4 dead-bug rework):**
 
-| Node | Stage 4.1 "expected" | Measured |
-|---|---|---|
-| −VCLAMP_L/R | −1.565 V | **−1.57 V** ✓ |
-| +VCLAMP_L/R | +1.565 V | **+1.38 V** ✗ |
+| Node        | Stage 4.1 "expected" | Measured      |
+|-------------|----------------------|---------------|
+| −VCLAMP_L/R | −1.565 V             | **−1.57 V** ✓ |
+| +VCLAMP_L/R | +1.565 V             | **+1.38 V** ✗ |
 
 Both polarities behave consistently across L and R. With rails at
 ±12.1 V (no sag) and the BJTs correctly oriented after rework, the
@@ -470,10 +522,10 @@ each pot acts as a constant **10 kΩ resistor from +VCLAMP to GND** —
 permanently in parallel with the 1.5 kΩ bottom resistor of the
 +VCLAMP divider.
 
-| Side | Bottom-to-GND eff. | Divider @ ±12.1 V | Measured |
-|---|---|---|---|
-| − | 1.5k (no pot) | 12.1 × 1.5 / 11.5 = **−1.578 V** | −1.57 V ✓ |
-| + | 1.5k ∥ 10k = **1.304k** | 12.1 × 1.304 / 11.304 = **+1.396 V** | +1.38 V ✓ |
+| Side | Bottom-to-GND eff.      | Divider @ ±12.1 V                    | Measured  |
+|------|-------------------------|--------------------------------------|-----------|
+| −    | 1.5k (no pot)           | 12.1 × 1.5 / 11.5 = **−1.578 V**     | −1.57 V ✓ |
+| +    | 1.5k ∥ 10k = **1.304k** | 12.1 × 1.304 / 11.304 = **+1.396 V** | +1.38 V ✓ |
 
 Both sides match the divider math to DMM precision.
 
@@ -563,13 +615,13 @@ Spectrum-based THD measurement on AD2 at the OPA1656 output
 (IN_OPA_R), 997 Hz balanced test tone via WaveGen (5 V amplitude
 per leg, 180° phased), 32-average RMS, Flat Top window.
 
-| Drive level (per leg) | Diff input | THD measured |
-|---|---|---|
-| Shorted (no signal) | — | **−62.0268 dBc** |
-| 2 V p-p (≈ +5 dBu) | 4 V p-p | **−62.0268 dBc** |
-| 18 V p-p (≈ +23 dBu) | 36 V p-p | −56.77 dBc |
-| 19 V p-p (≈ +24 dBu) | 38 V p-p | **−57.43 dBc** |
-| 20 V p-p (≈ +25 dBu) | 40 V p-p | −57.20 dBc |
+| Drive level (per leg) | Diff input | THD measured     |
+|-----------------------|------------|------------------|
+| Shorted (no signal)   | —          | **−62.0268 dBc** |
+| 2 V p-p (≈ +5 dBu)    | 4 V p-p    | **−62.0268 dBc** |
+| 18 V p-p (≈ +23 dBu)  | 36 V p-p   | −56.77 dBc       |
+| 19 V p-p (≈ +24 dBu)  | 38 V p-p   | **−57.43 dBc**   |
+| 20 V p-p (≈ +25 dBu)  | 40 V p-p   | −57.20 dBc       |
 
 **Analysis:**
 
