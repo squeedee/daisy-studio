@@ -86,11 +86,12 @@ enough to fold back on a short before damage.
   from 0 V watching current. DMM on +12V_RAW downstream of the bulk
   cap reaches 11.7–11.9 V (small Vds drop across DMP3056L). Steady-
   state PSU current matches the preload + quiescent budget; nothing
-  unexpected. **FAILED** ground not connected
+  unexpected. **FAILED** ground not connected (issue #13, Rev 2c fix)
 - [ ] **1.4 Reverse-polarity blocks (FET).** Power down, reverse the
   PSU leads, ramp back up. DMP3056L blocks; +12V_RAW stays at 0 V,
   PSU current limited only by leakage (≪ 1 mA). Power down, restore
   polarity, confirm rails recover. **FAILED** Reverse S and D on mosfet
+  (issue #14, Rev 2c fix)
 - [ ] **1.5 +5 V rail.** DMM on +5 V should read 5.05–5.15 V (FB
   divider 100 k / 13.3 k → 0.6 V × 8.52). AC-coupled scope at the
   same node — ripple well under 50 mV pp at the 500 kHz switching
@@ -429,9 +430,9 @@ assumed ~1.5 dB more rail clearance than the OPA1656 actually
 delivers on ±12 V. The 15 kΩ fixed value was set under that
 optimistic ceiling.
 
-**Resolution:** Swap R_fb_fixed (R2, R7) from 15 kΩ to **6.8 kΩ**
-(or closest E12 from stock — 5.6 kΩ also workable). Keep the
-10 kΩ Bourns trim. New range 6.8–16.8 kΩ → gain 3.09× to 7.64× →
+**Resolution (Rev 2c — issue #15):** Swap R_fb_fixed (R2, R7) from
+15 kΩ to **6.8 kΩ** (5.6 kΩ acceptable as a stock alternate). Keep
+the 10 kΩ Bourns trim. New range 6.8–16.8 kΩ → gain 3.09× to 7.64× →
 peak differential output +19.7 to +27.6 dBu (OPA clip ceiling
 +26.5 dBu).
 
@@ -445,9 +446,10 @@ peak differential output +19.7 to +27.6 dBu (OPA clip ceiling
   consumer level. Acceptable — user can attenuate at the output
   level pot on the daughterboard if a lower nominal is needed.
 
-**Action:** Swap R2 and R7 to 6.8 kΩ (or in-stock equivalent) on
-all populated boards; update the Stage 3 Populate parts list before
-the next build. Re-run 3.1 / 3.2 after the swap.
+**Action:** Rev 2b bench mitigation — hand-swap R2/R7 to **10 kΩ**
+(closest in-stock value, sufficient to clear the clip ceiling and let
+Stage 3 validation proceed). Rev 2c spin ships with 6.8 kΩ default
+per the schematic / BOM update. Re-run 3.1 / 3.2 after the swap.
 
 ### F2 — GPIO header collides with Seed USB during programming
 
@@ -457,19 +459,12 @@ plugged in for programming/DFU fouls the header (or anything mated
 into it). Programming the Seed in-circuit while the daughterboard
 ribbon is connected is awkward at best.
 
-**Resolution:** TBD — two candidate directions:
+**Resolution (Rev 3 — issue #16):** Move the GPIO header further from
+the Seed USB cutout so a standard USB-micro plug + boot has clearance.
+Assume a right-angle low-profile USB breakout cable on the host side
+(specific part TBD) — pick the header position to accommodate it.
 
-- **PCB-side fix (Rev 3):** Move the GPIO header further from the
-  Seed USB cutout so a standard USB-micro plug + boot has clearance.
-  Cheaper if we're already respinning for other reasons.
-- **BOM-side fix (could apply to remaining Rev 2 boards):** Swap
-  the GPIO header for a low-profile variant (e.g. surface-mount or
-  shrouded low-stack), so its mating connector clears the USB plug.
-  Constrains the daughterboard cable choice — needs cross-check
-  against the existing mating part.
-
-**Action:** Defer to Rev 3 issue triage. Don't change the Rev 2
-schematic / PCB / BOM mid-validation.
+**Action:** Defer to Rev 3. No change to Rev 2b / 2c schematic / PCB.
 
 ### F3 — H11L1SM optoisolator pads still under-sized
 
@@ -480,15 +475,15 @@ lead edges for fillet or for visual inspection. Better than Rev 1
 (where the footprint was outright wrong, flagged in pre-build sanity)
 but still under IPC-recommended land allowance.
 
-**Resolution:** Rev 3 — extend the pad lengths outward (away from the
-package body) so each lead sits on a land with normal toe/heel fillet
-allowance. No change to the pitch or pad width (which appear to match
-the package).
+**Resolution (Rev 2c — issue #17):** Extend the pad lengths outward
+(away from the package body) so each lead sits on a land with normal
+toe/heel fillet allowance per IPC-7351. No change to the pitch or
+pad width (which appear to match the package).
 
-**Action:** Defer to Rev 3 issue triage. No change to Rev 2 PCB or
-schematic. Pre-build sanity item ("H11L1SM footprint matches the
-populated package") should be updated for Rev 3 to confirm the new
-land geometry.
+**Action:** Rev 2b mitigation — careful hand-soldering on populated
+boards; not a blocker. Rev 2c spin ships with corrected footprint.
+Pre-build sanity item ("H11L1SM footprint matches the populated
+package") to be updated for the new land geometry on Rev 2c.
 
 ### F4 — BJT clamp symbol/footprint pin mismatch (E↔B swapped)
 
@@ -538,16 +533,16 @@ Same mechanism mirror-polarity for the PNPs on +VCLAMP.
   overdrive rather than being soft-clamped to ≤4.8 V at the Seed
   pin. Could exceed the Seed's input rating.
 
-**Resolution:** Rev 3 — fix the symbol/footprint pairing. Either
-update the symbol's pin assignment to JEDEC SOT-23 (1=B, 2=E, 3=C),
-or assign a footprint whose pad numbering matches the existing
-symbol. The Sim.Pins property on the symbol must agree with the
-footprint mapping after the fix.
+**Resolution (Rev 2c — issue #18):** Update the footprint to JEDEC
+SOT-23 (1 = B, 2 = E, 3 = C) so subsequent SOT-23 part substitutions
+are electrically correct without further rework. The Sim.Pins property
+on the symbol must agree with the new footprint mapping.
 
-**Action (Board 1, this validation pass):** Dead-bug rework — lift
-Q1–Q4, swap pins 1↔2 with magnet wire, then continue Stage 4.
-Remaining four boards depend on whether dead-bug rework is worth
-the time vs. waiting for Rev 3.
+**Action (Board 1, this validation pass):** Dead-bug rework — Q1–Q4
+package clipped, leads bent down and reconnected to the correct nets
+to recover the intended pin function, then continued Stage 4.
+Remaining four Rev 2b boards: weigh the dead-bug effort vs. waiting
+for Rev 2c.
 
 ### F5 — +VCLAMP loaded by clip-threshold trim pot (asymmetric clamps)
 
@@ -593,14 +588,25 @@ Both sides match the divider math to DMM precision.
   used a symmetric ±1.565 V reference. Bench will confirm; needs
   measurement before settling the new spec.
 
-**Resolution (Rev 3):** Either swap RV7/RV8 to a higher-value trim
-(47 kΩ or 100 kΩ — loading on +VCLAMP drops to <3 %, reaching
-symmetric ±1.565 V again), or move the clip-threshold derivation to
-its own divider off +12 V so it doesn't load +VCLAMP at all.
+**Resolution (issue #19):**
 
-**Action (Rev 2):** No hardware change. Update Stage 4.1's +VCLAMP
-tolerance inline; accept the asymmetric clamp behaviour as the
-Rev 2 reality and measure Stage 4.3 against it.
+- **Rev 2c:** swap RV7/RV8 to **47 kΩ or 100 kΩ** — loading on
+  +VCLAMP drops to <3 %, reaching symmetric ±1.565 V again.
+  Single-part change, smallest blast radius.
+- **Rev 3:** move the clip-threshold derivation to its own divider
+  off +12 V so it doesn't share impedance with +VCLAMP at all.
+  Cleaner — eliminates the impedance coupling between the clamp
+  reference and the clip-threshold detector entirely.
+
+**Knock-on:** once F5 is fixed, full +24 dBu calibration headroom is
+restored and the output trims (RV2 / RV4) can be re-set to the
+original spec rather than the F9 work-around level (~+22–23 dBu).
+Stage 3.1 / 3.2 and F9 procedure notes will need updating once the
+fix is in.
+
+**Action (Rev 2b):** No hardware change on the current bench boards.
+Stage 4.1's +VCLAMP tolerance documented inline with the asymmetric
+reality; Stage 4.3 measured against the realistic clamp thresholds.
 
 ### F6 — Input stage rails on small input; THAT1246 SENSE topology is fragile
 
@@ -640,21 +646,27 @@ layout error compounding the topology fragility.
 - Stage 4.1 (±VCLAMP) unaffected — measured with no audio drive.
 - Stages 4.2–4.6 cannot run on stock Rev 2 boards without rework.
 
-**Resolution (Rev 3):** Drop the active-ground-sense topology and
-adopt the THAT1246 datasheet textbook application — tie SENSE
-directly to OUTPUT (or to the destination ground at the load
-side), and let the OPA1656 act as a conventional downstream
-inverting gain stage with its own self-contained R9 / R16
-feedback. Two independently stable stages, no nested loop. REF /
-pin 1 stays at AGND. Update both the schematic and PCB.
+**Resolution (issue #20):**
 
-**Action (Board 1, this validation pass):** Rework on each
-THAT1246 — cut the SENSE trace from its current destination, and
-short-jumper **U4 pin 5 → U4 pin 6** and **U5 pin 5 → U5 pin 6**
-(SENSE tied directly to OUTPUT at the chip). The OPA −IN node is
-left fed only by R16 (input) and R9 (feedback) as a normal
-inverting amp. Sanity check: −8.7 dBu diff input should give a
-clean ~240 mV-peak sine at the OPA output, not a railed square.
+- **Rev 2c:** drop the active-ground-sense topology. Tie SENSE
+  directly to OUTPUT at the THAT1246. OPA1656 becomes a conventional
+  downstream inverting gain stage with self-contained R9 / R16
+  feedback. Two independently stable stages, no nested loop. REF /
+  pin 1 stays at AGND. Update both schematic and PCB.
+- **Rev 3:** keep the active-ground-sense concept correctly. Move R16
+  close to the OPA1656 and run the SENSE trace **back to the
+  THAT1246 from the load-side of R16** (sensing across the board
+  rather than at the OPA virtual ground). Recovers the original
+  remote-ground-referenced sensing intent without the nested-loop
+  instability.
+
+**Action (Board 1, this validation pass):** Rework on each THAT1246
+— cut the SENSE trace from its current destination, short-jumper
+**U4 pin 5 → U4 pin 6** and **U5 pin 5 → U5 pin 6** (SENSE tied
+directly to OUTPUT at the chip — equivalent to the Rev 2c fix). The
+OPA −IN node is left fed only by R16 (input) and R9 (feedback) as a
+normal inverting amp. Sanity check: −8.7 dBu diff input should give
+a clean ~240 mV-peak sine at the OPA output, not a railed square.
 
 ### F7 — Input-stage THD floor on Board 1 limited by AD2 measurement rig
 
@@ -746,12 +758,13 @@ channel without realizing it, and during board population it
 invites mis-stuffing. Compounds with F2 (GPIO header position)
 as a class of layout-usability fixes due in Rev 3.
 
-**Resolution (Rev 3):** Re-place RV7 and RV8 in the PCB layout so
-each sits adjacent to its respective channel's BJT clamp / op-amp
-group. No schematic change required.
+**Resolution (Rev 3 — issue #21):** Re-place RV7 and RV8 in the PCB
+layout so each sits adjacent to its respective channel's BJT clamp /
+op-amp group. No schematic change required. Combine with the F10
+silkscreen-labelling improvements while the layout is open.
 
-**Action:** None on Rev 2 boards. Mark the silkscreen with hand
-labels if doing further trim work; deferred to Rev 3 issue triage.
+**Action:** None on Rev 2b boards. Mark the silkscreen with hand
+labels if doing further trim work; deferred to Rev 3.
 
 ### F9 — Broadband H4..H9 fanout is the most sensitive distortion indicator; calibrate output trims via loopback-THD, not scope p-p
 
@@ -821,6 +834,33 @@ in 3.1/3.2/4.6 above.
 **Action:** Re-trim all five boards using the new procedure once
 populated. Record locked codec-input-level value per channel for QA
 records.
+
+### F10 — Silkscreen labelling improvements
+
+**Symptom (recurring across F2, F8, F9 and the RV2 / RV4 output-trim
+confusion that bit the first Stage 3.1 trim pass):** Several
+layout-usability traps trace back to ambiguous silkscreen. Operators
+have to consult the schematic to distinguish L vs R trims, identify
+connector roles (In / Out / Thru), or locate the correct
+clip-threshold pot for the channel under test. Each instance is
+small, but they compound during build, trim, and field service.
+
+**Resolution (issue #24):** Add explicit silkscreen labelling on the
+PCB for:
+
+- **Audio jacks:** "Input-Left", "Input-Right", "Output-Left",
+  "Output-Right" near each Neutrik combo.
+- **MIDI jacks:** "In", "Out", "Thru" near each DIN-5.
+- **Clip-threshold trims:** "Clip Trim Left" / "Clip Trim Right"
+  alongside RV7 / RV8 (combine with the F8 re-placement so labels
+  and physical sides agree).
+- **Output-feedback trims:** "Output Trim Left" / "Output Trim Right"
+  alongside RV2 / RV4 (prevents the L/R-confusion class of bug that
+  surfaced during the F9 calibration work).
+
+**Action:** Land in Rev 2c silk if the spin happens before Rev 3, or
+combine with the broader Rev 3 layout pass. No schematic change. No
+electrical impact.
 
 ## Equipment
 
