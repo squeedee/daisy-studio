@@ -862,6 +862,56 @@ PCB for:
 combine with the broader Rev 3 layout pass. No schematic change. No
 electrical impact.
 
+### F11 — Panel-side mounting hole geometry not exposed by connector footprints
+
+**Symptom (designing aluminium back panel for the wooden enclosure,
+May 2026):** Generating a 1:1 drilling template for the back panel
+required the panel-side M3 mounting hole pattern for the Neutrik
+NCJ6FA-H combo jacks. The KiCad footprint
+(`Connector_Audio:Jack_XLR-6.35mm_Neutrik_NCJ6FA-H-0_Horizontal`)
+exposes only the PCB through-hole pads, an F.Fab body envelope, and a
+single `Dwgs.User` line marking the front-face plane. The actual
+panel-side M3 hole pattern — diagonally placed, *outside* the round
+Ø24 mm bezel cutout — is buried in the bundled `.step` mesh and is
+not recoverable parametrically. Same problem for the SDS-50J MIDI DIN
+sockets (panel-side retention features not on any plottable layer)
+and the DC barrel jack (body-clearance outline not flagged on any
+panel-facing layer either).
+
+**Consequences:** No electrical issue. Pure mechanical / fabrication
+pain: anyone making a matching panel has to dig through each
+manufacturer's datasheet, transcribe the pattern by hand, and verify
+it on a printed template — exactly the loop that produced wrong
+mounting-hole locations on two iterations of the back-panel SVG (the
+template put screws on the vertical centreline, then on the
+horizontal centreline, before the user pointed out they are
+diagonally placed and outside the bezel). Recurring tax every time a
+panel, faceplate, or hand-cut enclosure is designed against this
+PCB.
+
+**Resolution (Rev 2c — issue #25):** Add a panel-overlay drawing on
+`Dwgs.User` (or introduce a dedicated `Panel.Cutout` user layer) for
+every panel-facing connector: 4× Neutrik NCJ6FA-H, 3× SDS-50J MIDI
+DIN, 1× microSD (Hirose DM3BT, B.Cu), 1× DC barrel jack, 1× JST VH.
+For each connector mark:
+
+- Front-face cutout outline at true size (round / D-shape / slot /
+  body envelope).
+- Panel mounting hole centres with drill diameter callout.
+- A reference cross at the connector axis intersected by the panel
+  plane.
+
+Once present, the full back-panel drilling pattern can be exported
+1:1 with `kicad-cli pcb export svg --layers Dwgs.User,Edge.Cuts …`
+and used directly as a template — no per-connector datasheet
+archaeology.
+
+**Action:** Rev 2b mitigation — `scripts/back_panel_template.py`
+hard-codes the connector cutout patterns from datasheet values.
+Verify by holding a printed template against an actual connector
+before drilling metal. Rev 2c spin lands the overlay layer and
+removes the need for the script.
+
 ## Equipment
 
 - **Digilent Analog Discovery 2** — scope + spectrum analyzer + arb
