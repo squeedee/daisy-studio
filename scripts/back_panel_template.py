@@ -11,10 +11,13 @@ import math
 from pathlib import Path
 
 # ---- Panel size & PCB placement (edit) ---------------------------------------
-PANEL_WIDTH_MM  = 260.0
-PANEL_HEIGHT_MM = 75.0
-PCB_LEFT_X      = (PANEL_WIDTH_MM - 241.625) / 2  # PCB left edge from panel L
-PCB_TOP_Y       = 25.0                            # PCB top surface from panel bottom
+# 10" x 2 1/4" aluminium panel; board centred; board bottom 1/2" from panel bottom
+PANEL_WIDTH_MM  = 10.0 * 25.4         # 254.0 mm
+PANEL_HEIGHT_MM = 2.25 * 25.4         # 57.15 mm
+PCB_LEFT_X      = (PANEL_WIDTH_MM - 241.625) / 2  # PCB centred horizontally
+PCB_THICKNESS   = 1.6
+PCB_BOTTOM_Y    = 0.5 * 25.4          # 12.7 mm — bottom of board above panel bottom
+PCB_TOP_Y       = PCB_BOTTOM_Y + PCB_THICKNESS    # PCB top-surface reference
 
 # ---- Connector axis heights above PCB top surface ----------------------------
 XLR_AXIS_ABOVE_PCB = 12.5  # from NCJ6FA-H 3D model z-offset
@@ -38,15 +41,16 @@ DIN_SCREW_ANGLES  = (0, 120, 240)  # degrees, 0° = straight up from DIN centre
 SD_SLOT_W = 14.0
 SD_SLOT_H = 3.0
 
-# Barrel jack body cutout — this is wrong.
-BARREL_BODY_W = 10.0
-BARREL_BODY_H = 10.0
-BARREL_AXIS_ABOVE_PCB = 5.0    # rough vertical centreline of jack body above PCB
+# Barrel jack — back-facing face envelope from the KiCad 3D model
+# (Connector_BarrelJack.3dshapes/BarrelJack_Horizontal.wrl, vertex bounds):
+#   local y: [-4.80, +4.50]  → 9.30 mm wide, centre at -0.15 mm
+#   local z: [0,    10.70]   → 10.70 mm tall, centre at  5.35 mm above PCB top
+BARREL_CLEARANCE             = 0.5   # added to each side of the envelope
+BARREL_BODY_W                = 9.30 + 2 * BARREL_CLEARANCE
+BARREL_BODY_H                = 10.70 + 2 * BARREL_CLEARANCE
+BARREL_BODY_CENTRE_ABOVE_PCB = 5.35
+BARREL_LOCAL_Y_CENTRE        = -0.15  # body geometric centre in footprint local y
 
-
-# Todo i dont want panel screws
-PANEL_SCREW_D     = 3.5
-PANEL_SCREW_INSET = 6.0
 
 # ---- Board geometry & V-groove ----------------------------------------------
 BOARD_LEFT_AFTER_VGROOVE = 62.075
@@ -68,11 +72,8 @@ DINS = [
 ]
 SD = (267.425, 33.575, 0)  # Hirose DM3BT, on B.Cu
 
-# DC barrel jack — body envelope, not just barrel opening
+# DC barrel jack placement
 BARREL_JACK = (288.825, 39.125, -90)
-# Local body envelope from KiCad BarrelJack_Horizontal: x in [-13.8, 0.9], y ±4.6
-# Body geometric centre in local frame:
-BARREL_LOCAL_CENTRE = ((-13.8 + 0.9) / 2, 0)
 
 # -----------------------------------------------------------------------------
 def transform(local_x, local_y, place_x, place_y, rot_deg):
@@ -127,11 +128,19 @@ body = []
 # Panel outline
 body.append(f'<rect x="0" y="0" width="{W}" height="{H}" {STROKE_CUT}/>')
 
-# PCB outline (guide only)
-body.append(rect_g(PCB_LEFT_X, PCB_TOP_Y, 241.625, 56.7, STROKE_GUIDE))
+# PCB top edge (guide only — the only PCB feature that lies in the panel plane)
+body.append(
+    f'<line x1="{PCB_LEFT_X}" y1="{fy(PCB_TOP_Y)}" '
+    f'x2="{PCB_LEFT_X + 241.625}" y2="{fy(PCB_TOP_Y)}" {STROKE_GUIDE}/>'
+)
 body.append(
     f'<text x="{PCB_LEFT_X + 2}" y="{fy(PCB_TOP_Y) - 1}" font-size="2" '
     f'fill="#999">PCB top edge (guide only — do not cut)</text>'
+)
+# PCB bottom-surface guide line (1/2" above panel bottom)
+body.append(
+    f'<line x1="{PCB_LEFT_X}" y1="{fy(PCB_BOTTOM_Y)}" '
+    f'x2="{PCB_LEFT_X + 241.625}" y2="{fy(PCB_BOTTOM_Y)}" {STROKE_GUIDE}/>'
 )
 
 # XLR cutouts — Ø22 hole + 2 M3 screws diagonally outside the bezel
@@ -178,27 +187,19 @@ body.append(slot(sd_panel_x, sd_panel_y, SD_SLOT_W, SD_SLOT_H))
 body.append(crosshair(sd_panel_x, sd_panel_y, size=2.0))
 body.append(label(sd_panel_x, sd_panel_y - 4, "microSD (B.Cu — verify)"))
 
-# DC barrel jack — body-clearance rectangle so the body protrudes through panel
+# DC barrel jack — cutout matches the back-facing face envelope so the body
+# can protrude through the panel. We project the body's local y-centre through
+# the placement rotation to get panel X; panel Y comes from the body z-centre.
 bjx, bjy, bjrot = BARREL_JACK
-bx_centre, by_centre = transform(*BARREL_LOCAL_CENTRE, bjx, bjy, bjrot)
+bx_centre, _ = transform(0, BARREL_LOCAL_Y_CENTRE, bjx, bjy, bjrot)
 barrel_panel_x = board_to_panel(bx_centre)
-barrel_panel_y = PCB_TOP_Y + BARREL_AXIS_ABOVE_PCB
+barrel_panel_y = PCB_TOP_Y + BARREL_BODY_CENTRE_ABOVE_PCB
 body.append(rect_g(barrel_panel_x - BARREL_BODY_W/2,
-                   barrel_panel_y + BARREL_BODY_H/2,
+                   barrel_panel_y - BARREL_BODY_H/2,
                    BARREL_BODY_W, BARREL_BODY_H, STROKE_CUT))
 body.append(crosshair(barrel_panel_x, barrel_panel_y, size=3.0))
 body.append(label(barrel_panel_x, barrel_panel_y + BARREL_BODY_H/2 + 2,
                   "DC barrel (body)"))
-
-# Panel-to-box screws (4 corners)
-for (cx, cy) in [
-    (PANEL_SCREW_INSET, PANEL_SCREW_INSET),
-    (W - PANEL_SCREW_INSET, PANEL_SCREW_INSET),
-    (PANEL_SCREW_INSET, H - PANEL_SCREW_INSET),
-    (W - PANEL_SCREW_INSET, H - PANEL_SCREW_INSET),
-]:
-    body.append(circle(cx, cy, PANEL_SCREW_D))
-    body.append(crosshair(cx, cy, size=2.0))
 
 # 25 mm calibration bar
 bx0, by0 = 5.0, 3.0
