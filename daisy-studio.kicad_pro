@@ -60,55 +60,7 @@
       ],
       "drc_exclusions": [
         [
-          "unconnected_items|109725000|62487500|F.Cu|4|01d94d02-df8e-4746-886d-e39dca6c253f|38fb5f52-66ae-4bd2-9558-43d6d9706e3b",
-          ""
-        ],
-        [
-          "unconnected_items|116921000|57021000|F.Cu|4|ca7e6193-7667-4354-aa67-b3553dbe2778|f8afd73d-e62e-4364-84a0-2b4e948b1e21",
-          ""
-        ],
-        [
-          "unconnected_items|133480000|58340000|F.Cu|4|4fba5ae4-8d10-40cf-942d-9f2482f83033|ee0faab2-3108-449e-90c2-f100a56dcdcd",
-          ""
-        ],
-        [
-          "unconnected_items|136020000|55800000|F.Cu|4|18e95ea6-7ede-438c-b830-1ea23dede31c|36291a5c-f225-4089-828e-c4b3cadf7e67",
-          ""
-        ],
-        [
           "unconnected_items|34175000|55050000|F.Cu|4|7b6e9111-40c8-438d-9a46-017150c7e2a5|f98aedce-62f0-4b58-8d18-ca9713bee132",
-          ""
-        ],
-        [
-          "unconnected_items|38625000|77450000|F.Cu|4|e2bbbc8e-41b1-4204-ba80-306cf1b0839f|5a71154a-9ac3-4825-bf71-ab8c43123213",
-          ""
-        ],
-        [
-          "unconnected_items|38650000|53475000|F.Cu|4|9f3cbbc9-4a2f-4cb7-83aa-14a3d9a46be5|b497bc2f-ccea-47a7-a334-ff71f0a9daa3",
-          ""
-        ],
-        [
-          "unconnected_items|38650000|61250000|F.Cu|4|6dcbf3e2-3206-4ff6-ae58-149f37e5aa28|dfde6de2-4d2c-470d-91c2-9005b3f8918b",
-          ""
-        ],
-        [
-          "unconnected_items|54300000|60030000|F.Cu|4|def6320f-3c73-4ea7-bbb6-9b972ac6a52c|b3bc3753-1e74-4ef9-9dd5-1ba7e1284384",
-          ""
-        ],
-        [
-          "unconnected_items|54300000|76170000|F.Cu|4|3c1509ed-7781-43e4-96d2-949c77b31b22|742db1c4-2e23-49b6-adc7-3f9951c81209",
-          ""
-        ],
-        [
-          "unconnected_items|61650000|54470943|F.Cu|4|faa51502-4cf0-414b-b5d1-59c1d6ad446e|e50d7652-d886-44f3-aedd-fb918184b6aa",
-          ""
-        ],
-        [
-          "unconnected_items|80200000|67380000|F.Cu|4|1245544e-1309-4e95-b4e0-0a4736a57247|9f1cc647-d37f-4976-9ee7-cdb56fd7152b",
-          ""
-        ],
-        [
-          "unconnected_items|98200000|67535000|F.Cu|4|d18733d0-c131-4eea-b8f3-47a385e7268b|f7e8876b-a22d-43d2-83b6-a144851b9524",
           ""
         ]
       ],

@@ -3807,7 +3807,7 @@
 	)
 	(text "12V Input Protection\n"
 		(exclude_from_sim no)
-		(at 67.564 27.178 0)
+		(at 67.564 29.718 0)
 		(effects
 			(font
 				(size 2.54 2.54)
@@ -3938,6 +3938,12 @@
 		(uuid "32449260-67ce-4114-aeba-5cae8ba7bac6")
 	)
 	(junction
+		(at 93.98 40.64)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "38616102-c181-4c97-a04c-fadb2f15126c")
+	)
+	(junction
 		(at 135.89 124.46)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3948,6 +3954,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3c3b9fd8-b18b-45a3-8eb3-4ff444cce8f8")
+	)
+	(junction
+		(at 86.36 55.88)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4059c108-b106-43b6-b376-25fd052c4d4d")
 	)
 	(junction
 		(at 234.95 59.69)
@@ -4004,7 +4016,7 @@
 		(uuid "91f7f5f4-aec4-4054-b096-1176ac702194")
 	)
 	(junction
-		(at 101.6 43.18)
+		(at 101.6 40.64)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "9c405a51-f001-45d8-a04d-d063b9e3abf9")
@@ -4026,12 +4038,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b156fedb-7579-4219-8f6d-5130d1101786")
-	)
-	(junction
-		(at 90.17 43.18)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "b249440e-1b23-4501-b197-d599205291bb")
 	)
 	(junction
 		(at 247.65 45.72)
@@ -4080,7 +4086,7 @@
 		(uuid "3454a7a6-d86d-4115-9f77-d430b28ff04a")
 	)
 	(no_connect
-		(at 35.56 50.8)
+		(at 35.56 53.34)
 		(uuid "856bfa6c-4d95-40f5-b152-8193026f13a4")
 	)
 	(no_connect
@@ -4189,6 +4195,16 @@
 	)
 	(wire
 		(pts
+			(xy 64.77 55.88) (xy 86.36 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "139b8f48-d9ec-425a-98ee-06eda3088934")
+	)
+	(wire
+		(pts
 			(xy 226.06 59.69) (xy 234.95 59.69)
 		)
 		(stroke
@@ -4259,7 +4275,7 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 45.72) (xy 43.18 55.88)
+			(xy 46.99 48.26) (xy 46.99 55.88)
 		)
 		(stroke
 			(width 0)
@@ -4369,23 +4385,13 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 40.64) (xy 53.34 40.64)
+			(xy 43.18 43.18) (xy 53.34 43.18)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "379e9a76-5687-48fd-b232-4a8a7a9d0a2f")
-	)
-	(wire
-		(pts
-			(xy 64.77 55.88) (xy 90.17 55.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3bd0e32b-86a5-4f7b-a444-6a3da9d937c5")
 	)
 	(wire
 		(pts
@@ -4396,16 +4402,6 @@
 			(type default)
 		)
 		(uuid "3bf11519-ab01-4cae-b342-d033a6f7f376")
-	)
-	(wire
-		(pts
-			(xy 64.77 43.18) (xy 64.77 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3bf8f6d4-0c16-4e18-9f8b-9153bb40cfec")
 	)
 	(wire
 		(pts
@@ -4439,6 +4435,16 @@
 	)
 	(wire
 		(pts
+			(xy 86.36 53.34) (xy 86.36 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "41b804b6-8822-4e42-8d9e-0c83c24fb1d2")
+	)
+	(wire
+		(pts
 			(xy 72.39 104.14) (xy 69.85 104.14)
 		)
 		(stroke
@@ -4469,6 +4475,16 @@
 	)
 	(wire
 		(pts
+			(xy 66.04 43.18) (xy 63.5 43.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5573e09a-b38b-485a-be4f-62840ae28ed4")
+	)
+	(wire
+		(pts
 			(xy 135.89 101.6) (xy 139.7 101.6)
 		)
 		(stroke
@@ -4476,6 +4492,16 @@
 			(type default)
 		)
 		(uuid "59770843-c79c-45d7-9d45-1525f413311b")
+	)
+	(wire
+		(pts
+			(xy 86.36 43.18) (xy 86.36 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "59cdcc0e-a0be-4c9c-9826-19a2d82a68e5")
 	)
 	(wire
 		(pts
@@ -4506,6 +4532,16 @@
 			(type default)
 		)
 		(uuid "5c34f41f-6513-40fe-97e2-6730b19b4959")
+	)
+	(wire
+		(pts
+			(xy 93.98 40.64) (xy 93.98 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5db6ed41-f6f7-493f-b971-324bfaeee6b4")
 	)
 	(wire
 		(pts
@@ -4629,6 +4665,16 @@
 	)
 	(wire
 		(pts
+			(xy 46.99 48.26) (xy 43.18 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "799b6a5a-d2c5-4b31-9aa5-a3bd2d556393")
+	)
+	(wire
+		(pts
 			(xy 247.65 45.72) (xy 247.65 53.34)
 		)
 		(stroke
@@ -4699,7 +4745,7 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 55.88) (xy 64.77 55.88)
+			(xy 46.99 55.88) (xy 64.77 55.88)
 		)
 		(stroke
 			(width 0)
@@ -4736,16 +4782,6 @@
 			(type default)
 		)
 		(uuid "89fec256-0943-4807-ac08-24533c869a4e")
-	)
-	(wire
-		(pts
-			(xy 90.17 43.18) (xy 101.6 43.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8b1d413e-67c9-453b-bb2f-3318f2720388")
 	)
 	(wire
 		(pts
@@ -4919,7 +4955,17 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 43.18) (xy 88.9 43.18)
+			(xy 104.14 40.64) (xy 101.6 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b139e5eb-c377-4bc0-b001-8055658e8872")
+	)
+	(wire
+		(pts
+			(xy 86.36 40.64) (xy 93.98 40.64)
 		)
 		(stroke
 			(width 0)
@@ -4999,16 +5045,6 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 46.99) (xy 90.17 43.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c38921b1-161f-47da-a0a5-284948c77a2d")
-	)
-	(wire
-		(pts
 			(xy 135.89 124.46) (xy 135.89 125.73)
 		)
 		(stroke
@@ -5059,16 +5095,6 @@
 	)
 	(wire
 		(pts
-			(xy 63.5 40.64) (xy 68.58 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cf49faaa-7f96-401e-a60b-28556f651434")
-	)
-	(wire
-		(pts
 			(xy 158.75 55.88) (xy 151.13 55.88)
 		)
 		(stroke
@@ -5116,16 +5142,6 @@
 			(type default)
 		)
 		(uuid "d5e867bf-5404-477b-8d6c-7b8abbfc5ddc")
-	)
-	(wire
-		(pts
-			(xy 64.77 43.18) (xy 68.58 43.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "dad59e15-47a3-4cfa-ae40-00dd9378e9ce")
 	)
 	(wire
 		(pts
@@ -5199,6 +5215,16 @@
 	)
 	(wire
 		(pts
+			(xy 86.36 55.88) (xy 93.98 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "eacafa16-11a8-427a-aa11-6fcbe5684763")
+	)
+	(wire
+		(pts
 			(xy 139.7 104.14) (xy 123.19 104.14)
 		)
 		(stroke
@@ -5209,7 +5235,7 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 54.61) (xy 90.17 55.88)
+			(xy 93.98 53.34) (xy 93.98 55.88)
 		)
 		(stroke
 			(width 0)
@@ -5256,6 +5282,16 @@
 			(type default)
 		)
 		(uuid "f50d89d6-6fb4-4af7-9a64-756796a0d587")
+	)
+	(wire
+		(pts
+			(xy 93.98 40.64) (xy 101.6 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f8ae0e8d-3ce9-4fa1-8819-560d4599696e")
 	)
 	(wire
 		(pts
@@ -5338,7 +5374,7 @@
 		(uuid "ff419f05-891b-45b0-b27a-d740726bc6fd")
 	)
 	(label "+12V_IN"
-		(at 43.18 40.64 0)
+		(at 43.18 43.18 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5496,7 +5532,7 @@
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
-		(at 101.6 43.18 0)
+		(at 101.6 40.64 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5505,7 +5541,7 @@
 		(fields_autoplaced yes)
 		(uuid "054f3ec6-dbf6-4619-ac38-deb2e007fd70")
 		(property "Reference" "#FLG01"
-			(at 101.6 41.275 0)
+			(at 101.6 38.735 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5514,7 +5550,7 @@
 			)
 		)
 		(property "Value" "PWR_FLAG_+12v_RAW"
-			(at 101.6 38.1 0)
+			(at 101.6 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5522,7 +5558,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 101.6 43.18 0)
+			(at 101.6 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5531,7 +5567,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 101.6 43.18 0)
+			(at 101.6 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5540,7 +5576,7 @@
 			)
 		)
 		(property "Description" "Special symbol for telling ERC where power comes from"
-			(at 101.6 43.18 0)
+			(at 101.6 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6998,7 +7034,7 @@
 	)
 	(symbol
 		(lib_id "Switch:SW_SPST")
-		(at 58.42 40.64 0)
+		(at 58.42 43.18 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7006,7 +7042,7 @@
 		(dnp no)
 		(uuid "69f08d76-c3c5-4303-b464-71e952ef3054")
 		(property "Reference" "SW1"
-			(at 58.42 34.29 0)
+			(at 58.42 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7014,7 +7050,7 @@
 			)
 		)
 		(property "Value" "Power"
-			(at 57.15 37.338 0)
+			(at 57.15 39.878 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7022,7 +7058,7 @@
 			)
 		)
 		(property "Footprint" "Connector_JST:JST_VH_B2P-VH_1x02_P3.96mm_Vertical"
-			(at 58.42 40.64 0)
+			(at 58.42 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7031,7 +7067,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 58.42 40.64 0)
+			(at 58.42 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7040,7 +7076,7 @@
 			)
 		)
 		(property "Description" "Single Pole Single Throw (SPST) switch"
-			(at 58.42 40.64 0)
+			(at 58.42 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7203,7 +7239,7 @@
 	)
 	(symbol
 		(lib_id "power:+12V_RAW")
-		(at 101.6 43.18 270)
+		(at 104.14 40.64 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7212,7 +7248,7 @@
 		(fields_autoplaced yes)
 		(uuid "8047ec12-c6c8-4d56-a988-bca65cda2a03")
 		(property "Reference" "#PWR04"
-			(at 97.79 43.18 0)
+			(at 100.33 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7221,7 +7257,7 @@
 			)
 		)
 		(property "Value" "+12V_RAW"
-			(at 105.41 43.1799 90)
+			(at 107.95 40.6399 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7230,7 +7266,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 101.6 43.18 0)
+			(at 104.14 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7239,7 +7275,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 101.6 43.18 0)
+			(at 104.14 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7248,7 +7284,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+12V\""
-			(at 101.6 43.18 0)
+			(at 104.14 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7470,135 +7506,6 @@
 		)
 	)
 	(symbol
-		(lib_id "daisy-studio:SI2301CDS-T1-GE3")
-		(at 68.58 43.18 0)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "928ad2e4-cb48-4414-89f4-62eaf67797f9")
-		(property "Reference" "Q5"
-			(at 78.74 34.29 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "DMP3056L-13"
-			(at 78.232 36.576 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-3"
-			(at 85.09 -51.74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://4donline.ihs.com/images/VipMasterIC/IC/DIOD/DIOD-S-A0012884531/DIOD-S-A0012915142-1.pdf?hkey=CECEF36DEECDED6468708AAF2E19C0C6"
-			(at 85.09 -151.74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Description" "DMP3056L-13"
-			(at 68.58 43.18 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Height" "1.12"
-			(at 85.09 -351.74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Mouser Part Number" "621-DMP3056L-13"
-			(at 85.09 -451.74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Mouser Price/Stock" "https://www.mouser.com/ProductDetail/Diodes-Incorporated/DMP3056L-13?qs=OVC8WVYZliRFsnMzvbeoig%3D%3D"
-			(at 85.09 -551.74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer_Name" "Diodes Incorporated"
-			(at 85.09 -651.74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer_Part_Number" "DMP3056L-13"
-			(at 85.09 -751.74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "8bee5979-9bd7-4a39-a657-e7ce4929f85c")
-		)
-		(pin "2"
-			(uuid "55abbaea-15c7-4481-a7e8-73501deb52d7")
-		)
-		(pin "3"
-			(uuid "e0660b95-c267-458d-8677-c99914c6a7e2")
-		)
-		(instances
-			(project "triptech"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "Q5")
-					(unit 1)
-				)
-			)
-			(project ""
-				(path "/a1b2c3d4-1111-4000-8000-000000000001"
-					(reference "Q1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:PWR_FLAG")
 		(at 132.08 125.73 180)
 		(unit 1)
@@ -7730,7 +7637,7 @@
 	)
 	(symbol
 		(lib_id "Connector:Barrel_Jack_MountingPin")
-		(at 35.56 43.18 0)
+		(at 35.56 45.72 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7738,14 +7645,6 @@
 		(dnp no)
 		(uuid "a100a001-0001-4000-8000-000000000001")
 		(property "Reference" "J13"
-			(at 35.56 35.052 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Barrel_Jack_MountingPin"
 			(at 35.56 37.592 0)
 			(effects
 				(font
@@ -7753,8 +7652,16 @@
 				)
 			)
 		)
+		(property "Value" "Barrel_Jack_MountingPin"
+			(at 30.988 40.132 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property "Footprint" "Connector_BarrelJack:BarrelJack_Horizontal"
-			(at 36.83 43.815 0)
+			(at 36.83 46.355 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7763,7 +7670,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 35.56 43.18 0)
+			(at 35.56 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7772,7 +7679,7 @@
 			)
 		)
 		(property "Description" "DC Barrel Jack with a mounting pin"
-			(at 35.56 43.18 0)
+			(at 35.56 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7806,7 +7713,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 64.77 52.07 0)
+		(at 86.36 49.53 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7814,7 +7721,7 @@
 		(dnp no)
 		(uuid "a100a001-0003-4000-8000-000000000001")
 		(property "Reference" "R33"
-			(at 67.818 51.308 0)
+			(at 89.408 48.768 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7822,7 +7729,7 @@
 			)
 		)
 		(property "Value" "10k"
-			(at 68.072 53.086 0)
+			(at 89.662 50.546 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7830,7 +7737,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
-			(at 62.992 52.07 90)
+			(at 84.582 49.53 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7839,7 +7746,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 64.77 52.07 0)
+			(at 86.36 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7848,7 +7755,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 64.77 52.07 0)
+			(at 86.36 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7879,7 +7786,7 @@
 	)
 	(symbol
 		(lib_id "Device:D_TVS")
-		(at 90.17 50.8 270)
+		(at 93.98 49.53 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7887,7 +7794,7 @@
 		(dnp no)
 		(uuid "a100a001-0004-4000-8000-000000000001")
 		(property "Reference" "D14"
-			(at 92.456 45.466 90)
+			(at 96.266 44.196 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7895,7 +7802,7 @@
 			)
 		)
 		(property "Value" "SMBJ15CA"
-			(at 95.25 47.244 90)
+			(at 99.06 45.974 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7903,7 +7810,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_SMB"
-			(at 90.17 50.8 0)
+			(at 93.98 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7912,7 +7819,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 90.17 50.8 0)
+			(at 93.98 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7921,7 +7828,7 @@
 			)
 		)
 		(property "Description" "Bidirectional transient-voltage-suppression diode"
-			(at 90.17 50.8 0)
+			(at 93.98 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8838,6 +8745,128 @@
 			(project "daisy-studio"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
 					(reference "D13")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "daisy-studio:SI2301CDS-T1-GE3")
+		(at 86.36 43.18 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "bb0ca5eb-4f22-4565-8ad6-5d88a71904c9")
+		(property "Reference" "Q5"
+			(at 76.2 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "DMP3056L-13"
+			(at 76.708 36.576 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-3"
+			(at 69.85 -51.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://4donline.ihs.com/images/VipMasterIC/IC/DIOD/DIOD-S-A0012884531/DIOD-S-A0012915142-1.pdf?hkey=CECEF36DEECDED6468708AAF2E19C0C6"
+			(at 69.85 -151.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Description" "DMP3056L-13"
+			(at 86.36 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Height" "1.12"
+			(at 69.85 -351.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" "621-DMP3056L-13"
+			(at 69.85 -451.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" "https://www.mouser.com/ProductDetail/Diodes-Incorporated/DMP3056L-13?qs=OVC8WVYZliRFsnMzvbeoig%3D%3D"
+			(at 69.85 -551.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Diodes Incorporated"
+			(at 69.85 -651.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "DMP3056L-13"
+			(at 69.85 -751.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d5ae553f-503b-432f-838b-88a98556f812")
+		)
+		(pin "2"
+			(uuid "e8ad6c25-cf9e-4171-bdff-43b02c58a3d4")
+		)
+		(pin "3"
+			(uuid "8941eecd-b6bf-46f0-a90f-5a79c9899b1b")
+		)
+		(instances
+			(project "daisy-studio"
+				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c/a1b2c3d4-1111-4000-8000-000000000001"
+					(reference "Q5")
 					(unit 1)
 				)
 			)
