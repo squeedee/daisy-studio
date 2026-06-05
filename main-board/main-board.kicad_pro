@@ -58,12 +58,7 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [
-        [
-          "unconnected_items|34175000|55050000|F.Cu|4|7b6e9111-40c8-438d-9a46-017150c7e2a5|f98aedce-62f0-4b58-8d18-ca9713bee132",
-          ""
-        ]
-      ],
+      "drc_exclusions": [],
       "meta": {
         "version": 2
       },
@@ -482,7 +477,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "daisy-studio.kicad_pro",
+    "filename": "main-board.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -690,10 +685,6 @@
     [
       "e5f1de27-957d-4de2-a85c-711399db8cbb",
       "Main Board Misc"
-    ],
-    [
-      "9196cbbe-7bd4-4d56-b9dd-cbcb720624e2",
-      "Daughter Board"
     ],
     [
       "55cca6a8-30da-4c13-b2f2-a01401e2b54c",

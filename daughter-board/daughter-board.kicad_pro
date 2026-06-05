@@ -451,7 +451,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "power.kicad_pro",
+    "filename": "daughter-board.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -560,12 +560,36 @@
           "label": "Datasheet",
           "name": "Datasheet",
           "show": true
+        },
+        {
+          "group_by": false,
+          "label": "Sim.Pins",
+          "name": "Sim.Pins",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Label",
+          "name": "Label",
+          "show": true
+        },
+        {
+          "group_by": false,
+          "label": "Description",
+          "name": "Description",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "#",
+          "name": "${ITEM_NUMBER}",
+          "show": false
         }
       ],
       "filter_string": "",
       "group_symbols": true,
       "include_excluded_from_bom": true,
-      "name": "Default Editing",
+      "name": "",
       "sort_asc": true,
       "sort_field": "Reference"
     },
@@ -611,7 +635,7 @@
   },
   "sheets": [
     [
-      "a1b2c3d4-1111-4000-8000-000000000001",
+      "7a72acde-a38f-4f73-95e2-21745d6c33b7",
       "Root"
     ]
   ],

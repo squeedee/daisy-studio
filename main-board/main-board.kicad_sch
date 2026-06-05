@@ -7,7 +7,7 @@
 	(title_block
 		(title "Daisy-Studio")
 		(date "2026-04-17")
-		(rev "2.0")
+		(rev "2c")
 		(company "Rasheed Abdul-Aziz")
 	)
 	(lib_symbols)
@@ -46,7 +46,7 @@
 			)
 		)
 		(instances
-			(project "daisy-studio"
+			(project "main-board"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
 					(page "4")
 				)
@@ -88,51 +88,9 @@
 			)
 		)
 		(instances
-			(project "daisy-studio"
+			(project "main-board"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
 					(page "3")
-				)
-			)
-		)
-	)
-	(sheet
-		(at 76.962 61.722)
-		(size 39.116 24.384)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 255 229 191 1.0000)
-		)
-		(uuid "9196cbbe-7bd4-4d56-b9dd-cbcb720624e2")
-		(property "Sheetname" "Daughter Board"
-			(at 76.962 61.0104 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "daughter.kicad_sch"
-			(at 76.962 86.6906 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(instances
-			(project "daisy-studio"
-				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
-					(page "7")
 				)
 			)
 		)
@@ -171,7 +129,7 @@
 			)
 		)
 		(instances
-			(project "daisy-studio"
+			(project "main-board"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
 					(page "2")
 				)
@@ -212,7 +170,7 @@
 			)
 		)
 		(instances
-			(project "daisy-studio"
+			(project "main-board"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
 					(page "5")
 				)
@@ -220,7 +178,7 @@
 		)
 	)
 	(sheet
-		(at 30.988 60.96)
+		(at 30.988 63.5)
 		(size 40.386 26.416)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -236,7 +194,7 @@
 		)
 		(uuid "e5f1de27-957d-4de2-a85c-711399db8cbb")
 		(property "Sheetname" "Main Board Misc"
-			(at 30.988 60.2484 0)
+			(at 30.988 62.7884 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -245,7 +203,7 @@
 			)
 		)
 		(property "Sheetfile" "misc.kicad_sch"
-			(at 30.988 87.9606 0)
+			(at 30.988 90.5006 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -254,7 +212,7 @@
 			)
 		)
 		(instances
-			(project "daisy-studio"
+			(project "main-board"
 				(path "/55cca6a8-30da-4c13-b2f2-a01401e2b54c"
 					(page "6")
 				)

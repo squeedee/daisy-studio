@@ -1,4 +1,0 @@
-(fp_lib_table
-  (version 7)
-  (lib (name "daisy-studio")(type "KiCad")(uri "${KIPRJMOD}/daisy-studio.pretty")(options "")(descr "Daisy Studio project footprints"))
-)
