@@ -4,6 +4,10 @@
 	(generator_version "9.0")
 	(uuid "7a72acde-a38f-4f73-95e2-21745d6c33b7")
 	(paper "A4")
+	(title_block
+		(title "Daisy-Studio Daughterboard")
+		(rev "2c")
+	)
 	(lib_symbols
 		(symbol "Connector_Generic:Conn_02x10_Odd_Even"
 			(pin_names
