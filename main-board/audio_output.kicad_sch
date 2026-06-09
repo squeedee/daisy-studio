@@ -8257,6 +8257,15 @@
 				(hide yes)
 			)
 		)
+		(property "Label" "OGT_L"
+			(at 107.95 41.91 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "d0045aca-86e4-4e92-8030-5704c6238bdf")
 		)
@@ -9165,6 +9174,15 @@
 		)
 		(property "Description" "Multi-Turn Trim-potentiometer"
 			(at 107.95 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Label" "OGT_R"
+			(at 107.95 101.6 90)
 			(effects
 				(font
 					(size 1.27 1.27)

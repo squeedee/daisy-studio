@@ -3289,6 +3289,12 @@
 		(uuid "d0ed6ee9-7326-4a2a-9216-2fd105e98599")
 	)
 	(junction
+		(at 170.18 104.14)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0186a1e4-84ec-4037-b335-71a0f35511d7")
+	)
+	(junction
 		(at 88.9 166.37)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3353,12 +3359,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "4065f8a0-bd85-4285-b0ce-256d99bb97ed")
-	)
-	(junction
-		(at 171.45 104.14)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "441ff5e8-44c5-4fd4-900a-5c6c8f4d41d2")
 	)
 	(junction
 		(at 48.26 149.86)
@@ -3622,7 +3622,7 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 104.14) (xy 171.45 104.14)
+			(xy 166.37 104.14) (xy 170.18 104.14)
 		)
 		(stroke
 			(width 0)
@@ -3642,7 +3642,7 @@
 	)
 	(wire
 		(pts
-			(xy 175.26 120.65) (xy 181.61 120.65)
+			(xy 173.99 120.65) (xy 181.61 120.65)
 		)
 		(stroke
 			(width 0)
@@ -3822,7 +3822,7 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 116.84) (xy 171.45 104.14)
+			(xy 170.18 116.84) (xy 170.18 104.14)
 		)
 		(stroke
 			(width 0)
@@ -4092,7 +4092,7 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 124.46) (xy 171.45 127)
+			(xy 170.18 124.46) (xy 170.18 127)
 		)
 		(stroke
 			(width 0)
@@ -4162,7 +4162,7 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 127) (xy 158.75 127)
+			(xy 170.18 127) (xy 158.75 127)
 		)
 		(stroke
 			(width 0)
@@ -5412,6 +5412,16 @@
 	)
 	(wire
 		(pts
+			(xy 170.18 104.14) (xy 171.45 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f11849f9-4d65-4d9f-8d9e-04dc30c37d91")
+	)
+	(wire
+		(pts
 			(xy 135.89 166.37) (xy 135.89 172.72)
 		)
 		(stroke
@@ -5511,7 +5521,7 @@
 		(uuid "96afc700-b991-4bea-a786-43ca853267e3")
 	)
 	(label "IN_THRESH_R"
-		(at 177.8 120.65 270)
+		(at 181.61 120.65 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5919,7 +5929,7 @@
 	(symbol
 		(lib_name "R_Potentiometer_Trim_1")
 		(lib_id "Device:R_Potentiometer_Trim")
-		(at 171.45 120.65 0)
+		(at 170.18 120.65 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5927,7 +5937,7 @@
 		(dnp no)
 		(uuid "008fe0e5-5ad0-46e0-9f3a-91399f735a66")
 		(property "Reference" "RV8"
-			(at 168.91 119.3799 0)
+			(at 167.64 119.3799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5936,7 +5946,7 @@
 			)
 		)
 		(property "Value" "10k"
-			(at 168.402 121.92 0)
+			(at 167.132 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5945,7 +5955,7 @@
 			)
 		)
 		(property "Footprint" "Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical"
-			(at 171.45 120.65 0)
+			(at 170.18 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5954,7 +5964,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 171.45 120.65 0)
+			(at 170.18 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5963,7 +5973,16 @@
 			)
 		)
 		(property "Description" "Multi-Turn Trim-potentiometer"
-			(at 171.45 120.65 0)
+			(at 170.18 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Label" "ICT_R"
+			(at 170.942 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8860,6 +8879,15 @@
 			)
 		)
 		(property "Description" "Multi-Turn Trim-potentiometer"
+			(at 171.45 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Label" "ICT_L"
 			(at 171.45 58.42 0)
 			(effects
 				(font
