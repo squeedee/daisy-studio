@@ -11,458 +11,6 @@
 		(company "Rasheed Abdul-Aziz")
 	)
 	(lib_symbols
-		(symbol "2N3904_1"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "Q"
-				(at 5.08 1.905 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "2N3904"
-				(at 5.08 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" "Package_TO_SOT_THT:TO-92_Inline"
-				(at 5.08 -1.905 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-						(italic yes)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "https://www.onsemi.com/pub/Collateral/2N3903-D.PDF"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "Description" "0.2A Ic, 40V Vce, Small Signal NPN Transistor, TO-92"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Sim.Device" "NPN"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Sim.Pins" "1=E 2=B 3=C"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "NPN Transistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "TO?92*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "2N3904_1_0_1"
-				(polyline
-					(pts
-						(xy -2.54 0) (xy 0.635 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 1.905) (xy 0.635 -1.905)
-					)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 1.27 0)
-					(radius 2.8194)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "2N3904_1_1_1"
-				(polyline
-					(pts
-						(xy 0.635 0.635) (xy 2.54 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 -0.635) (xy 2.54 -2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 -1.778) (xy 1.778 -1.27) (xy 2.286 -2.286) (xy 1.27 -1.778)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(pin input line
-					(at -5.08 0 0)
-					(length 2.54)
-					(name "B"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 2.54 5.08 270)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 2.54 -5.08 90)
-					(length 2.54)
-					(name "E"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "2N3906_1"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "Q"
-				(at 5.08 1.905 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "2N3906"
-				(at 5.08 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" "Package_TO_SOT_THT:TO-92_Inline"
-				(at 5.08 -1.905 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-						(italic yes)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "https://www.onsemi.com/pub/Collateral/2N3906-D.PDF"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "Description" "-0.2A Ic, -40V Vce, Small Signal PNP Transistor, TO-92"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Sim.Device" "PNP"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Sim.Pins" "1=E 2=B 3=C"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "PNP Transistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "TO?92*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "2N3906_1_0_1"
-				(polyline
-					(pts
-						(xy -2.54 0) (xy 0.635 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 1.905) (xy 0.635 -1.905)
-					)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 0.635) (xy 2.54 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 -0.635) (xy 2.54 -2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 1.27 0)
-					(radius 2.8194)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.286 -1.778) (xy 1.778 -2.286) (xy 1.27 -1.27) (xy 2.286 -1.778)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-			)
-			(symbol "2N3906_1_1_1"
-				(pin input line
-					(at -5.08 0 0)
-					(length 2.54)
-					(name "B"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 2.54 5.08 270)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 2.54 -5.08 90)
-					(length 2.54)
-					(name "E"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "Amplifier_Operational:OPA1656ID"
 			(pin_names
 				(offset 0.127)
@@ -1802,6 +1350,450 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "MMBT3904_1"
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "Q"
+				(at 5.08 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "MMBT3904"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+				(at 5.08 -1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.onsemi.com/pdf/datasheet/pzt3904-d.pdf"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Description" "0.2A Ic, 40V Vce, Small Signal NPN Transistor, SOT-23"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Sim.Device" "NPN"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Sim.Pins" "1=B 2=E 3=C"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "NPN Transistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "SOT?23*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "MMBT3904_1_0_1"
+				(polyline
+					(pts
+						(xy -2.54 0) (xy 0.635 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 1.905) (xy 0.635 -1.905)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 1.27 0)
+					(radius 2.8194)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "MMBT3904_1_1_1"
+				(polyline
+					(pts
+						(xy 0.635 0.635) (xy 2.54 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 -0.635) (xy 2.54 -2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 -1.778) (xy 1.778 -1.27) (xy 2.286 -2.286) (xy 1.27 -1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(pin input line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 5.08 270)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 -5.08 90)
+					(length 2.54)
+					(name "E"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "MMBT3906_1"
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "Q"
+				(at 5.08 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "MMBT3906"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+				(at 5.08 -1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.onsemi.com/pdf/datasheet/pzt3906-d.pdf"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Description" "-0.2A Ic, -40V Vce, Small Signal PNP Transistor, SOT-23"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Sim.Device" "PNP"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Sim.Pins" "1=B 2=E 3=C"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "PNP Transistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "SOT?23*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "MMBT3906_1_0_1"
+				(polyline
+					(pts
+						(xy -2.54 0) (xy 0.635 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 1.905) (xy 0.635 -1.905)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 0.635) (xy 2.54 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 -0.635) (xy 2.54 -2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 1.27 0)
+					(radius 2.8194)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.286 -1.778) (xy 1.778 -2.286) (xy 1.27 -1.27) (xy 2.286 -1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+			)
+			(symbol "MMBT3906_1_1_1"
+				(pin input line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 5.08 270)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 -5.08 90)
+					(length 2.54)
+					(name "E"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "R_Potentiometer_Trim_1"
 			(pin_numbers
 				(hide yes)
@@ -1969,13 +1961,9 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Transistor_BJT:2N3904"
-			(pin_numbers
-				(hide yes)
-			)
+		(symbol "Transistor_BJT:MMBT3904"
 			(pin_names
 				(offset 0)
-				(hide yes)
 			)
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -1989,7 +1977,7 @@
 					(justify left)
 				)
 			)
-			(property "Value" "2N3904"
+			(property "Value" "MMBT3904"
 				(at 5.08 0 0)
 				(effects
 					(font
@@ -1998,7 +1986,7 @@
 					(justify left)
 				)
 			)
-			(property "Footprint" "Package_TO_SOT_THT:TO-92_Inline"
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 				(at 5.08 -1.905 0)
 				(effects
 					(font
@@ -2009,7 +1997,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "https://www.onsemi.com/pub/Collateral/2N3903-D.PDF"
+			(property "Datasheet" "https://www.onsemi.com/pdf/datasheet/pzt3904-d.pdf"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2019,7 +2007,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "0.2A Ic, 40V Vce, Small Signal NPN Transistor, TO-92"
+			(property "Description" "0.2A Ic, 40V Vce, Small Signal NPN Transistor, SOT-23"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2037,7 +2025,7 @@
 					(hide yes)
 				)
 			)
-			(property "Sim.Pins" "1=E 2=B 3=C"
+			(property "Sim.Pins" "1=B 2=E 3=C"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2055,7 +2043,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_fp_filters" "TO?92*"
+			(property "ki_fp_filters" "SOT?23*"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2064,7 +2052,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "2N3904_0_1"
+			(symbol "MMBT3904_0_1"
 				(polyline
 					(pts
 						(xy -2.54 0) (xy 0.635 0)
@@ -2101,7 +2089,7 @@
 					)
 				)
 			)
-			(symbol "2N3904_1_1"
+			(symbol "MMBT3904_1_1"
 				(polyline
 					(pts
 						(xy 0.635 0.635) (xy 2.54 2.54)
@@ -2148,7 +2136,7 @@
 							)
 						)
 					)
-					(number "2"
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2184,7 +2172,7 @@
 							)
 						)
 					)
-					(number "1"
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2195,13 +2183,9 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Transistor_BJT:2N3906"
-			(pin_numbers
-				(hide yes)
-			)
+		(symbol "Transistor_BJT:MMBT3906"
 			(pin_names
 				(offset 0)
-				(hide yes)
 			)
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -2215,7 +2199,7 @@
 					(justify left)
 				)
 			)
-			(property "Value" "2N3906"
+			(property "Value" "MMBT3906"
 				(at 5.08 0 0)
 				(effects
 					(font
@@ -2224,7 +2208,7 @@
 					(justify left)
 				)
 			)
-			(property "Footprint" "Package_TO_SOT_THT:TO-92_Inline"
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 				(at 5.08 -1.905 0)
 				(effects
 					(font
@@ -2235,7 +2219,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "https://www.onsemi.com/pub/Collateral/2N3906-D.PDF"
+			(property "Datasheet" "https://www.onsemi.com/pdf/datasheet/pzt3906-d.pdf"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2245,7 +2229,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "-0.2A Ic, -40V Vce, Small Signal PNP Transistor, TO-92"
+			(property "Description" "-0.2A Ic, -40V Vce, Small Signal PNP Transistor, SOT-23"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2263,7 +2247,7 @@
 					(hide yes)
 				)
 			)
-			(property "Sim.Pins" "1=E 2=B 3=C"
+			(property "Sim.Pins" "1=B 2=E 3=C"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2281,7 +2265,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_fp_filters" "TO?92*"
+			(property "ki_fp_filters" "SOT?23*"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2290,7 +2274,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "2N3906_0_1"
+			(symbol "MMBT3906_0_1"
 				(polyline
 					(pts
 						(xy -2.54 0) (xy 0.635 0)
@@ -2363,7 +2347,7 @@
 					)
 				)
 			)
-			(symbol "2N3906_1_1"
+			(symbol "MMBT3906_1_1"
 				(pin input line
 					(at -5.08 0 0)
 					(length 2.54)
@@ -2374,7 +2358,7 @@
 							)
 						)
 					)
-					(number "2"
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2410,7 +2394,7 @@
 							)
 						)
 					)
-					(number "1"
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -3345,13 +3329,19 @@
 		(uuid "1f2ba6ec-71a5-4261-bda3-6fba0038d3be")
 	)
 	(junction
+		(at 171.45 39.37)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "206a2c39-ffd8-41a1-9959-e782a81f21f0")
+	)
+	(junction
 		(at 80.01 173.99)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2bf3c256-92fc-4ba0-9062-0ffff466d020")
 	)
 	(junction
-		(at 158.75 46.99)
+		(at 157.48 46.99)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2da02310-3d31-4ae9-b257-e62b5d94efdf")
@@ -3399,12 +3389,6 @@
 		(uuid "4b860f7d-3500-48ba-8074-ba511c2dda78")
 	)
 	(junction
-		(at 171.45 41.91)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "4ff09c3e-4e41-4655-a7dc-f5821b06b089")
-	)
-	(junction
 		(at 135.89 181.61)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3447,7 +3431,7 @@
 		(uuid "618be527-51bd-416f-8629-31fe6ee5c872")
 	)
 	(junction
-		(at 158.75 109.22)
+		(at 160.02 109.22)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "64eaf387-f242-4cdf-84ba-e05c03693850")
@@ -3495,10 +3479,22 @@
 		(uuid "830e1418-7c5c-4d5e-9028-3bd03c2d68ff")
 	)
 	(junction
+		(at 160.02 46.99)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "83966583-e6cc-4929-88dd-01fa2ede3ebc")
+	)
+	(junction
 		(at 237.49 151.13)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8dcb85f8-385f-4835-be2a-fbffddf885dd")
+	)
+	(junction
+		(at 157.48 109.22)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "8fd3f778-e241-461e-9d79-823f59dd50a4")
 	)
 	(junction
 		(at 96.52 166.37)
@@ -3642,7 +3638,7 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 104.14) (xy 170.18 104.14)
+			(xy 166.37 101.6) (xy 170.18 101.6)
 		)
 		(stroke
 			(width 0)
@@ -3722,6 +3718,16 @@
 	)
 	(wire
 		(pts
+			(xy 157.48 110.49) (xy 158.75 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "100f33e9-afb2-4b08-a771-133ce9941f61")
+	)
+	(wire
+		(pts
 			(xy 82.55 44.45) (xy 86.36 44.45)
 		)
 		(stroke
@@ -3752,16 +3758,6 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 46.99) (xy 177.8 46.99)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "11eea062-ac34-4b43-8ba0-955deb0249cc")
-	)
-	(wire
-		(pts
 			(xy 251.46 151.13) (xy 251.46 149.86)
 		)
 		(stroke
@@ -3779,6 +3775,16 @@
 			(type default)
 		)
 		(uuid "1290d51e-2ec1-4748-8dbf-d0a1cd75d440")
+	)
+	(wire
+		(pts
+			(xy 158.75 45.72) (xy 160.02 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "13a35fe4-8fce-466f-9cc4-a1101660035c")
 	)
 	(wire
 		(pts
@@ -3942,7 +3948,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 64.77) (xy 158.75 57.15)
+			(xy 158.75 64.77) (xy 158.75 59.69)
 		)
 		(stroke
 			(width 0)
@@ -3952,23 +3958,13 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 52.07) (xy 151.13 52.07)
+			(xy 149.86 54.61) (xy 151.13 54.61)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "2925865d-8090-4505-a63a-117e31d86949")
-	)
-	(wire
-		(pts
-			(xy 171.45 54.61) (xy 171.45 41.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2a2b48d3-e836-47fc-ab78-56eee3aac096")
 	)
 	(wire
 		(pts
@@ -4032,6 +4028,16 @@
 	)
 	(wire
 		(pts
+			(xy 158.75 48.26) (xy 158.75 49.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3bc49426-2a1f-402d-8913-d9bec539a370")
+	)
+	(wire
+		(pts
 			(xy 40.64 123.19) (xy 40.64 113.03)
 		)
 		(stroke
@@ -4039,6 +4045,16 @@
 			(type default)
 		)
 		(uuid "3bf6f8c1-9fe6-43b9-9cd2-b5ed38727dc1")
+	)
+	(wire
+		(pts
+			(xy 170.18 101.6) (xy 170.18 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3c3743ac-cd78-449a-898f-f9b064c4f877")
 	)
 	(wire
 		(pts
@@ -4192,6 +4208,16 @@
 	)
 	(wire
 		(pts
+			(xy 160.02 46.99) (xy 157.48 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "502a2d68-3a61-43a9-b100-a465b00562d5")
+	)
+	(wire
+		(pts
 			(xy 137.16 172.72) (xy 135.89 172.72)
 		)
 		(stroke
@@ -4272,6 +4298,16 @@
 	)
 	(wire
 		(pts
+			(xy 158.75 107.95) (xy 158.75 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5a46cc2a-578b-4a92-b1cb-dfc11a74ad0e")
+	)
+	(wire
+		(pts
 			(xy 88.9 181.61) (xy 96.52 181.61)
 		)
 		(stroke
@@ -4279,16 +4315,6 @@
 			(type default)
 		)
 		(uuid "5b3e128c-97bc-4606-8285-2563bbd18247")
-	)
-	(wire
-		(pts
-			(xy 171.45 41.91) (xy 171.45 35.56)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5b71339f-982e-41bf-9900-f4e7c9edfc52")
 	)
 	(wire
 		(pts
@@ -4332,7 +4358,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 36.83) (xy 158.75 33.02)
+			(xy 158.75 34.29) (xy 158.75 33.02)
 		)
 		(stroke
 			(width 0)
@@ -4359,6 +4385,16 @@
 			(type default)
 		)
 		(uuid "64c00232-016a-4eef-bc2e-d1dd26ee96cb")
+	)
+	(wire
+		(pts
+			(xy 157.48 48.26) (xy 158.75 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "64fddd30-ad65-4115-b71c-763c993e444a")
 	)
 	(wire
 		(pts
@@ -4392,6 +4428,16 @@
 	)
 	(wire
 		(pts
+			(xy 157.48 48.26) (xy 157.48 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "68dddada-5108-4f88-9779-04f5ccb47ac7")
+	)
+	(wire
+		(pts
 			(xy 177.8 53.34) (xy 177.8 46.99)
 		)
 		(stroke
@@ -4422,6 +4468,26 @@
 	)
 	(wire
 		(pts
+			(xy 158.75 110.49) (xy 158.75 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6c70b001-0db1-4d5f-b025-bfeb286ca93c")
+	)
+	(wire
+		(pts
+			(xy 158.75 45.72) (xy 158.75 44.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6ca725f1-ce50-4a2d-ab22-58ad84f6a51a")
+	)
+	(wire
+		(pts
 			(xy 135.89 109.22) (xy 140.97 109.22)
 		)
 		(stroke
@@ -4442,6 +4508,16 @@
 	)
 	(wire
 		(pts
+			(xy 160.02 46.99) (xy 177.8 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6fcc6669-0087-4375-be42-1c52bffecd2a")
+	)
+	(wire
+		(pts
 			(xy 238.76 30.48) (xy 238.76 29.21)
 		)
 		(stroke
@@ -4452,7 +4528,7 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 123.19) (xy 149.86 114.3)
+			(xy 149.86 123.19) (xy 149.86 116.84)
 		)
 		(stroke
 			(width 0)
@@ -4532,7 +4608,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 109.22) (xy 177.8 109.22)
+			(xy 160.02 109.22) (xy 177.8 109.22)
 		)
 		(stroke
 			(width 0)
@@ -4569,6 +4645,16 @@
 			(type default)
 		)
 		(uuid "83db8a24-250e-4679-a6bf-a0e074b385f1")
+	)
+	(wire
+		(pts
+			(xy 160.02 107.95) (xy 158.75 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "863af8a7-0000-427b-8df0-1d887f4097f3")
 	)
 	(wire
 		(pts
@@ -4702,6 +4788,26 @@
 	)
 	(wire
 		(pts
+			(xy 157.48 109.22) (xy 160.02 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9800114b-2e92-4ed6-9a85-bc234c473e2c")
+	)
+	(wire
+		(pts
+			(xy 171.45 39.37) (xy 171.45 54.61)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "988c05e2-a576-401e-b580-3982af74a385")
+	)
+	(wire
+		(pts
 			(xy 196.85 55.88) (xy 199.39 55.88)
 		)
 		(stroke
@@ -4742,7 +4848,7 @@
 	)
 	(wire
 		(pts
-			(xy 148.59 46.99) (xy 158.75 46.99)
+			(xy 148.59 46.99) (xy 157.48 46.99)
 		)
 		(stroke
 			(width 0)
@@ -4752,7 +4858,7 @@
 	)
 	(wire
 		(pts
-			(xy 148.59 109.22) (xy 158.75 109.22)
+			(xy 148.59 109.22) (xy 157.48 109.22)
 		)
 		(stroke
 			(width 0)
@@ -4962,6 +5068,16 @@
 	)
 	(wire
 		(pts
+			(xy 160.02 107.95) (xy 160.02 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b60aa21e-78ae-4086-b30e-df222f076a0a")
+	)
+	(wire
+		(pts
 			(xy 45.72 107.95) (xy 45.72 118.11)
 		)
 		(stroke
@@ -5012,6 +5128,16 @@
 	)
 	(wire
 		(pts
+			(xy 160.02 45.72) (xy 160.02 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bd02173c-069e-46d2-a88c-0f6d446005b0")
+	)
+	(wire
+		(pts
 			(xy 82.55 38.1) (xy 82.55 44.45)
 		)
 		(stroke
@@ -5022,7 +5148,7 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 41.91) (xy 171.45 41.91)
+			(xy 166.37 39.37) (xy 171.45 39.37)
 		)
 		(stroke
 			(width 0)
@@ -5032,7 +5158,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 127) (xy 158.75 119.38)
+			(xy 158.75 127) (xy 158.75 121.92)
 		)
 		(stroke
 			(width 0)
@@ -5172,7 +5298,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 99.06) (xy 158.75 95.25)
+			(xy 158.75 96.52) (xy 158.75 95.25)
 		)
 		(stroke
 			(width 0)
@@ -5252,7 +5378,7 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 60.96) (xy 149.86 52.07)
+			(xy 149.86 60.96) (xy 149.86 54.61)
 		)
 		(stroke
 			(width 0)
@@ -5322,6 +5448,16 @@
 	)
 	(wire
 		(pts
+			(xy 157.48 110.49) (xy 157.48 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e9483397-3a81-47e0-8206-a8142caa9028")
+	)
+	(wire
+		(pts
 			(xy 29.21 102.87) (xy 29.21 105.41)
 		)
 		(stroke
@@ -5339,6 +5475,16 @@
 			(type default)
 		)
 		(uuid "e99555ff-aa14-4eab-a2e3-a97ae90afbc2")
+	)
+	(wire
+		(pts
+			(xy 171.45 39.37) (xy 171.45 35.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e9a6043a-149a-41c3-9cd9-d0f70f38834b")
 	)
 	(wire
 		(pts
@@ -5452,7 +5598,7 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 114.3) (xy 151.13 114.3)
+			(xy 149.86 116.84) (xy 151.13 116.84)
 		)
 		(stroke
 			(width 0)
@@ -6265,9 +6411,8 @@
 		)
 	)
 	(symbol
-		(lib_name "2N3906_1")
-		(lib_id "Transistor_BJT:2N3906")
-		(at 161.29 104.14 0)
+		(lib_id "Transistor_BJT:MMBT3906")
+		(at 161.29 101.6 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6276,7 +6421,7 @@
 		(dnp no)
 		(uuid "1256844d-4cde-4d57-92ee-1d55de129f0e")
 		(property "Reference" "Q3"
-			(at 166.116 102.108 0)
+			(at 154.686 99.822 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6285,7 +6430,7 @@
 			)
 		)
 		(property "Value" "MMBT3906"
-			(at 167.386 99.822 0)
+			(at 155.448 102.362 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6294,7 +6439,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
-			(at 156.21 106.045 0)
+			(at 156.21 103.505 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6304,8 +6449,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/2N3906-D.PDF"
-			(at 161.29 104.14 0)
+		(property "Datasheet" "https://www.onsemi.com/pdf/datasheet/pzt3906-d.pdf"
+			(at 161.29 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6314,8 +6459,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "-0.2A Ic, -40V Vce, Small Signal PNP Transistor, TO-92"
-			(at 161.29 104.14 0)
+		(property "Description" "-0.2A Ic, -40V Vce, Small Signal PNP Transistor, SOT-23"
+			(at 161.29 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6324,7 +6469,7 @@
 			)
 		)
 		(property "Sim.Device" "PNP"
-			(at 161.29 104.14 0)
+			(at 161.29 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6332,8 +6477,8 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Pins" "1=E 2=B 3=C"
-			(at 161.29 104.14 0)
+		(property "Sim.Pins" "1=B 2=E 3=C"
+			(at 161.29 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6863,9 +7008,9 @@
 		)
 	)
 	(symbol
-		(lib_name "2N3904_1")
-		(lib_id "Transistor_BJT:2N3904")
-		(at 156.21 52.07 0)
+		(lib_name "MMBT3904_1")
+		(lib_id "Transistor_BJT:MMBT3904")
+		(at 156.21 54.61 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6874,7 +7019,7 @@
 		(dnp no)
 		(uuid "21f1a36c-ffcd-461d-b403-f5e6c8200948")
 		(property "Reference" "Q1"
-			(at 161.29 50.7999 0)
+			(at 160.782 52.578 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6883,7 +7028,7 @@
 			)
 		)
 		(property "Value" "MMBT3904"
-			(at 161.29 53.3399 0)
+			(at 160.782 54.356 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6892,7 +7037,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
-			(at 161.29 50.165 0)
+			(at 161.29 52.705 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6902,8 +7047,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/2N3903-D.PDF"
-			(at 156.21 52.07 0)
+		(property "Datasheet" "https://www.onsemi.com/pdf/datasheet/pzt3904-d.pdf"
+			(at 156.21 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6912,8 +7057,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "0.2A Ic, 40V Vce, Small Signal NPN Transistor, TO-92"
-			(at 156.21 52.07 0)
+		(property "Description" "0.2A Ic, 40V Vce, Small Signal NPN Transistor, SOT-23"
+			(at 156.21 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6922,7 +7067,7 @@
 			)
 		)
 		(property "Sim.Device" "NPN"
-			(at 156.21 52.07 0)
+			(at 156.21 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6930,8 +7075,8 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Pins" "1=E 2=B 3=C"
-			(at 156.21 52.07 0)
+		(property "Sim.Pins" "1=B 2=E 3=C"
+			(at 156.21 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8128,8 +8273,9 @@
 		)
 	)
 	(symbol
-		(lib_id "Transistor_BJT:2N3906")
-		(at 161.29 41.91 0)
+		(lib_name "MMBT3906_1")
+		(lib_id "Transistor_BJT:MMBT3906")
+		(at 161.29 39.37 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8138,7 +8284,7 @@
 		(dnp no)
 		(uuid "54f2f55a-1ebf-478d-8a10-e59cf4657809")
 		(property "Reference" "Q2"
-			(at 166.116 39.878 0)
+			(at 155.194 39.878 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8147,7 +8293,7 @@
 			)
 		)
 		(property "Value" "MMBT3906"
-			(at 167.386 37.592 0)
+			(at 154.94 37.846 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8156,7 +8302,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
-			(at 156.21 43.815 0)
+			(at 156.21 41.275 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8166,8 +8312,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/2N3906-D.PDF"
-			(at 161.29 41.91 0)
+		(property "Datasheet" "https://www.onsemi.com/pdf/datasheet/pzt3906-d.pdf"
+			(at 161.29 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8176,8 +8322,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "-0.2A Ic, -40V Vce, Small Signal PNP Transistor, TO-92"
-			(at 161.29 41.91 0)
+		(property "Description" "-0.2A Ic, -40V Vce, Small Signal PNP Transistor, SOT-23"
+			(at 161.29 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8186,7 +8332,7 @@
 			)
 		)
 		(property "Sim.Device" "PNP"
-			(at 161.29 41.91 0)
+			(at 161.29 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8194,8 +8340,8 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Pins" "1=E 2=B 3=C"
-			(at 161.29 41.91 0)
+		(property "Sim.Pins" "1=B 2=E 3=C"
+			(at 161.29 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8833,7 +8979,7 @@
 		(dnp no)
 		(uuid "6ab4d5a0-7ebd-454b-9c18-e133434c9519")
 		(property "Reference" "RV7"
-			(at 168.91 57.1499 0)
+			(at 169.672 57.658 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8842,7 +8988,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 168.402 59.69 0)
+			(at 169.672 59.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10000,8 +10146,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Transistor_BJT:2N3904")
-		(at 156.21 114.3 0)
+		(lib_id "Transistor_BJT:MMBT3904")
+		(at 156.21 116.84 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10010,7 +10156,7 @@
 		(dnp no)
 		(uuid "920df318-99a4-4eed-81a4-51900e7f0adb")
 		(property "Reference" "Q4"
-			(at 161.29 113.0299 0)
+			(at 160.528 113.792 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10019,7 +10165,7 @@
 			)
 		)
 		(property "Value" "MMBT3904"
-			(at 161.29 115.5699 0)
+			(at 160.528 115.824 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10028,7 +10174,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
-			(at 161.29 112.395 0)
+			(at 161.29 114.935 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10038,8 +10184,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/2N3903-D.PDF"
-			(at 156.21 114.3 0)
+		(property "Datasheet" "https://www.onsemi.com/pdf/datasheet/pzt3904-d.pdf"
+			(at 156.21 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10048,8 +10194,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "0.2A Ic, 40V Vce, Small Signal NPN Transistor, TO-92"
-			(at 156.21 114.3 0)
+		(property "Description" "0.2A Ic, 40V Vce, Small Signal NPN Transistor, SOT-23"
+			(at 156.21 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10058,7 +10204,7 @@
 			)
 		)
 		(property "Sim.Device" "NPN"
-			(at 156.21 114.3 0)
+			(at 156.21 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10066,8 +10212,8 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Pins" "1=E 2=B 3=C"
-			(at 156.21 114.3 0)
+		(property "Sim.Pins" "1=B 2=E 3=C"
+			(at 156.21 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
